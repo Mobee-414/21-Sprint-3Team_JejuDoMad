@@ -1,4 +1,5 @@
 import { ReservationCard } from "@/features/reservations/components/ReservationCard";
+import { Calendar } from "@/components/ui/calendar";
 
 const mockTimeSlots = [
   { id: "1", time: "09:00", isAvailable: true },
@@ -13,6 +14,7 @@ export default function ReservationTestPage() {
     <main>
       <section>
         <h1>Reservation Test</h1>
+        <Calendar />
         <p>예약 카드 UI 테스트 페이지</p>
       </section>
 
