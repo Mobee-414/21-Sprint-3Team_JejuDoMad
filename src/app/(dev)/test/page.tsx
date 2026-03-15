@@ -1,35 +1,20 @@
-import { Calendar } from "@/components/ui/calendar";
+import { StateBadge } from "@/components/ui/badge/StateBadge";
+import { EventBadge } from "@/components/ui/badge/EventBadge";
 
-const mockActivity = {
-  price: 10000,
-  schedules: [
-    {
-      date: "2026-03-15",
-      startTime: "12:00",
-      endTime: "13:00",
-    },
-    {
-      date: "2026-03-18",
-      startTime: "12:00",
-      endTime: "13:00",
-    },
-    {
-      date: "2026-03-18",
-      startTime: "13:00",
-      endTime: "14:00",
-    },
-    {
-      date: "2026-03-18",
-      startTime: "14:00",
-      endTime: "15:00",
-    },
-  ],
-};
-export default function ReservationTestPage() {
+export default function TestPage() {
   return (
-    <main className="min-h-screen p-10">
-      <div className="w-fit">
-        <Calendar size="lg" />
+    <main>
+      <div className="flex gap-4">
+        <StateBadge variant="cancel">예약 취소</StateBadge>
+        <StateBadge variant="complete">예약 완료</StateBadge>
+        <StateBadge variant="reject">예약 거절</StateBadge>
+        <StateBadge variant="experience">체험 완료</StateBadge>
+        <StateBadge variant="approve">예약 승인</StateBadge>
+      </div>
+      <div>
+        <EventBadge type="reservation" count={3} />
+        <EventBadge type="approved" count={5} />
+        <EventBadge type="completed" count={2} />
       </div>
     </main>
   );
