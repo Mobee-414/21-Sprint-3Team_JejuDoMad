@@ -1,5 +1,5 @@
 import GNB from "@/components/gnb/gnb";
-import "@/styles/globals.css";
+import Footer from "@/components/footer/footer";
 
 export default function MainLayout ( {
   children,
@@ -10,6 +10,7 @@ export default function MainLayout ( {
     <>
       <GNB />
       <main>{children}</main>
+      <Footer />
     </>
   );
 }
