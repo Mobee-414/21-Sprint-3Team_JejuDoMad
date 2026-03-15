@@ -149,7 +149,7 @@ function Calendar({
         className,
       )}
       classNames={{
-        root: cn(defaultClassNames.root, "w-full"),
+        root: cn(defaultClassNames.root, "w-full overflow-hidden"),
         months: cn(defaultClassNames.months, "flex w-full flex-col"),
         month: cn(defaultClassNames.month, "flex w-full flex-col"),
         month_caption: styles.monthCaption,
@@ -178,12 +178,12 @@ function Calendar({
         ),
         week: cn(
           defaultClassNames.week,
-          "flex w-full justify-between border-b border-border",
+          "flex w-full justify-between border-b border-border last:border-b-0",
           styles.week,
         ),
         day: cn(
           defaultClassNames.day,
-          "relative p-0 text-center align-top",
+          "relative  text-center align-top",
           styles.day,
         ),
         today: cn(defaultClassNames.today),

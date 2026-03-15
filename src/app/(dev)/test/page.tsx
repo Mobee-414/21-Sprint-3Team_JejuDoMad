@@ -1,4 +1,4 @@
-import { ReservationCard } from "@/features/reservations/components/ReservationCard";
+import { Calendar } from "@/components/ui/calendar";
 
 const mockActivity = {
   price: 10000,
@@ -27,11 +27,10 @@ const mockActivity = {
 };
 export default function ReservationTestPage() {
   return (
-    <main className="p-10">
-      <ReservationCard
-        price={mockActivity.price}
-        schedules={mockActivity.schedules}
-      />
+    <main className="min-h-screen p-10">
+      <div className="w-fit">
+        <Calendar size="lg" />
+      </div>
     </main>
   );
 }
