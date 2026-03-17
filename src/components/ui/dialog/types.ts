@@ -21,4 +21,9 @@ export interface DialogContentProps {
   className?: string;
   showOverlay?: boolean;
 }
-
+export interface DialogIconProps {
+  src: string;
+  alt?: string;
+  size?: number;
+  className?: string;
+}

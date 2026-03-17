@@ -4,13 +4,14 @@ import { createContext, useContext, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils";
-
+import Image from "next/image";
 import type { ReactPortal, PropsWithChildren, SetStateAction } from "react";
 import type {
   DialogContextValue,
   DialogProps,
   DialogTriggerProps,
   DialogContentProps,
+  DialogIconProps,
 } from "./types";
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -111,6 +112,28 @@ function DialogContent({ children, className, showOverlay = true }: DialogConten
   );
 }
 
+function DialogIcon({ src, alt = "dialog-icon", size, className }: DialogIconProps) {
+  return (
+    <div className="flex justify-center w-full pt-10">
+      <div 
+        className={cn(
+          "relative",
+          !size && className 
+        )}
+        style={size ? { width: `${size}px`, height: `${size}px` } : undefined}
+      >
+        <Image 
+          src={src} 
+          alt={alt} 
+          fill 
+          priority 
+          className="object-contain" 
+        />
+      </div>
+    </div>
+  );
+}
+
 function DialogHeader({ children, className }: DialogContentProps) {
   return <div className={cn("flex flex-col gap-2 p-4", className)}>{children}</div>;
 }
@@ -143,5 +166,6 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogIcon,
   useDialogControl as useDialogState,
 };

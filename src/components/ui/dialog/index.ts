@@ -10,5 +10,6 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogIcon,
   useDialogState,
 } from "./dialog";
