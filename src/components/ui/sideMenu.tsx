@@ -10,7 +10,12 @@ import IconList from "@/../public/images/icons/icon_list.svg";
 import IconSetting from "@/../public/images/icons/icon_setting.svg";
 import IconCalendar from "@/../public/images/icons/icon_calendar.svg";
 
-export default function SideMenu() {
+
+interface SideMenuProps {
+  onMenuClick?: () => void;
+}
+
+export default function SideMenu({ onMenuClick }: SideMenuProps) {
   const pathname = usePathname();
 
   // 필터 색상 변수 정의
@@ -18,16 +23,16 @@ export default function SideMenu() {
   const filterActive = "invert(58%) sepia(38%) saturate(5896%) hue-rotate(160deg) brightness(93%) contrast(101%)";
 
   const menuItems = [
-    { label: "내 정보", icon: IconUser, href: "/mypage/profile" },
-    { label: "예약내역", icon: IconList, href: "/mypage/reservations" },
+    { label: "내 정보", icon: IconUser, href: "/mypage/myInfo" },
+    { label: "예약내역", icon: IconList, href: "/mypage/myReservations" },
     { label: "내 체험", icon: IconSetting, href: "/mypage/experiences" },
     { label: "예약 현황", icon: IconCalendar, href: "/mypage/status" },
   ];
 
   return (
-    <div className="bg-white w-full md:w-[291px] h-auto md:h-[450px] px-[14px] md:py-6 py-[14px] rounded-[12px] border-[#EDEEF2] shadow-[0_4px_12px_rgba(156,180,202,0.2)] flex flex-col items-center">
+    <div className="bg-white w-[327px] md:w-[178px] lg:w-[291px] h-auto lg:h-[450px] px-[14px] lg:py-6 md:py-4 py-4 rounded-[12px] border-[#EDEEF2] shadow-[0_4px_12px_rgba(156,180,202,0.2)] flex flex-col items-center">
       {/* 프로필 이미지 영역 */}
-      <div className="bg-secondary w-[120px] h-[120px] rounded-full relative flex justify-center items-center">
+      <div className="bg-secondary lg:w-[120px] lg:h-[120px] md:w-[70px] md:h-[70px] w-[70px] h-[70px] rounded-full relative flex justify-center items-center">
         <Button size="icon-sm" className="absolute bottom-1 right-0.5 w-[30px] h-[30px] bg-[#B3B4BC] rounded-full flex justify-center items-center">
           <Image 
             src={IconEdit} 
@@ -50,6 +55,7 @@ export default function SideMenu() {
             <Link 
               key={item.label} 
               href={item.href}
+              onClick={onMenuClick}
               style={{ 
                 "--icon-default": filterDefault, 
                 "--icon-active": filterActive 
