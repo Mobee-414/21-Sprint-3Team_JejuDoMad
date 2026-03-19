@@ -9,7 +9,7 @@ export default function GNB() {
   return (
     <header className="w-full">
       <div className="
-        mx-auto flex items-center justify-between px-4 md:px-[200px] md:h-[80px] h-[48px]
+        mx-auto flex items-center justify-between px-4 md:px-50 md:h-20 h-12
       "
       >
         <Link href= "/" >
