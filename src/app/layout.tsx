@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
+import QueryProvider from "@/shared/providers/queryProvider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={cn("font-sans", geist.variable)}>
-      <body className={geist.variable}>{children}</body>
+      <body className={geist.variable}>
+        <QueryProvider> {children}</QueryProvider>
+      </body>
     </html>
   );
 }
