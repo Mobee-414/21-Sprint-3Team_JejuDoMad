@@ -1,4 +1,3 @@
-
 import { StateBadge } from "@/components/ui/badge/StateBadge";
 import { EventBadge } from "@/components/ui/badge/EventBadge";
 
@@ -19,7 +18,4 @@ export default function TestPage() {
       </div>
     </main>
   );
-
 }
-
-export { Input }
