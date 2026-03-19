@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -20,7 +22,7 @@ export default function GNB() {
           />
 
           <Image 
-            src="images/icons/logo.svg"
+            src="/images/icons/logo.svg"
             alt="Global Nomad Logo"
             width={174}
             height={28}
@@ -33,7 +35,7 @@ export default function GNB() {
             <>
               <button>
                 <Image 
-                  src="images/icons/bell.svg"
+                  src="/images/icons/bell.svg"
                   alt="Bell"
                   width={24}
                   height={24}
