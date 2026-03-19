@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Link from "next/link";
 import Image from "next/image";
@@ -20,7 +20,8 @@ export default function GNB() {
             className="md:hidden"
           />
 
-          <Image
+
+          <Image 
             src="/images/icons/logo.svg"
             alt="Global Nomad Logo"
             width={174}
@@ -33,7 +34,8 @@ export default function GNB() {
           {isLogin ? (
             <>
               <button>
-                <Image
+
+                <Image 
                   src="/images/icons/bell.svg"
                   alt="Bell"
                   width={24}
