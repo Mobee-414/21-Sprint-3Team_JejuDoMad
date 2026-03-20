@@ -1,16 +1,16 @@
 export interface CardProps {
-  id: number;
-  userId: number;
+  id?: number;
+  userId?: number;
   title: string;
-  description: string;
-  category: string;
+  description?: string;
+  category?: string;
   price: number;
-  address: string;
+  address?: string;
   bannerImageUrl: string;
   rating: number;
   reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   className?: string;
 }
 
