@@ -15,7 +15,7 @@ interface ReservationCardProps {
   schedules: Schedule[];
 }
 
-export function ReservationCard({ price, schedules }: ReservationCardProps) {
+export default function ReservationCard({ price, schedules }: ReservationCardProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [guestCount, setGuestCount] = useState(10);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(

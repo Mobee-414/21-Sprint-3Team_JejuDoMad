@@ -10,8 +10,11 @@ export default function GNB() {
 
   return (
     <header className="w-full">
-      <div className="mx-auto flex h-[48px] items-center justify-between px-4 md:h-[80px] md:px-[200px]">
-        <Link href="/">
+      <div className="
+        mx-auto flex items-center justify-between px-4 md:px-50 md:h-20 h-12
+      "
+      >
+        <Link href= "/" >
           <Image
             src="/images/icons/logo_mobile.svg"
             alt="Global Nomad Logo"

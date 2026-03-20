@@ -30,17 +30,17 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
   ];
 
   return (
-    <div className="bg-white w-[327px] md:w-[178px] lg:w-[291px] h-auto lg:h-[450px] px-[14px] lg:py-6 md:py-4 py-4 rounded-[12px] border-[#EDEEF2] shadow-[0_4px_12px_rgba(156,180,202,0.2)] flex flex-col items-center">
+    <div className="bg-white w-81.75 md:w-44.5 lg:w-72.75 h-auto lg:h-112.5x-[14px] lg:py-6 md:py-4 py-4 rounded-[12px] border-[#EDEEF2] shadow-[0_4px_12px_rgba(156,180,202,0.2)] flex flex-col items-center">
       {/* 프로필 이미지 영역 */}
-      <div className="bg-secondary lg:w-[120px] lg:h-[120px] md:w-[70px] md:h-[70px] w-[70px] h-[70px] rounded-full relative flex justify-center items-center">
-        <Button size="icon-sm" className="absolute bottom-1 right-0.5 w-[30px] h-[30px] bg-[#B3B4BC] rounded-full flex justify-center items-center">
+      <div className="bg-secondary lg:w-30 lg:h-30 md:w-17.5 md:h-17.5 w-17.5 h-17.5 rounded-full relative flex justify-center items-center">
+        <Button size="icon-sm" className="absolute bottom-1 right-0.5 w-7.5 h-7.5 bg-[#B3B4BC] rounded-full flex justify-center items-center">
           <Image 
             src={IconEdit} 
             alt="icon_edit"
             width={16}
             height={16}
             priority
-            className="w-4 h-auto invert brightness-0 [filter:brightness(0)_invert(1)]"
+            className="w-4 h-auto invert brightness-0 filter-[brightness(0)_invert(1)]"
           />
         </Button>
       </div>
@@ -61,13 +61,13 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
                 "--icon-active": filterActive 
               } as React.CSSProperties}
               
-              className={`group w-full h-[54px] flex items-center px-[14px] rounded-[16px] cursor-pointer transition-colors duration-200 
+              className={`group w-full h-13.5 flex items-center px-3.5 rounded-2xl cursor-pointer transition-colors duration-200 
                 ${isActive ? "bg-[#E5F3FF]" : "hover:bg-[#E5F3FF]"}
               `}
             >
               
-              <div className={`mr-2 flex-shrink-0 transition-all duration-200 
-                ${isActive ? "[filter:var(--icon-active)]" : "[filter:var(--icon-default)] group-hover:[filter:var(--icon-active)]"}
+              <div className={`mr-2 shrink-0 transition-all duration-200 
+                ${isActive ? "filter-(--icon-active)" : "filter-(--icon-default) group-hover:filter-(--icon-active)"}
               `}>
                 <Image src={item.icon} alt={item.label} width={24} height={24} />
               </div>
