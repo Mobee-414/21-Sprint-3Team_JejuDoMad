@@ -37,6 +37,7 @@ const DropdownRoot = ({
 
   useEffect(() => {
     if (!isOpen) return;
+
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
       if (
@@ -46,11 +47,14 @@ const DropdownRoot = ({
         close();
       }
     };
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
@@ -83,7 +87,7 @@ const Trigger = ({ children, className }: DropdownProps) => {
       type="button"
       onClick={toggle}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center rounded transition-colors outline-none",
+        "inline-flex cursor-pointer items-center justify-center rounded-[4px] transition-colors outline-none",
         matchTriggerWidth && "w-full",
         className,
       )}
@@ -146,7 +150,7 @@ const Menu = ({ children, className }: DropdownProps) => {
       role="menu"
       style={{ position: "fixed", top: 0, left: 0, visibility: "hidden" }}
       className={cn(
-        "z-50 min-w-32 overflow-hidden rounded border border-border bg-popover p-1 text-popover-foreground shadow-md",
+        "z-50 min-w-[128px] overflow-hidden rounded-[4px] border border-border bg-popover p-[4px] text-popover-foreground shadow-md",
         className,
       )}
     >
@@ -175,7 +179,7 @@ const Item = ({ children, onClick, className, isActive }: ItemProps) => {
       }}
       style={{ cursor: "pointer" }}
       className={cn(
-        "rounded px-4 py-2.5 text-base text-foreground",
+        "rounded-[4px] px-[16px] py-[10px] text-[16px] text-foreground",
         "text-center transition-colors hover:bg-muted",
         isActive && "bg-muted",
         className,

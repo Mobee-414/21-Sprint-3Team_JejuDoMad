@@ -5,7 +5,7 @@ import { Dropdown } from "@/components/ui/dropdown";
 export default function SortDropdown() {
   return (
     <Dropdown>
-      <Dropdown.Trigger className="px-4 py-2 rounded-xl flex gap-2">
+      <Dropdown.Trigger className="flex gap-[8px] rounded-[12px] px-[16px] py-[8px]">
         가격 <span>▼</span>
       </Dropdown.Trigger>
 

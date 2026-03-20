@@ -13,7 +13,7 @@ export default function SidebarLayout({
   const isMyPage = pathname === "/mypage";
 
   return (
-    <div className="mx-auto mt-10 flex w-full max-w-245 flex-col items-center gap-6 px-4 pb-20 md:mt-7.5 md:max-w-186 md:flex-row md:items-start md:gap-7.5 md:px-7.5 md:pb-24 lg:mt-10 lg:max-w-245 lg:gap-7.5 lg:px-10 lg:pb-30">
+    <div className="mx-auto mt-10 flex w-full max-w-245 flex-col items-center gap-6 px-4 pb-20 md:mt-7.5 md:max-w-186 md:flex-row md:items-start md:gap-0 lg:mt-10 lg:max-w-245 lg:gap-7.5 lg:px-10 lg:pb-30">
       <div
         className={`w-full max-w-72.5 shrink-0 lg:w-72.5 ${isMyPage ? "block" : "hidden"} md:block`}
       >

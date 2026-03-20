@@ -10,7 +10,7 @@ export default function GNB() {
 
   return (
     <header className="w-full">
-      <div className="mx-auto flex h-12 items-center justify-between px-4 md:h-20 md:px-50">
+      <div className="mx-auto flex h-[48px] items-center justify-between px-[16px] md:h-[80px] md:px-[200px]">
         <Link href="/">
           <Image
             src="/images/icons/logo_mobile.svg"
@@ -29,7 +29,7 @@ export default function GNB() {
           />
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-[16px]">
           {isLogin ? (
             <>
               <button>

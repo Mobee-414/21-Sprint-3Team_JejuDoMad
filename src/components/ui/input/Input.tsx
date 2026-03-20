@@ -14,7 +14,7 @@ function Input({ className, ref, ...props }: InputProps) {
       {...props}
       ref={ref}
       className={clsx(
-        "w-full rounded-2xl border border-gray-100 bg-white pt-4 pr-5 pb-4 pl-5 transition-colors duration-200",
+        "w-full rounded-[16px] border border-gray-100 bg-white pt-[16px] pr-[20px] pb-[16px] pl-[20px] transition-colors duration-200",
         className,
       )}
     />

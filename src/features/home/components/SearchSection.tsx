@@ -1,12 +1,10 @@
-import SearchBar from "./SearchBar"
+import SearchBar from "./SearchBar";
 
-export default function SearchSection () {
+export default function SearchSection() {
   return (
-    <div className="max-w-[1120px] mx-auto flex flex-col items-center gap-10 text-2xl md:text-4xl font-bold">
-      <p>
-        무엇을 체험하고 싶으신가요?
-      </p>
+    <div className="mx-auto flex max-w-[1120px] flex-col items-center gap-[40px] text-[24px] font-bold md:text-[36px]">
+      <p>무엇을 체험하고 싶으신가요?</p>
       <SearchBar />
     </div>
-  )
+  );
 }

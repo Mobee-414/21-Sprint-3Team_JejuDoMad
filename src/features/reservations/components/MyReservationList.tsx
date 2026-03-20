@@ -11,7 +11,7 @@ export default function MyReservationList({ reservations }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-[16px]">
       {reservations.map((reservation) => (
         <ReservationCard key={reservation.id} {...reservation} />
       ))}

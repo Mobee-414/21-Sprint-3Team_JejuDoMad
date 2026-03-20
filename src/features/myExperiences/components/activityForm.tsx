@@ -64,9 +64,8 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-8 pb-20 text-gray-950"
+      className="flex flex-col gap-[32px] pb-[80px] text-gray-950"
     >
-      {/* 제목 */}
       <FormInput
         {...register("title")}
         label="제목"
@@ -76,20 +75,21 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         errorMessage={errors.title?.message}
       />
 
-      <div className="flex flex-col gap-2.5">
-        <label className="text-base font-medium text-gray-950">카테고리</label>
+      <div className="flex flex-col gap-[10px]">
+        <label className="text-[16px] font-medium text-gray-950">
+          카테고리
+        </label>
         <Dropdown matchTriggerWidth className="w-full">
           <Dropdown.Trigger
             className={cn(
-              "flex w-full items-center justify-between rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_6px_0_#00000005]",
-              "h-[56px] text-base transition-all focus:border-black",
+              "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white p-[16px] text-[16px] shadow-[0_2px_6px_0_#00000005] transition-all focus:border-black",
               !selectedCategory ? "text-gray-400" : "text-gray-950",
               errors.category && "border-red-500",
             )}
           >
             {selectedCategory || "카테고리 선택"}
             <svg
-              className="h-5 w-5 text-gray-400"
+              className="h-[20px] w-[20px] text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -102,7 +102,8 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
               />
             </svg>
           </Dropdown.Trigger>
-          <Dropdown.Menu className="rounded-2xl border border-gray-100 bg-white py-2 shadow-xl">
+
+          <Dropdown.Menu className="rounded-[16px] border border-gray-100 bg-white py-[8px] shadow-xl">
             {CATEGORIES.map((category) => (
               <Dropdown.Item
                 key={category}
@@ -110,7 +111,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
                   setValue("category", category, { shouldValidate: true })
                 }
                 className={cn(
-                  "px-4 py-3 text-left transition-colors hover:bg-gray-50",
+                  "px-[16px] py-[12px] text-left transition-colors hover:bg-gray-50",
                   selectedCategory === category && "bg-gray-50 font-bold",
                 )}
               >
@@ -120,9 +121,11 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
           </Dropdown.Menu>
         </Dropdown>
 
-        <div className="min-h-[20px] px-2">
+        <div className="min-h-[20px] px-[8px]">
           {errors.category && (
-            <p className="text-sm text-red-500">{errors.category.message}</p>
+            <p className="text-[14px] text-red-500">
+              {errors.category.message}
+            </p>
           )}
         </div>
       </div>
@@ -133,7 +136,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         isTextarea
         placeholder="체험에 대해 설명해 주세요"
         variant="experience"
-        className="h-40 !bg-white"
+        className="h-[160px] !bg-white"
         errorMessage={errors.description?.message}
       />
 
@@ -158,40 +161,45 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         errorMessage={errors.address?.message}
       />
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-[16px]">
         <label className="text-16-b text-gray-950">예약 가능한 시간대</label>
-        <div className="flex flex-col gap-4">
+
+        <div className="flex flex-col gap-[16px]">
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="flex items-center gap-2 max-md:flex-col md:gap-3"
+              className="flex items-center gap-[8px] max-md:flex-col md:gap-[12px]"
             >
               <div className="w-full md:flex-1">
                 <input
                   type="date"
                   {...register(`schedules.${index}.date`)}
                   className={cn(
-                    "w-full rounded-2xl border border-gray-100 bg-white p-4 transition-all outline-none focus:border-black",
+                    "w-full rounded-[16px] border border-gray-100 bg-white p-[16px] transition-all outline-none focus:border-black",
                     errors.schedules?.[index]?.date && "border-red-500",
                   )}
                 />
               </div>
-              <div className="flex w-full items-center gap-1.5 md:w-auto md:shrink-0 md:gap-3">
-                <div className="flex-1 md:w-32">
+
+              <div className="flex w-full items-center gap-[6px] md:w-auto md:shrink-0 md:gap-[12px]">
+                <div className="flex-1 md:w-[128px]">
                   <input
                     type="time"
                     {...register(`schedules.${index}.startTime`)}
-                    className="w-full rounded-2xl border border-gray-100 bg-white p-4 px-2 text-sm outline-none focus:border-black md:px-4 md:text-base"
+                    className="w-full rounded-[16px] border border-gray-100 bg-white p-[16px] px-[8px] text-[14px] outline-none focus:border-black md:px-[16px] md:text-[16px]"
                   />
                 </div>
+
                 <span className="shrink-0 text-gray-400">—</span>
-                <div className="flex-1 md:w-32">
+
+                <div className="flex-1 md:w-[128px]">
                   <input
                     type="time"
                     {...register(`schedules.${index}.endTime`)}
-                    className="w-full rounded-2xl border border-gray-100 bg-white p-4 px-2 text-sm outline-none focus:border-black md:px-4 md:text-base"
+                    className="w-full rounded-[16px] border border-gray-100 bg-white p-[16px] px-[8px] text-[14px] outline-none focus:border-black md:px-[16px] md:text-[16px]"
                   />
                 </div>
+
                 <div className="flex shrink-0 items-center justify-center">
                   {index === 0 ? (
                     <button
@@ -203,7 +211,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
                           endTime: "13:00",
                         })
                       }
-                      className="flex h-11 w-11 cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+                      className="flex h-[44px] w-[44px] cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
                     >
                       <Image
                         src="/images/buttons/btn_add.svg"
@@ -216,7 +224,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="flex h-11 w-11 cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
+                      className="flex h-[44px] w-[44px] cursor-pointer items-center justify-center transition-opacity hover:opacity-70"
                     >
                       <Image
                         src="/images/buttons/btn_remove.svg"
@@ -231,14 +239,15 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
             </div>
           ))}
         </div>
+
         {errors.schedules && (
-          <p className="text-sm text-red-500">
+          <p className="text-[14px] text-red-500">
             {errors.schedules.message || errors.schedules.root?.message}
           </p>
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-[8px]">
         <ImageUploader
           bannerValue={bannerImageUrl}
           subImagesValue={subImageUrls}
@@ -250,22 +259,22 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
           }
         />
 
-        <div className="min-h-[20px] px-2">
+        <div className="min-h-[20px] px-[8px]">
           {(errors.bannerImageUrl || errors.subImageUrls) && (
-            <p className="text-sm text-red-500">
+            <p className="text-[14px] text-red-500">
               {errors.bannerImageUrl?.message || errors.subImageUrls?.message}
             </p>
           )}
         </div>
       </div>
 
-      <div className="mt-8 flex items-center justify-center">
+      <div className="mt-[32px] flex items-center justify-center">
         <Button
           type="submit"
           disabled={isSubmitting}
           variant="default"
           size="lg"
-          className="w-full rounded-lg py-6 text-base font-bold text-white md:w-30"
+          className="w-full rounded-[8px] py-[24px] text-[16px] font-bold text-white md:w-[120px]"
         >
           {isSubmitting
             ? "처리 중..."

@@ -10,10 +10,10 @@ export default function Pagination() {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex justify-center mt-10 gap-2">
+    <div className="mt-[40px] flex justify-center gap-[8px]">
       <button
         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        className="px-3 py-2 rounded-md"
+        className="rounded-[6px] px-[12px] py-[8px]"
       >
         {"<"}
       </button>
@@ -23,10 +23,8 @@ export default function Pagination() {
           key={page}
           onClick={() => setCurrentPage(page)}
           className={cn(
-            "px-3 py-2 rounded-md text-sm",
-            currentPage === page
-              ? "bg-black text-white"
-              : "hover:bg-gray-100"
+            "rounded-[6px] px-[12px] py-[8px] text-[14px]",
+            currentPage === page ? "bg-black text-white" : "hover:bg-gray-100",
           )}
         >
           {page}
@@ -35,7 +33,7 @@ export default function Pagination() {
 
       <button
         onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        className="px-3 py-2 rounded-md"
+        className="rounded-[6px] px-[12px] py-[8px]"
       >
         {">"}
       </button>
