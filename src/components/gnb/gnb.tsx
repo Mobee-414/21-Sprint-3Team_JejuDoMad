@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useAuthStore } from "@/store/authStore";
 
 export default function GNB() {
-  const isLogin:boolean = false;
+  const { user } = useAuthStore();
+  const isLogin = !!user;
 
   return (
     <header className="w-full">
-      <div className="
-        mx-auto flex items-center justify-between px-4 md:px-[200px] md:h-[80px] h-[48px]
-      "
-      >
-        <Link href= "/" >
+      <div className="mx-auto flex h-[48px] items-center justify-between px-4 md:h-[80px] md:px-[200px]">
+        <Link href="/">
           <Image
             src="/images/icons/logo_mobile.svg"
             alt="Global Nomad Logo"
@@ -20,6 +19,7 @@ export default function GNB() {
             height={32}
             className="md:hidden"
           />
+
 
           <Image 
             src="/images/icons/logo.svg"
@@ -34,6 +34,7 @@ export default function GNB() {
           {isLogin ? (
             <>
               <button>
+
                 <Image 
                   src="/images/icons/bell.svg"
                   alt="Bell"
@@ -41,7 +42,7 @@ export default function GNB() {
                   height={24}
                 />
               </button>
-              <span>정만철</span>
+              <span>{user?.nickname}</span>
             </>
           ) : (
             <>
@@ -50,8 +51,7 @@ export default function GNB() {
             </>
           )}
         </div>
-
       </div>
     </header>
-  );   
+  );
 }
