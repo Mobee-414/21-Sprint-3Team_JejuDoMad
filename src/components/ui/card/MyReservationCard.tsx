@@ -3,8 +3,8 @@ import { MyReservationItem } from "@/features/reservations/types/reservation";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import {StateBadge} from "@/components/ui/badge/StateBadge";
-import { reservationStatusMap } from "@/features/reservations/constants/reservationStatusMap";
+import { StateBadge } from "@/components/ui/badge/StateBadge";
+import { reservationStatusMap } from "@/features/reservations/constants/reservationStatus";
 import {
   Dialog,
   DialogContent,
@@ -33,22 +33,21 @@ export default function MyReservationCard({
   createdAt,
   updatedAt,
 }: MyReservationItem) {
-const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
   const hasButtonUI = status === "pending" || status === "completed";
 
   const handleCancelClick = () => {
     setIsCancelDialogOpen(true);
-  }
+  };
 
   const handleCloseDialog = () => {
     setIsCancelDialogOpen(false);
-  }
+  };
 
   const handleConfirmCancel = () => {
     setIsCancelDialogOpen(false);
-  }
-
+  };
 
   return (
     <>
@@ -68,7 +67,7 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
                 {reservationStatusMap[status].label}
               </StateBadge>
 
-              <h4 className="text-14 mt-2 overflow-hidden text-ellipsis whitespace-nowrap font-bold lg:mt-3 lg:text-18">
+              <h4 className="text-14 lg:text-18 mt-2 overflow-hidden font-bold text-ellipsis whitespace-nowrap lg:mt-3">
                 {activity.title}
               </h4>
               <div className="text-13 lg:text-16 mt-1 font-medium text-gray-500 lg:mt-2.5">
@@ -93,10 +92,11 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
                   <button className="flex h-full grow items-center justify-center rounded-xl border border-gray-300 bg-white px-2.5 py-1.5">
                     예약 변경
                   </button>
-                  <button 
+                  <button
                     type="button"
                     onClick={handleCancelClick}
-                    className="flex h-full grow items-center justify-center rounded-xl bg-gray-50 px-2.5 py-1.5">
+                    className="flex h-full grow items-center justify-center rounded-xl bg-gray-50 px-2.5 py-1.5"
+                  >
                     예약 취소
                   </button>
                 </>
@@ -129,40 +129,39 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
       </div>
 
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-        <DialogContent className="flex flex-col items-center w-[320px] rounded-3xl px-7.5 pt-7.5 pb-6 gap-4 md:w-100 md:h-60.5 md:rounded-[30px] md:gap-6">
-         <div className="relative w-12.25 h-12.25 md:w-22 md:h-22">
-         <Image
-            src="/images/icons/modal/visual_warning.svg"
-            alt="경고 아이콘" 
-            fill
-            className="object-cover"
-          />
+        <DialogContent className="flex w-[320px] flex-col items-center gap-4 rounded-3xl px-7.5 pt-7.5 pb-6 md:h-60.5 md:w-100 md:gap-6 md:rounded-[30px]">
+          <div className="relative h-12.25 w-12.25 md:h-22 md:w-22">
+            <Image
+              src="/images/icons/modal/visual_warning.svg"
+              alt="경고 아이콘"
+              fill
+              className="object-cover"
+            />
           </div>
-          
-          <DialogTitle className="text-[16px] font-bold text-center text-gray-950 md:text-[18px]">
+
+          <DialogTitle className="text-center text-[16px] font-bold text-gray-950 md:text-[18px]">
             예약을 취소하시겠어요?
           </DialogTitle>
 
-          <DialogFooter className="flex flex-row justify-center w-full gap-3 p-0">
+          <DialogFooter className="flex w-full flex-row justify-center gap-3 p-0">
             <div className="flex w-70.5 gap-3">
-            <Button
-            variant="outline"
-            onClick={handleCloseDialog}
-            className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
-            >
-              아니요
-            </Button>
-            <Button
-              onClick={handleConfirmCancel}
-              className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
-            >
-              취소하기
-            </Button>
+              <Button
+                variant="outline"
+                onClick={handleCloseDialog}
+                className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
+              >
+                아니요
+              </Button>
+              <Button
+                onClick={handleConfirmCancel}
+                className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
+              >
+                취소하기
+              </Button>
             </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </>
   );
 }

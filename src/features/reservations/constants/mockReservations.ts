@@ -22,7 +22,6 @@ export const mockReservations: reservation.MyReservationItem[] = [
     updatedAt: "",
   },
 
-
   {
     id: 2,
     teamId: "team-1",
@@ -44,7 +43,6 @@ export const mockReservations: reservation.MyReservationItem[] = [
     updatedAt: "",
   },
 
-
   {
     id: 3,
     teamId: "team-1",
@@ -65,7 +63,6 @@ export const mockReservations: reservation.MyReservationItem[] = [
     createdAt: "",
     updatedAt: "",
   },
-
 
   {
     id: 4,
