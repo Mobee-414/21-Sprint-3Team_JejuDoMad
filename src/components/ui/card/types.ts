@@ -52,12 +52,12 @@ export interface MyActivity {
   price: number;
   address: string;
   bannerImageUrl: string;
-  subImages: MySubImage[];
-  schedules: MySchedule[];
-  reviewCount: number;
   rating: number;
+  reviewCount: number;
   createdAt: string;
   updatedAt: string;
+  subImages?: MySubImage[];
+  schedules?: MySchedule[];
 }
 
 export interface MySubImage {

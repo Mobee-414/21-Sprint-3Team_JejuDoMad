@@ -36,7 +36,8 @@ const FormInput = forwardRef<
         variant === "experience" || variant === "auth",
     });
 
-    const baseBorder = "border border-gray-100 shadow-[0_2px_6px_0_#00000005]";
+    const baseBorder =
+      "border border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005]";
 
     const focusBorder =
       "focus:border-[var(--color-primary-500)] focus:outline-none";
