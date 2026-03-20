@@ -15,11 +15,11 @@ export interface CardProps {
 }
 
 export type ReservationStatus =
-  | "pending" //예약완료
-  | "confirmed" //예약승인
-  | "declined" //예약거절
-  | "canceled" //예약취소
-  | "completed"; //체험완료
+  | "pending"
+  | "confirmed"
+  | "declined"
+  | "canceled"
+  | "completed";
 
 export interface MyReservationItem {
   activity: {
@@ -29,7 +29,7 @@ export interface MyReservationItem {
   };
   scheduleId: number;
   id: number;
-  nickname: string;
+  // nickname: string;
   teamId: string;
   userId: number;
   status: ReservationStatus;

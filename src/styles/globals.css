@@ -38,7 +38,7 @@
   --sidebar-accent-foreground: oklch(0.3729 0.0306 259.7328);
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
   --sidebar-ring: oklch(0.7227 0.192 149.5793);
-  --font-sans: "Pretendard", DM Sans, sans-serif;
+  --font-sans: "Pretendard Variable", "Pretendard", DM Sans, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: IBM Plex Mono, monospace;
   --radius: 0.5rem;
@@ -98,7 +98,7 @@
   --sidebar-accent-foreground: oklch(0.7118 0.0129 286.0665);
   --sidebar-border: oklch(0.4461 0.0263 256.8018);
   --sidebar-ring: oklch(0.7729 0.1535 163.2231);
-  --font-sans: DM Sans, sans-serif;
+  --font-sans: "Pretendard Variable", "Pretendard", DM Sans, sans-serif;
   --font-serif: Lora, serif;
   --font-mono: IBM Plex Mono, monospace;
   --radius: 0.5rem;
@@ -202,6 +202,15 @@ body {
   font-family: var(--font-sans);
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 @utility text-11-m {
   font-size: 11px;
   font-weight: 500;
@@ -299,8 +308,5 @@ body {
 
   body {
     @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
   }
 }
