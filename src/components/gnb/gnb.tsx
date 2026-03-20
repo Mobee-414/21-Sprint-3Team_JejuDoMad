@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useAuthStore } from "@/store/authStore";
 
 export default function GNB() {
-  const isLogin:boolean = false;
+  const { user } = useAuthStore();
+  const isLogin = !!user;
 
   return (
     <header className="w-full">
@@ -21,6 +23,7 @@ export default function GNB() {
             className="md:hidden"
           />
 
+
           <Image 
             src="/images/icons/logo.svg"
             alt="Global Nomad Logo"
@@ -34,6 +37,7 @@ export default function GNB() {
           {isLogin ? (
             <>
               <button>
+
                 <Image 
                   src="/images/icons/bell.svg"
                   alt="Bell"
@@ -41,7 +45,7 @@ export default function GNB() {
                   height={24}
                 />
               </button>
-              <span>정만철</span>
+              <span>{user?.nickname}</span>
             </>
           ) : (
             <>
@@ -50,8 +54,7 @@ export default function GNB() {
             </>
           )}
         </div>
-
       </div>
     </header>
-  );   
+  );
 }
