@@ -2,7 +2,7 @@
 
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
-import MyExperienceCard from "@/components/ui/card/MyActivityCard";
+import MyActivityCard from "@/components/ui/card/MyActivityCard";
 import { cn } from "@/lib/utils";
 
 export default function MyActivitiesPage() {
@@ -68,7 +68,7 @@ export default function MyActivitiesPage() {
       <div className="flex flex-col gap-4 lg:gap-6">
         {myActivities.length > 0 ? (
           myActivities.map((activity) => (
-            <MyExperienceCard key={activity.id} {...activity} />
+            <MyActivityCard key={activity.id} {...activity} />
           ))
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
