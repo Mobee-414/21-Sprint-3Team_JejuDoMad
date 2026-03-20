@@ -1,5 +1,13 @@
 {
-  "cSpell.words": ["logomark", "Pretendard", "pretendardvariable", "shadcn"],
+  "cSpell.words": [
+    "Jeju",
+    "jejudomad",
+    "Kakao",
+    "logomark",
+    "Pretendard",
+    "pretendardvariable",
+    "shadcn"
+  ],
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[typescript]": {

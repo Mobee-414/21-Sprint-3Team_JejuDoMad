@@ -1,5 +1,5 @@
 import { MyReservationItem } from "@/features/reservations/types/reservation";
-import ReservationCard from "@/components/ui/card/MyReservationCard";    
+import ReservationCard from "@/components/ui/card/MyReservationCard";
 
 interface Props {
   reservations: MyReservationItem[];
