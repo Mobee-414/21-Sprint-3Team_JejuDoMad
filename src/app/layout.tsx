@@ -10,7 +10,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={cn("font-sans")}>
-      <body>{children}</body>
+      <QueryProvider>
+        <body>{children}</body>
+      </QueryProvider>
     </html>
   );
 }
