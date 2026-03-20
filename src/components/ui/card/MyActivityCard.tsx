@@ -3,22 +3,15 @@
 import Link from "next/link";
 import { MyActivity } from "./types";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function MyExperienceCard({
   id,
-  userId,
   title,
-  description,
-  category,
   price,
-  address,
   bannerImageUrl,
-  subImages,
-  schedules,
   reviewCount,
   rating,
-  createdAt,
-  updatedAt,
 }: MyActivity) {
   return (
     <div className="flex w-full justify-between rounded-3xl bg-white p-6 shadow">
@@ -42,15 +35,20 @@ export default function MyExperienceCard({
           <span className="text-14 lg:text-16 text-gray-400">/ 인</span>
         </h2>
         <div className="mt-auto flex w-full gap-2">
-          <Link href={`/myUpdateExperiences/${id}`} className="flex flex-1">
-            <button className="text-14 lg:text-16 w-full rounded-[8px] bg-gray-50 px-[10px] py-[6px] font-medium">
+          <Link href={`/mypage/activities/edit/${id}`} className="flex flex-1">
+            <Button variant="outline" size="sm" className="w-full">
               수정하기
-            </button>
+            </Button>
           </Link>
 
-          <button className="text-14 lg:text-16 flex-1 rounded-[8px] bg-gray-50 px-[10px] py-[6px] font-medium">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex-1"
+            onClick={() => alert("삭제하시겠습니까?")}
+          >
             삭제하기
-          </button>
+          </Button>
         </div>
       </div>
       <div className="relative h-[82px] w-[82px] shrink-0 overflow-hidden rounded-3xl lg:h-[142px] lg:w-[142px]">

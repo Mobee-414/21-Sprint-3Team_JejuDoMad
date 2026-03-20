@@ -6,11 +6,13 @@ export interface DropdownContextValue {
   close: () => void;
   triggerRef: RefObject<HTMLElement | null>;
   menuRef: RefObject<HTMLUListElement | null>;
+  matchTriggerWidth?: boolean;
 }
 
 export interface DropdownProps {
   children: ReactNode;
   className?: string;
+  matchTriggerWidth?: boolean;
 }
 
 export interface ItemProps {
