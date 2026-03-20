@@ -25,16 +25,16 @@ export default function ReservationListSection() {
       );
 
   return (
-    <section className="flex flex-col w-full max-w-[375px] px-6 gap-[30px] md:max-w-[476px] md:px-0 lg:max-w-[640px]">
-      <div className="flex flex-col w-full max-w-[327px] gap-[10px] py-[10px] md:max-w-[476px] md:gap-[14px] lg:max-w-[640px]">
+    <section className="flex w-full flex-col gap-7.5 md:max-w-119 lg:max-w-160">
+      <div className="flex flex-col w-full gap-2.5 py-2.5 md:gap-3.5">
           <h2 className="text-18-b text-gray-950">예약내역</h2>
           <p className="text-14-m text-gray-500">
             예약내역 변경 및 취소할 수 있습니다.
           </p>
   
 
-        <div className="w-full max-w-[327px] md:max-w-[482px]">
-        <div className="scrollbar-hide flex h-[39px] items-center gap-2 overflow-x-auto whitespace-nowrap">
+        <div className="w-full">
+        <div className="scrollbar-hide flex h-9.75 items-center gap-2 overflow-x-auto whitespace-nowrap">
           {filterOptions.map((option) => {
             const isSelected = selectedStatus === option.value;
 

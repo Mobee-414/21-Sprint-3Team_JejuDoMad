@@ -55,9 +55,9 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
       <div className="text-16 px-2 pb-3 font-bold text-gray-800 lg:hidden">
         {date}
       </div>
-      <div className={cn("relative", hasButtonUI && "pb-12.5 lg:pb-0")}>
+      <div className={cn("relative", hasButtonUI && "pb-12 lg:pb-0")}>
         <div
-          className={`rounded-3xl pr-24.5 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-29 lg:pr-38.75`}
+          className={`rounded-3xl pr-22 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-29 lg:pr-38.75`}
         >
           <div className="rounded-3xl shadow-[0px_-8px_20px_rgba(0,0,0,0.05)] lg:relative">
             <Link
@@ -68,7 +68,7 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
                 {reservationStatusMap[status].label}
               </StateBadge>
 
-              <h4 className="text-14 lg:text-18 mt-2 font-bold break-keep lg:mt-3">
+              <h4 className="text-14 mt-2 overflow-hidden text-ellipsis whitespace-nowrap font-bold lg:mt-3 lg:text-18">
                 {activity.title}
               </h4>
               <div className="text-13 lg:text-16 mt-1 font-medium text-gray-500 lg:mt-2.5">
@@ -87,7 +87,7 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
                 </span>
               </div>
             </Link>
-            <div className="text-14 absolute right-0 bottom-0 left-0 flex h-9.25 gap-3 px-2.25 font-medium text-gray-600 md:px-0 lg:right-10 lg:bottom-7.5 lg:left-auto lg:z-1 lg:h-7.25 lg:gap-2">
+            <div className="text-14 absolute right-0 bottom-0 left-0 flex h-9 gap-3 px-2 font-medium text-gray-600 md:px-0 lg:right-10 lg:bottom-7.5 lg:left-auto lg:z-1 lg:h-7.25 lg:gap-2">
               {status === "pending" && (
                 <>
                   <button className="flex h-full grow items-center justify-center rounded-xl border border-gray-300 bg-white px-2.5 py-1.5">
@@ -113,7 +113,7 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
           </div>
           <div
             className={cn(
-              "absolute top-0 right-0 bottom-0 h-auto w-34 overflow-hidden rounded-r-3xl lg:w-45.25",
+              "absolute top-0 right-0 bottom-0 h-auto w-32 overflow-hidden rounded-r-3xl md:w-34 lg:w-45.25",
               hasButtonUI && "bottom-12.5 lg:bottom-0",
             )}
           >
@@ -130,7 +130,7 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <DialogContent className="flex flex-col items-center w-[320px] rounded-3xl px-7.5 pt-7.5 pb-6 gap-4 md:w-100 md:h-60.5 md:rounded-[30px] md:gap-6">
-         <div className="relative w-[49px] h-[49px] md:w-[88px] md:h-[88px]">
+         <div className="relative w-12.25 h-12.25 md:w-22 md:h-22">
          <Image
             src="/images/icons/modal/visual_warning.svg"
             alt="경고 아이콘" 
@@ -144,17 +144,17 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
           </DialogTitle>
 
           <DialogFooter className="flex flex-row justify-center w-full gap-3 p-0">
-            <div className="flex w-[282px] gap-3">
+            <div className="flex w-70.5 gap-3">
             <Button
             variant="outline"
             onClick={handleCloseDialog}
-            className="h-[41px] flex-1 rounded-[12px] md:h-[47px] md:rounded-[14px]"
+            className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
             >
               아니요
             </Button>
             <Button
               onClick={handleConfirmCancel}
-              className="h-[41px] flex-1 rounded-[12px] md:h-[47px] md:rounded-[14px]"
+              className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
             >
               취소하기
             </Button>
