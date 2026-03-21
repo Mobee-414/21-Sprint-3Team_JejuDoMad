@@ -1,25 +1,25 @@
 export interface CardProps {
-  id: number;
-  userId: number;
+  id?: number;
+  userId?: number;
   title: string;
-  description: string;
-  category: string;
+  description?: string;
+  category?: string;
   price: number;
-  address: string;
+  address?: string;
   bannerImageUrl: string;
   rating: number;
   reviewCount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   className?: string;
 }
 
 export type ReservationStatus =
-  | "pending" //예약완료
-  | "confirmed" //예약승인
-  | "declined" //예약거절
-  | "canceled" //예약취소
-  | "completed"; //체험완료
+  | "pending"
+  | "confirmed"
+  | "declined"
+  | "canceled"
+  | "completed";
 
 export interface MyReservationItem {
   activity: {
@@ -29,7 +29,7 @@ export interface MyReservationItem {
   };
   scheduleId: number;
   id: number;
-  nickname: string;
+  // nickname: string;
   teamId: string;
   userId: number;
   status: ReservationStatus;
