@@ -2,7 +2,7 @@ import ImageGallery from "./header/ImageGallery";
 import TitleSection from "./header/TitleSection";
 import DescriptionSection from "./header/DescriptionSection";
 import ActivityCalendar from "./reservation/ActivityCalender";
-import { ReservationCard } from "@/features/reservations/components/ReservationCard";
+import ReservationCard from "@/features/reservations/components/ReservationCard";
 import KakaoMap from "./map/KakaoMap";
 import ReviewSection from "./review/ReviewSection";
 
