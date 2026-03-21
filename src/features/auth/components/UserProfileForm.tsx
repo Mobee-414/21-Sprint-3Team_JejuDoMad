@@ -1,10 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import Input from "@/components/ui/input/Input";
 import PasswordInput from "@/components/ui/input/PasswordInput";
 import { Button } from "@/components/ui/button";
+import { mockUserProfile } from "../constants/mockUserProfile";
 
 export function EditProfileForm() {
+  const [nickname, setNickname] = useState(mockUserProfile.nickname);
+  const [email, setEmail] = useState(mockUserProfile.email);
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <section className="w-full rounded-[12px] border border-border bg-card px-[24px] py-[20px] shadow-sm">
       <div className="flex flex-col gap-[4px] py-[10px]">
@@ -22,8 +28,13 @@ export function EditProfileForm() {
           <Input
             id="nickname"
             type="text"
-            placeholder="정만철"
-            className="h-[54px] text-16-m placeholder:text-muted-foreground"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className={`h-[54px] text-16-m ${
+              isFocused ? "text-foreground" : "text-muted-foreground"
+            }`}
           />
         </div>
 
@@ -34,8 +45,13 @@ export function EditProfileForm() {
           <Input
             id="email"
             type="email"
-            placeholder="codeit@codeit.com"
-            className="h-[54px] text-16-m placeholder:text-muted-foreground"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className={`h-[54px] text-16-m ${
+              isFocused ? "text-foreground" : "text-muted-foreground"
+            }`}
           />
         </div>
 

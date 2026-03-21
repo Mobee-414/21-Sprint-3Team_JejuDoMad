@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import MyReservationList from "./MyReservationList";
 import { mockReservations } from "../constants/mockReservations";
-import { ReservationStatus } from "../types/reservation";
-import ReservationEmptyState from "./ReservationEmptyState";
+import { ReservationStatus, MyReservationItem } from "../types/reservation";
+import EmptyState from "./EmptyState";
+import ReviewModal from "./ReviewModal";
 
 const filterOptions: { label: string; value: ReservationStatus }[] = [
   { label: "예약 완료", value: "pending" },
@@ -18,6 +21,33 @@ const filterOptions: { label: string; value: ReservationStatus }[] = [
 export default function ReservationListSection() {
   const [selectedStatus, setSelectedStatus] =
     useState<ReservationStatus | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedReservation, setSelectedReservation] =
+    useState<MyReservationItem | null>(null);
+
+  const handleClickReview = (reservation: MyReservationItem) => {
+    setSelectedReservation(reservation);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleSubmitReview = ({
+    rating,
+    content,
+  }: {
+    rating: number;
+    content: string;
+  }) => {
+    if (!selectedReservation) return;
+
+    console.log("리뷰 작성", {
+      reservationId: selectedReservation.id,
+      rating,
+      content,
+    });
+
+    setIsReviewModalOpen(false);
+    setSelectedReservation(null);
+  };
 
   const filteredReservations =
     selectedStatus === null
@@ -27,6 +57,8 @@ export default function ReservationListSection() {
         );
 
   const isEmpty = filteredReservations.length === 0;
+
+  const router = useRouter();
 
   return (
     <section className="flex w-full flex-col gap-[30px] md:max-w-[476px] lg:max-w-[640px]">
@@ -53,13 +85,13 @@ export default function ReservationListSection() {
                         selectedStatus === option.value ? null : option.value,
                       )
                     }
-                    className={[
+                    className={cn(
                       "h-[39px] shrink-0 rounded-[100px] px-[16px] py-[10px]",
                       "gap-[6px] border",
                       isSelected
                         ? "border-primary bg-primary/10 text-primary"
                         : "border-gray-200 bg-white text-gray-950 hover:border-primary hover:text-primary",
-                    ].join(" ")}
+                    )}
                   >
                     {option.label}
                   </Button>
@@ -73,12 +105,36 @@ export default function ReservationListSection() {
       <div>
         {filteredReservations.length === 0 ? (
           <div className="flex w-full justify-center">
-            <ReservationEmptyState />
+            <EmptyState
+              message="아직 예약한 체험이 없어요"
+              buttonText="둘러보기"
+              onButtonClick={() => router.push("/activities")}
+            />
           </div>
         ) : (
-          <MyReservationList reservations={filteredReservations} />
+          <MyReservationList
+            reservations={filteredReservations}
+            onClickReview={handleClickReview}
+          />
         )}
       </div>
+      {selectedReservation && (
+        <ReviewModal
+          open={isReviewModalOpen}
+          onOpenChange={(open) => {
+            setIsReviewModalOpen(open);
+
+            if (!open) {
+              setSelectedReservation(null);
+            }
+          }}
+          activityTitle={selectedReservation.activity.title}
+          reviewDate={selectedReservation.date}
+          reviewTime={`${selectedReservation.startTime} - ${selectedReservation.endTime}`}
+          participantCount={selectedReservation.headCount}
+          onSubmit={handleSubmitReview}
+        />
+      )}
     </section>
   );
 }

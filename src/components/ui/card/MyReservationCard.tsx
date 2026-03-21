@@ -7,6 +7,9 @@ import { StateBadge } from "@/components/ui/badge/StateBadge";
 import { reservationStatusMap } from "@/features/reservations/constants/reservationStatus";
 import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
 
+interface MyReservationCardProps extends MyReservationItem {
+  onClickReview?: () => void;
+}
 export default function MyReservationCard({
   activity,
   scheduleId,
@@ -22,7 +25,8 @@ export default function MyReservationCard({
   endTime,
   createdAt,
   updatedAt,
-}: MyReservationItem) {
+  onClickReview,
+}: MyReservationCardProps) {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
   const hasButtonUI = status === "pending" || status === "completed";
@@ -83,6 +87,8 @@ export default function MyReservationCard({
               )}
               {status === "completed" && (
                 <button
+                  type="button"
+                  onClick={onClickReview}
                   className="flex h-full grow items-center justify-center rounded-[12px] bg-primary px-[10px] py-[6px] text-white"
                   disabled={reviewSubmitted}
                 >
