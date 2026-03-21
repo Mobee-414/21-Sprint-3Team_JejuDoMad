@@ -18,6 +18,7 @@ export const ImageUploader = ({
 }: ImageUploaderProps) => {
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const subInputRef = useRef<HTMLInputElement>(null);
+
   const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -48,14 +49,14 @@ export const ImageUploader = ({
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2.5">
-        <label className="text-base font-medium text-gray-950">
+    <div className="flex flex-col gap-[24px]">
+      <div className="flex flex-col gap-[10px]">
+        <label className="text-[16px] font-medium text-gray-950">
           배너 이미지
         </label>
         <div
           onClick={() => bannerInputRef.current?.click()}
-          className="relative flex h-40 w-40 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-lg border border-2 border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black"
+          className="relative flex h-[160px] w-[160px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[8px] border border-[2px] border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black"
         >
           {bannerValue ? (
             <Image
@@ -67,8 +68,10 @@ export const ImageUploader = ({
             />
           ) : (
             <>
-              <span className="text-2xl text-gray-400">+</span>
-              <span className="mt-1 text-xs text-gray-400">이미지 등록</span>
+              <span className="text-[24px] text-gray-400">+</span>
+              <span className="mt-[4px] text-[12px] text-gray-400">
+                이미지 등록
+              </span>
             </>
           )}
         </div>
@@ -81,39 +84,41 @@ export const ImageUploader = ({
         />
       </div>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-[10px]">
         <div className="flex items-center justify-between">
-          <label className="text-base font-medium text-gray-950">
+          <label className="text-[16px] font-medium text-gray-950">
             소개 이미지
           </label>
-          <span className="text-sm text-gray-400">
+          <span className="text-[14px] text-gray-400">
             ({subImagesValue.length}/4)
           </span>
         </div>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-[16px]">
           {subImagesValue.length < 4 && (
             <div
               onClick={() => subInputRef.current?.click()}
-              className="flex h-40 w-40 cursor-pointer flex-col items-center justify-center rounded-lg border border-2 border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black"
+              className="flex h-[160px] w-[160px] cursor-pointer flex-col items-center justify-center rounded-[8px] border border-[2px] border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black"
             >
-              <span className="text-2xl text-gray-400">+</span>
-              <span className="mt-1 text-xs text-gray-400">이미지 추가</span>
+              <span className="text-[24px] text-gray-400">+</span>
+              <span className="mt-[4px] text-[12px] text-gray-400">
+                이미지 추가
+              </span>
             </div>
           )}
 
           {subImagesValue.map((src, index) => (
-            <div key={index} className="relative h-40 w-40">
+            <div key={index} className="relative h-[160px] w-[160px]">
               <Image
                 src={src}
                 alt={`소개-${index}`}
                 fill
                 unoptimized
-                className="rounded-lg border border-gray-100 object-cover"
+                className="rounded-[8px] border border-gray-100 object-cover"
               />
               <button
                 type="button"
                 onClick={() => handleDeleteSubImage(index)}
-                className="absolute -top-2 -right-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black/80 text-xl text-white shadow-md hover:bg-black"
+                className="absolute -top-[8px] -right-[8px] z-10 flex h-[28px] w-[28px] items-center justify-center rounded-full bg-black/80 text-[20px] text-white shadow-md hover:bg-black"
               >
                 ×
               </button>
