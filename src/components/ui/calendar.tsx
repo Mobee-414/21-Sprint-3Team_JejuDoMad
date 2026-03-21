@@ -58,7 +58,7 @@ const calendarSizeStyles = {
       "h-[var(--calendar-weekday-height,32px)] w-[var(--calendar-weekday-width,40px)]",
   },
   lg: {
-    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] [--calendar-width:640px]",
+    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] w-full max-w-[640px]",
     monthCaption: "flex h-[56px] w-full items-center justify-center",
     captionInner:
       "flex h-full w-full items-center justify-center gap-4 translate-y-[1px] mb-8 mt-5",
@@ -143,7 +143,7 @@ function Calendar({
         ...formatters,
       }}
       className={cn(
-        "group/calendar w-(--calendar-width) [--cell-radius:var(--radius-md)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
+        "group/calendar w-full [--cell-radius:var(--radius-md)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         styles.root,
