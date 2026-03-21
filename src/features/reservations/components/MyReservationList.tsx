@@ -1,5 +1,5 @@
 import { MyReservationItem } from "@/features/reservations/types/reservation";
-import ReservationCard from "@/components/ui/card/MyReservationCard";    
+import ReservationCard from "@/components/ui/card/MyReservationCard";
 
 interface Props {
   reservations: MyReservationItem[];
@@ -11,7 +11,7 @@ export default function MyReservationList({ reservations }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-[16px]">
       {reservations.map((reservation) => (
         <ReservationCard key={reservation.id} {...reservation} />
       ))}

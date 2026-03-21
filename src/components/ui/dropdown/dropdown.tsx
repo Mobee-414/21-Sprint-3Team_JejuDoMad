@@ -13,7 +13,9 @@ import React, {
 import { createPortal } from "react-dom";
 import { DropdownContextValue, DropdownProps, ItemProps } from "./types";
 
-const DropdownContext = createContext<DropdownContextValue | undefined>(undefined);
+const DropdownContext = createContext<DropdownContextValue | undefined>(
+  undefined,
+);
 
 const useDropdown = () => {
   const context = useContext(DropdownContext);
@@ -21,42 +23,63 @@ const useDropdown = () => {
   return context;
 };
 
-const DropdownRoot = ({ children, className }: DropdownProps) => {
+const DropdownRoot = ({
+  children,
+  className,
+  matchTriggerWidth = false,
+}: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
 
-  const toggle = useCallback(() => setIsOpen(prev => !prev), []);
+  const toggle = useCallback(() => setIsOpen((prev) => !prev), []);
   const close = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     if (!isOpen) return;
+
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      if (!triggerRef.current?.contains(target) && !menuRef.current?.contains(target)) {
+      if (
+        !triggerRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
         close();
       }
     };
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
+      if (e.key === "Escape") close();
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen, close]);
 
   return (
-    <DropdownContext.Provider value={{ isOpen, toggle, close, triggerRef, menuRef }}>
-      <div className={cn("relative inline-flex text-left", className)}>{children}</div>
+    <DropdownContext.Provider
+      value={{ isOpen, toggle, close, triggerRef, menuRef, matchTriggerWidth }}
+    >
+      <div
+        className={cn(
+          "relative text-left",
+          matchTriggerWidth ? "flex w-full" : "inline-flex",
+          className,
+        )}
+      >
+        {children}
+      </div>
     </DropdownContext.Provider>
   );
 };
 
 const Trigger = ({ children, className }: DropdownProps) => {
-  const { toggle, triggerRef, isOpen } = useDropdown();
+  const { toggle, triggerRef, isOpen, matchTriggerWidth } = useDropdown();
 
   return (
     <button
@@ -64,8 +87,9 @@ const Trigger = ({ children, className }: DropdownProps) => {
       type="button"
       onClick={toggle}
       className={cn(
-        "inline-flex items-center justify-center outline-none transition-colors rounded cursor-pointer",
-        className
+        "inline-flex cursor-pointer items-center justify-center rounded-[4px] transition-colors outline-none",
+        matchTriggerWidth && "w-full",
+        className,
       )}
       aria-haspopup="true"
       aria-expanded={isOpen}
@@ -76,53 +100,63 @@ const Trigger = ({ children, className }: DropdownProps) => {
 };
 
 const Menu = ({ children, className }: DropdownProps) => {
-  const { isOpen, triggerRef, menuRef } = useDropdown();
+  const { isOpen, triggerRef, menuRef, matchTriggerWidth } = useDropdown();
 
   useLayoutEffect(() => {
-  if (!isOpen) return;
+    if (!isOpen) return;
 
-  const updatePosition = () => {
-    if (!triggerRef.current || !menuRef.current) return;
+    const updatePosition = () => {
+      if (!triggerRef.current || !menuRef.current) return;
 
-    const rect = triggerRef.current.getBoundingClientRect();
-    const menuWidth = menuRef.current.offsetWidth || 130;
-    const padding = 8;
+      const rect = triggerRef.current.getBoundingClientRect();
 
-    let left = rect.right - menuWidth;
-    if (left < padding) left = rect.left;
-    left = Math.max(padding, Math.min(left, window.innerWidth - menuWidth - padding));
+      if (matchTriggerWidth) {
+        menuRef.current.style.width = `${rect.width}px`;
+      } else {
+        menuRef.current.style.width = "auto";
+      }
 
-    menuRef.current.style.top = `${rect.bottom + 4}px`;
-    menuRef.current.style.left = `${left}px`;
-    menuRef.current.style.visibility = 'visible';
-  };
+      const menuWidth = menuRef.current.offsetWidth;
+      const padding = 8;
 
-  updatePosition();
-  window.addEventListener('resize', updatePosition);
-  window.addEventListener('scroll', updatePosition, true);
+      let left = matchTriggerWidth ? rect.left : rect.right - menuWidth;
 
-  return () => {
-    window.removeEventListener('resize', updatePosition);
-    window.removeEventListener('scroll', updatePosition, true);
-  };
-}, [isOpen, triggerRef, menuRef]);
+      if (left < padding) left = rect.left;
+      left = Math.max(
+        padding,
+        Math.min(left, window.innerWidth - menuWidth - padding),
+      );
 
+      menuRef.current.style.top = `${rect.bottom + 4}px`;
+      menuRef.current.style.left = `${left}px`;
+      menuRef.current.style.visibility = "visible";
+    };
 
-  if (!isOpen || typeof window === 'undefined') return null;
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [isOpen, triggerRef, menuRef, matchTriggerWidth]);
+
+  if (!isOpen || typeof window === "undefined") return null;
 
   return createPortal(
     <ul
       ref={menuRef}
       role="menu"
-      style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden' }}
-     className={cn(
-  "z-50 min-w-32 overflow-hidden rounded border border-border bg-popover text-popover-foreground shadow-md p-1",
-  className
-)}
+      style={{ position: "fixed", top: 0, left: 0, visibility: "hidden" }}
+      className={cn(
+        "z-50 min-w-[128px] overflow-hidden rounded-[4px] border border-border bg-popover p-[4px] text-popover-foreground shadow-md",
+        className,
+      )}
     >
       {children}
     </ul>,
-    document.body
+    document.body,
   );
 };
 Menu.displayName = "Dropdown.Menu";
@@ -141,14 +175,14 @@ const Item = ({ children, onClick, className, isActive }: ItemProps) => {
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') handleClick();
+        if (e.key === "Enter" || e.key === " ") handleClick();
       }}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: "pointer" }}
       className={cn(
-        "rounded px-4 py-2.5 text-base text-foreground",
-        "hover:bg-muted transition-colors text-center",
+        "rounded-[4px] px-[16px] py-[10px] text-[16px] text-foreground",
+        "text-center transition-colors hover:bg-muted",
         isActive && "bg-muted",
-        className
+        className,
       )}
     >
       {children}

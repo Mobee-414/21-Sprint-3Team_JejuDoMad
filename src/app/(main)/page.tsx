@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
-      <div className="mt-10">
+      <div className="mt-[40px]">
         <SearchSection />
       </div>
       <PopularActivitiesSection />

@@ -14,16 +14,14 @@ const EMAIL_REGEXP = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function LoginForm() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth); //Zustand 액션 가져오기
+  const setAuth = useAuthStore((state) => state.setAuth);
 
-  //React Hook Form 설정
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginRequest>({ mode: "onChange" });
 
-  //TanStack Query (Mutation) 설정
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => loginUser(data),
     onSuccess: (res) => {
@@ -39,11 +37,12 @@ export default function LoginForm() {
   const onSubmit = (formData: LoginRequest) => {
     loginMutation.mutate(formData);
   };
+
   return (
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 md:gap-5"
+        className="flex flex-col gap-[16px] md:gap-[20px]"
       >
         <FormInput
           label="이메일"
@@ -79,7 +78,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           size="lg"
-          className="mt-2 md:mt-[10px]"
+          className="mt-[8px] md:mt-[10px]"
           disabled={!isValid || loginMutation.isPending}
         >
           {loginMutation.isPending ? "로그인중..." : "로그인하기"}

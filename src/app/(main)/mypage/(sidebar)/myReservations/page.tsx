@@ -1,5 +1,5 @@
-import ReservationListSection from '@/features/reservations/components/ReservationListSection';
+import ReservationListSection from "@/features/reservations/components/MyReservationListSection";
 
 export default function Page() {
-  return <ReservationListSection />
+  return <ReservationListSection />;
 }

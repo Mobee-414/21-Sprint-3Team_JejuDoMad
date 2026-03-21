@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { TextareaHTMLAttributes, Ref } from 'react';
-import clsx from 'clsx';
+import { TextareaHTMLAttributes, Ref } from "react";
+import clsx from "clsx";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
@@ -14,8 +14,8 @@ function TextareaInput({ className, ref, ...props }: TextareaProps) {
       {...props}
       ref={ref}
       className={clsx(
-        'h-[140px] md:h-[200px] border border-gray-100 rounded-2xl w-full pt-4 pr-5 pb-4 pl-5 transition-colors duration-200 resize-none',
-        className
+        "h-[140px] w-full resize-none rounded-[16px] border border-gray-100 pt-[16px] pr-[20px] pb-[16px] pl-[20px] transition-colors duration-200 md:h-[200px]",
+        className,
       )}
     />
   );
