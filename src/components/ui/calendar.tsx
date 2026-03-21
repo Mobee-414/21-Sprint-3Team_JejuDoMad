@@ -58,22 +58,23 @@ const calendarSizeStyles = {
       "h-[var(--calendar-weekday-height,32px)] w-[var(--calendar-weekday-width,40px)]",
   },
   lg: {
-    root: "rounded-[24px] bg-background px-3 pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] [--calendar-width:640px]",
+    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] [--calendar-width:640px]",
     monthCaption: "flex h-[56px] w-full items-center justify-center",
     captionInner:
-      "flex h-full w-full items-center justify-center gap-4 translate-y-[1px]",
+      "flex h-full w-full items-center justify-center gap-4 translate-y-[1px] mb-8 mt-5",
     captionText:
       "inline-flex items-center text-20-b leading-none text-foreground translate-y-[1px]",
     navButton:
       "inline-flex h-8 w-8 shrink-0 items-center justify-center disabled:opacity-40",
     weekday:
-      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)] text-16-m",
-    week: "mt-0",
-    day: "h-[var(--calendar-day-height,124px)] w-[var(--calendar-day-width,91px)] p-0 align-top",
+      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)] text-16-b",
+    week: "mt-5 ",
+    day: "h-[var(--calendar-day-height,124px)] w-[var(--calendar-day-width,91px)] p-0 align-top text-16-m",
     dayButton:
-      "inline-flex h-full w-full items-start justify-start rounded-none p-2 text-left leading-none",
+      "inline-flex h-full w-full items-start justify-center rounded-none p-2 pt-4 text-left leading-none",
     weekNumber:
       "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)]",
+    outside: "text-[#B3B4BC] opacity-100",
   },
 } as const;
 
@@ -333,7 +334,7 @@ function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         classNames[UI.DayButton],
-        "relative isolate z-10 flex aspect-square size-auto flex-col gap-1 border-0 font-normal leading-none",
+        "relative isolate z-10 flex aspect-square size-auto flex-col gap-1 border-0 leading-none font-normal",
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
         "data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground",
         "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground",
