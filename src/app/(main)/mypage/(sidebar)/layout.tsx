@@ -1,17 +1,69 @@
-import SideMenu from '@/components/ui/sideMenu';
+"use client";
+
+import { useEffect } from "react";
+import SideMenu from "@/components/ui/sideMenu";
+import { usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function SidebarLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const isMainMyPage = pathname === "/mypage";
+
+  useEffect(() => {
+    const handleRedirect = () => {
+      if (window.innerWidth >= 768 && isMainMyPage) {
+        router.replace("/mypage/myInfo");
+      }
+    };
+
+    handleRedirect();
+
+    window.addEventListener("resize", handleRedirect);
+    return () => window.removeEventListener("resize", handleRedirect);
+  }, [isMainMyPage, router]);
+
   return (
-    <div className='mx-auto mt-10 flex w-full max-w-245 flex-col items-center gap-6 px-4 pb-20 md:mt-7.5 md:max-w-186 md:flex-row md:items-start md:gap-7.5 md:px-7.5 md:pb-24 lg:mt-10 lg:max-w-245 lg:gap-7.5 lg:px-10 lg:pb-30'>
-      <div className='w-full max-w-72.5 md:w-40 md: shrink-0 lg:w-72.5'>
+    <div
+      className={cn(
+        "mx-auto mt-4 flex w-full flex-col items-center gap-4 px-4 pb-20",
+        "md:mt-7.5 md:max-w-186 md:flex-row md:items-start md:gap-7.5 md:px-7.5 md:pb-24",
+        "lg:mt-10 lg:max-w-245 lg:gap-7.5 lg:px-10 lg:pb-30",
+      )}
+    >
+      <div
+        className={cn(
+          "w-full md:w-40 md:shrink-0 lg:w-72.5",
+          isMainMyPage ? "block" : "hidden md:block",
+        )}
+      >
         <SideMenu />
       </div>
+      <div
+        className={`mx-auto w-full md:mx-0 md:min-w-0 md:flex-1 lg:max-w-160 ${isMainMyPage ? "hidden md:block" : "block"}`}
+      >
+        {!isMainMyPage && (
+          <button
+            onClick={() => router.push("/mypage")}
+            className="transition-active mb-2 flex items-center gap-2.5 text-gray-700 active:opacity-60 md:hidden"
+          >
+            <Image
+              src="/images/icons/icon_back.svg"
+              alt="뒤로가기"
+              width={24}
+              height={24}
+              className="h-6 w-6"
+            />
+          </button>
+        )}
 
-      <div className='w-full md:min-w-0 md:flex-1 lg:max-w-160'>{children}</div>
+        {children}
+      </div>
     </div>
   );
 }
