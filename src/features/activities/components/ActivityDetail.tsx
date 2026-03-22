@@ -1,7 +1,7 @@
 import ImageGallery from "./header/ImageGallery";
 import TitleSection from "./header/TitleSection";
 import DescriptionSection from "./header/DescriptionSection";
-import ActivityCalendar from "./reservation/ActivityCalender";
+import ActivityCalender from "./reservation/ActivityCalender";
 import ReservationCard from "@/features/reservations/components/MyReservationCard";
 import KakaoMap from "./map/KakaoMap";
 import ReviewSection from "./review/ReviewSection";
@@ -21,7 +21,7 @@ export default function ActivityDetail() {
           <TitleSection />
 
           <div className="mt-10 block md:hidden">
-            <ActivityCalendar />
+            <ActivityCalender />
           </div>
 
           <div className="mt-10 hidden md:block">
