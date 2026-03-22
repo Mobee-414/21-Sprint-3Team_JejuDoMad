@@ -4,8 +4,8 @@ import { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="px-6 py-[65px] md:py-[140px]">
-      <div className="mx-auto max-w-[640px]">
+    <div className="px-6 py-16.25 md:py-35">
+      <div className="mx-auto max-w-160">
         <h1 className="flex justify-center">
           <Link href="/">
             <Image
@@ -24,7 +24,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             />
           </Link>
         </h1>
-        <main className="mt-[42px] md:mt-[62px]">{children}</main>
+        <main className="mt-10.5 md:mt-15.5">{children}</main>
       </div>
     </div>
   );

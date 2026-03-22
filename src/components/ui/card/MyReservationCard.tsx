@@ -3,19 +3,9 @@ import { MyReservationItem } from "@/features/reservations/types/reservation";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import {StateBadge} from "@/components/ui/badge/StateBadge";
-import { reservationStatusMap } from "@/features/reservations/constants/reservationStatusMap";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-  DialogIcon,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { StateBadge } from "@/components/ui/badge/StateBadge";
+import { reservationStatusMap } from "@/features/reservations/constants/reservationStatus";
+import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
 
 export default function MyReservationCard({
   activity,
@@ -33,77 +23,67 @@ export default function MyReservationCard({
   createdAt,
   updatedAt,
 }: MyReservationItem) {
-const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
   const hasButtonUI = status === "pending" || status === "completed";
 
   const handleCancelClick = () => {
     setIsCancelDialogOpen(true);
-  }
-
-  const handleCloseDialog = () => {
-    setIsCancelDialogOpen(false);
-  }
-
-  const handleConfirmCancel = () => {
-    setIsCancelDialogOpen(false);
-  }
-
+  };
 
   return (
     <>
-      <div className="text-16 px-2 pb-3 font-bold text-gray-800 lg:hidden">
+      <div className="text-16 px-[8px] pb-[12px] font-bold text-gray-800 lg:hidden">
         {date}
       </div>
-      <div className={cn("relative", hasButtonUI && "pb-12 lg:pb-0")}>
-        <div
-          className={`rounded-3xl pr-22 shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-29 lg:pr-38.75`}
-        >
-          <div className="rounded-3xl shadow-[0px_-8px_20px_rgba(0,0,0,0.05)] lg:relative">
+      <div className={cn("relative", hasButtonUI && "pb-[48px] lg:pb-0")}>
+        <div className="rounded-[24px] pr-[88px] shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-[116px] lg:pr-[155px]">
+          <div className="rounded-[24px] shadow-[0px_-8px_20px_rgba(0,0,0,0.05)] lg:relative">
             <Link
               href={``}
-              className="relative z-1 block rounded-3xl bg-white p-5 lg:px-10 lg:py-7.5"
+              className="relative z-[1] block rounded-[24px] bg-white p-[20px] lg:px-[40px] lg:py-[30px]"
             >
               <StateBadge variant={reservationStatusMap[status].variant}>
                 {reservationStatusMap[status].label}
               </StateBadge>
 
-              <h4 className="text-14 mt-2 overflow-hidden text-ellipsis whitespace-nowrap font-bold lg:mt-3 lg:text-18">
+              <h4 className="mt-[8px] overflow-hidden text-[14px] font-bold text-ellipsis whitespace-nowrap lg:mt-[12px] lg:text-[18px]">
                 {activity.title}
               </h4>
-              <div className="text-13 lg:text-16 mt-1 font-medium text-gray-500 lg:mt-2.5">
-                <span className="hidden lg:mr-1 lg:inline-block">
+              <div className="mt-[4px] text-[13px] font-medium text-gray-500 lg:mt-[10px] lg:text-[16px]">
+                <span className="hidden lg:mr-[4px] lg:inline-block">
                   {date}
-                  <i className="ml-1 inline-block h-0.5 w-0.5 rounded-full bg-gray-500 align-middle" />
+                  <i className="ml-[4px] inline-block h-[2px] w-[2px] rounded-full bg-gray-500 align-middle" />
                 </span>
                 {startTime} - {endTime}
               </div>
-              <div className="mt-2 flex items-center gap-1 lg:mt-2.5">
-                <strong className="text-16 lg:text-18">
+              <div className="mt-[8px] flex items-center gap-[4px] lg:mt-[10px]">
+                <strong className="text-[16px] lg:text-[18px]">
                   &#8361;{totalPrice.toLocaleString()}
                 </strong>
-                <span className="text-14 lg:text-16 text-gray-400">
+                <span className="text-[14px] text-gray-400 lg:text-[16px]">
                   /{headCount}명
                 </span>
               </div>
             </Link>
-            <div className="text-14 absolute right-0 bottom-0 left-0 flex h-9 gap-3 px-2 font-medium text-gray-600 md:px-0 lg:right-10 lg:bottom-7.5 lg:left-auto lg:z-1 lg:h-7.25 lg:gap-2">
+            <div className="text-14 absolute right-0 bottom-0 left-0 flex h-[36px] gap-[12px] px-[8px] font-medium text-gray-600 md:px-0 lg:right-[40px] lg:bottom-[30px] lg:left-auto lg:z-[1] lg:h-[29px] lg:gap-[8px]">
               {status === "pending" && (
                 <>
-                  <button className="flex h-full grow items-center justify-center rounded-xl border border-gray-300 bg-white px-2.5 py-1.5">
+                  <button className="flex h-full grow items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]">
                     예약 변경
                   </button>
-                  <button 
+                  <button
                     type="button"
                     onClick={handleCancelClick}
-                    className="flex h-full grow items-center justify-center rounded-xl bg-gray-50 px-2.5 py-1.5">
+                    className="flex h-full grow items-center justify-center rounded-[12px] bg-gray-50 px-[10px] py-[6px]"
+                  >
                     예약 취소
                   </button>
                 </>
               )}
               {status === "completed" && (
                 <button
-                  className="flex h-full grow items-center justify-center rounded-xl bg-primary px-2.5 py-1.5 text-white"
+                  className="flex h-full grow items-center justify-center rounded-[12px] bg-primary px-[10px] py-[6px] text-white"
                   disabled={reviewSubmitted}
                 >
                   {reviewSubmitted ? "후기 작성 완료!" : "후기 작성"}
@@ -113,8 +93,8 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
           </div>
           <div
             className={cn(
-              "absolute top-0 right-0 bottom-0 h-auto w-32 overflow-hidden rounded-r-3xl md:w-34 lg:w-45.25",
-              hasButtonUI && "bottom-12.5 lg:bottom-0",
+              "absolute top-0 right-0 bottom-0 h-auto w-[128px] overflow-hidden rounded-r-[24px] md:w-[136px] lg:w-[181px]",
+              hasButtonUI && "bottom-[50px] lg:bottom-0",
             )}
           >
             <Image
@@ -127,42 +107,16 @@ const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
           </div>
         </div>
       </div>
-
-      <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-        <DialogContent className="flex flex-col items-center w-[320px] rounded-3xl px-7.5 pt-7.5 pb-6 gap-4 md:w-100 md:h-60.5 md:rounded-[30px] md:gap-6">
-         <div className="relative w-12.25 h-12.25 md:w-22 md:h-22">
-         <Image
-            src="/images/icons/modal/visual_warning.svg"
-            alt="경고 아이콘" 
-            fill
-            className="object-cover"
-          />
-          </div>
-          
-          <DialogTitle className="text-[16px] font-bold text-center text-gray-950 md:text-[18px]">
-            예약을 취소하시겠어요?
-          </DialogTitle>
-
-          <DialogFooter className="flex flex-row justify-center w-full gap-3 p-0">
-            <div className="flex w-70.5 gap-3">
-            <Button
-            variant="outline"
-            onClick={handleCloseDialog}
-            className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
-            >
-              아니요
-            </Button>
-            <Button
-              onClick={handleConfirmCancel}
-              className="h-10.25 flex-1 rounded-[12px] md:h-11.75 md:rounded-[14px]"
-            >
-              취소하기
-            </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
+      <ConfirmDialog
+        open={isCancelDialogOpen}
+        title="예약을 취소하시겠어요?"
+        confirmText="취소하기"
+        cancelText="아니요"
+        onCancel={() => setIsCancelDialogOpen(false)}
+        onConfirm={() => {
+          setIsCancelDialogOpen(false);
+        }}
+      />
     </>
   );
 }

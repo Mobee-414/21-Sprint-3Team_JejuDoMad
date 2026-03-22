@@ -17,7 +17,6 @@ interface SideMenuProps {
 export default function SideMenu({ onMenuClick }: SideMenuProps) {
   const pathname = usePathname();
 
-  // 필터 색상 변수 정의
   const filterDefault =
     "invert(48%) sepia(3%) saturate(728%) hue-rotate(194deg) brightness(90%) contrast(87%)";
   const filterActive =
@@ -44,15 +43,14 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
             width={16}
             height={16}
             priority
-            className="h-auto w-4 brightness-0 invert filter-[brightness(0)_invert(1)]"
+            className="h-auto w-[16px] brightness-0 invert filter-[brightness(0)_invert(1)]"
           />
         </Button>
       </div>
 
-      {/* 메뉴 리스트 영역 */}
-      <nav className="mt-6 w-full space-y-1">
+      {/* 메뉴 */}
+      <nav className="mt-[24px] w-full space-y-[4px]">
         {menuItems.map((item) => {
-          // 현재 페이지 경로와 메뉴의 href가 일치하는지 확인
           const isActive = pathname === item.href;
 
           return (
@@ -66,10 +64,14 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
                   "--icon-active": filterActive,
                 } as React.CSSProperties
               }
-              className={`group flex h-13.5 w-full cursor-pointer items-center rounded-2xl px-3.5 transition-colors duration-200 ${isActive ? "bg-[#E5F3FF]" : "hover:bg-[#E5F3FF]"} `}
+              className={`group flex h-[54px] w-full cursor-pointer items-center rounded-[16px] px-[14px] transition-colors duration-200 ${isActive ? "bg-[#E5F3FF]" : "hover:bg-[#E5F3FF]"}`}
             >
               <div
-                className={`mr-2 shrink-0 transition-all duration-200 ${isActive ? "filter-(--icon-active)" : "filter-(--icon-default) group-hover:filter-(--icon-active)"} `}
+                className={`mr-[8px] shrink-0 transition-all duration-200 ${
+                  isActive
+                    ? "filter-(--icon-active)"
+                    : "filter-(--icon-default) group-hover:filter-(--icon-active)"
+                }`}
               >
                 <Image
                   src={item.icon}
@@ -80,7 +82,11 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
               </div>
 
               <span
-                className={`text-16-m transition-colors duration-200 ${isActive ? "text-[#1F1F22]" : "text-gray-600 group-hover:text-[#1F1F22]"} `}
+                className={`text-16-m transition-colors duration-200 ${
+                  isActive
+                    ? "text-[#1F1F22]"
+                    : "text-gray-600 group-hover:text-[#1F1F22]"
+                }`}
               >
                 {item.label}
               </span>

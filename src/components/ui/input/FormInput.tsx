@@ -26,8 +26,8 @@ function FormInput({
   ...props
 }: FormInputProps) {
   const variantLabelStyles = cn({
-    "font-bold text-base text-gray-950": variant === "default",
-    "font-medium text-base text-gray-950":
+    "font-bold text-[16px] text-gray-950": variant === "default",
+    "font-medium text-[16px] text-gray-950":
       variant === "experience" || variant === "auth",
   });
 
@@ -38,7 +38,7 @@ function FormInput({
   const errorBorder = errorMessage ? "border-red-500" : "";
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-[10px]">
       <label className={variantLabelStyles}>{label}</label>
       {isTextarea ? (
         <TextareaInput
@@ -60,7 +60,10 @@ function FormInput({
         />
       )}
       <span
-        className={cn("pl-2 text-sm", errorMessage ? "text-red-500" : null)}
+        className={cn(
+          "pl-[8px] text-[14px]",
+          errorMessage ? "text-red-500" : null,
+        )}
       >
         {errorMessage || " "}
       </span>
