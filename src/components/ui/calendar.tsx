@@ -40,40 +40,39 @@ type CalendarProps = React.ComponentProps<typeof DayPicker> & {
 
 const calendarSizeStyles = {
   md: {
-    root: "bg-background px-2 [--calendar-width:350px]",
-    monthCaption: "flex h-11 w-full items-center justify-center",
+    root: "bg-background px-[8px] [--calendar-width:350px]",
+    monthCaption: "flex h-[44px] w-full items-center justify-center",
     captionInner:
-      "flex h-full w-full items-center justify-center gap-3 translate-y-[1px]",
+      "flex h-full w-full translate-y-[1px] items-center justify-center gap-[12px]",
     captionText:
-      "inline-flex items-center text-16-b leading-none text-foreground translate-y-[1px]",
+      "inline-flex translate-y-[1px] items-center text-16-b leading-none text-foreground",
     navButton:
-      "inline-flex h-6 w-6 shrink-0 items-center justify-center disabled:opacity-40",
+      "inline-flex h-[24px] w-[24px] shrink-0 items-center justify-center disabled:opacity-40",
     weekday:
       "h-[var(--calendar-weekday-height,32px)] w-[var(--calendar-weekday-width,40px)] text-14-m",
-    week: "mt-3",
+    week: "mt-[12px]",
     day: "h-[var(--calendar-day-height,46px)] w-[var(--calendar-day-width,46px)] p-0",
     dayButton:
-      "inline-flex h-[var(--calendar-day-button-height,40px)] w-[var(--calendar-day-button-width,40px)] items-center justify-center rounded-full p-0 text-sm leading-none",
+      "inline-flex h-[var(--calendar-day-button-height,40px)] w-[var(--calendar-day-button-width,40px)] items-center justify-center rounded-full p-0 text-[14px] leading-none",
     weekNumber:
       "h-[var(--calendar-weekday-height,32px)] w-[var(--calendar-weekday-width,40px)]",
   },
   lg: {
-    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] w-full max-w-[640px]",
+    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] w-full [--calendar-width:640px]",
     monthCaption: "flex h-[56px] w-full items-center justify-center",
     captionInner:
       "flex h-full w-full items-center justify-center gap-4 translate-y-[1px] mb-8 mt-5",
     captionText:
-      "inline-flex items-center text-20-b leading-none text-foreground translate-y-[1px]",
+      "inline-flex translate-y-[1px] items-center text-20-b leading-none text-foreground",
     navButton:
-      "inline-flex h-8 w-8 shrink-0 items-center justify-center disabled:opacity-40",
+      "inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center disabled:opacity-40",
     weekday:
-      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)] text-16-b",
+      "h-[var(--calendar-weekday-height,40px)] w-[calc(100%/7)] text-16-b",
     week: "mt-5 ",
-    day: "h-[var(--calendar-day-height,124px)] w-[var(--calendar-day-width,91px)] p-0 align-top text-16-m",
+    day: "h-[var(--calendar-day-height,124px)] w-[calc(100%/7)] p-0 align-top text-16-m",
     dayButton:
-      "inline-flex h-full w-full items-start justify-center rounded-none p-2 pt-4 text-left leading-none",
-    weekNumber:
-      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)]",
+      "inline-flex h-full w-full items-start justify-center rounded-none p-[8px] pt-[16px] text-left leading-none",
+    weekNumber: "h-[var(--calendar-weekday-height,40px)] w-[calc(100%/7)]",
     outside: "text-[#B3B4BC] opacity-100",
   },
 } as const;
@@ -94,7 +93,7 @@ function CustomMonthCaption({
           disabled={!previousMonth}
           className={styles.navButton}
         >
-          <ChevronLeftIcon className="size-4" />
+          <ChevronLeftIcon className="h-[16px] w-[16px]" />
         </button>
 
         <div className={styles.captionText}>
@@ -107,7 +106,7 @@ function CustomMonthCaption({
           disabled={!nextMonth}
           className={styles.navButton}
         >
-          <ChevronRightIcon className="size-4" />
+          <ChevronRightIcon className="h-[16px] w-[16px]" />
         </button>
       </div>
     </div>
@@ -158,7 +157,10 @@ function Calendar({
         nav: "hidden",
         button_previous: "hidden",
         button_next: "hidden",
-        dropdowns: cn(defaultClassNames.dropdowns, "flex items-center gap-1.5"),
+        dropdowns: cn(
+          defaultClassNames.dropdowns,
+          "flex items-center gap-[6px]",
+        ),
         dropdown_root: cn(
           defaultClassNames.dropdown_root,
           "relative rounded-[24px]",
@@ -170,7 +172,7 @@ function Calendar({
         month_grid: cn(defaultClassNames.month_grid, "w-full border-collapse"),
         weekdays: cn(
           defaultClassNames.weekdays,
-          "mt-2 flex w-full justify-between border-b border-border",
+          "mt-[8px] flex w-full justify-between border-b border-border",
         ),
         weekday: cn(
           defaultClassNames.weekday,
@@ -184,7 +186,7 @@ function Calendar({
         ),
         day: cn(
           defaultClassNames.day,
-          "relative  text-center align-top",
+          "relative text-center align-top",
           styles.day,
         ),
         today: cn(defaultClassNames.today),
@@ -217,7 +219,7 @@ function Calendar({
           if (orientation === "left") {
             return (
               <ChevronLeftIcon
-                className={cn("size-4", iconClassName)}
+                className={cn("h-[16px] w-[16px]", iconClassName)}
                 {...iconProps}
               />
             );
@@ -226,7 +228,7 @@ function Calendar({
           if (orientation === "right") {
             return (
               <ChevronRightIcon
-                className={cn("size-4", iconClassName)}
+                className={cn("h-[16px] w-[16px]", iconClassName)}
                 {...iconProps}
               />
             );
@@ -234,7 +236,7 @@ function Calendar({
 
           return (
             <ChevronDownIcon
-              className={cn("size-4", iconClassName)}
+              className={cn("h-[16px] w-[16px]", iconClassName)}
               {...iconProps}
             />
           );
@@ -334,13 +336,13 @@ function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         classNames[UI.DayButton],
-        "relative isolate z-10 flex aspect-square size-auto flex-col gap-1 border-0 leading-none font-normal",
+        "relative isolate z-10 flex aspect-square size-auto flex-col gap-[4px] border-0 leading-none font-normal",
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
         "data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground",
         "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground",
         "data-[range-start=true]:rounded-(--cell-radius) data-[range-start=true]:rounded-l-(--cell-radius) data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground",
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground",
-        "dark:hover:text-foreground [&>span]:text-xs [&>span]:opacity-70",
+        "dark:hover:text-foreground [&>span]:text-[12px] [&>span]:opacity-70",
         modifiers.today && !modifiers.selected && "bg-primary/20 text-primary",
         calendarSizeStyles.md.dayButton,
         className,

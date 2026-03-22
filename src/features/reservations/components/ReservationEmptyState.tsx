@@ -8,8 +8,8 @@ export default function ReservationEmptyState() {
   const router = useRouter();
 
   return (
-    <div className="flex h-71.75 w-45.5 flex-col items-center justify-between">
-      <div className="flex h-50.75 w-full flex-col items-center justify-center gap-7.5">
+    <div className="flex h-[287px] w-[182px] flex-col items-center justify-between">
+      <div className="flex h-[203px] w-full flex-col items-center justify-center gap-[30px]">
         <Image
           src="/images/icons/emptyImage.svg"
           alt="예약 내역 없음"
@@ -26,7 +26,7 @@ export default function ReservationEmptyState() {
         type="button"
         size="lg"
         onClick={() => router.push("/activities")}
-        className="h-13.5 w-full"
+        className="h-[54px] w-full"
       >
         둘러보기
       </Button>

@@ -26,12 +26,12 @@ function PasswordInput({
         ref={ref}
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
-        className={clsx(className, "pr-10")}
+        className={clsx(className, "pr-[40px]")}
       />
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute top-1/2 right-3 -translate-y-1/2"
+        className="absolute top-1/2 right-[12px] -translate-y-1/2"
       >
         <Image
           src={

@@ -3,17 +3,17 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function Pagination() {
+export default function ReviewPagination() {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 5;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="mt-[40px] flex justify-center gap-[8px]">
+    <div className="mt-10 flex justify-center gap-2">
       <button
         onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-        className="rounded-[6px] px-[12px] py-[8px]"
+        className="rounded-md px-3 py-2"
       >
         {"<"}
       </button>
@@ -23,7 +23,7 @@ export default function Pagination() {
           key={page}
           onClick={() => setCurrentPage(page)}
           className={cn(
-            "rounded-[6px] px-[12px] py-[8px] text-[14px]",
+            "rounded-md px-3 py-2 text-sm",
             currentPage === page ? "bg-black text-white" : "hover:bg-gray-100",
           )}
         >
@@ -33,7 +33,7 @@ export default function Pagination() {
 
       <button
         onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        className="rounded-[6px] px-[12px] py-[8px]"
+        className="rounded-md px-3 py-2"
       >
         {">"}
       </button>
