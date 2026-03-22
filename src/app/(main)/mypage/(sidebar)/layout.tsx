@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import SideMenu from "@/components/ui/sideMenu";
-import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import SideMenu from "@/components/ui/sideMenu";
+import { useMyPageRedirect } from "@/features/mypage/hooks/useMyPageRedirect";
+import { cn } from "@/lib/utils";
 
 export default function SidebarLayout({
   children,
@@ -15,18 +15,7 @@ export default function SidebarLayout({
   const router = useRouter();
   const isMainMyPage = pathname === "/mypage";
 
-  useEffect(() => {
-    const handleRedirect = () => {
-      if (window.innerWidth >= 768 && isMainMyPage) {
-        router.replace("/mypage/myInfo");
-      }
-    };
-
-    handleRedirect();
-
-    window.addEventListener("resize", handleRedirect);
-    return () => window.removeEventListener("resize", handleRedirect);
-  }, [isMainMyPage, router]);
+  useMyPageRedirect(isMainMyPage);
 
   return (
     <div
@@ -39,13 +28,17 @@ export default function SidebarLayout({
       <div
         className={cn(
           "w-full md:w-40 md:shrink-0 lg:w-72.5",
-          isMainMyPage ? "block" : "hidden md:block",
+          !isMainMyPage && "hidden md:block",
         )}
       >
         <SideMenu />
       </div>
+
       <div
-        className={`mx-auto w-full md:mx-0 md:min-w-0 md:flex-1 lg:max-w-160 ${isMainMyPage ? "hidden md:block" : "block"}`}
+        className={cn(
+          "mx-auto w-full md:mx-0 md:min-w-0 md:flex-1 lg:max-w-160",
+          isMainMyPage && "hidden md:block",
+        )}
       >
         {!isMainMyPage && (
           <button
