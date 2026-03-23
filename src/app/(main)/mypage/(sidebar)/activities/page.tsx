@@ -54,7 +54,7 @@ export default function MyActivitiesPage() {
         </div>
 
         <Link
-          href="/mypage/activities/register"
+          href="/mypage/manage/register"
           className={cn(
             buttonVariants({ variant: "default", size: "sm" }),
             "shrink-0 px-[12px] py-[16px] text-white sm:w-[144px] sm:px-[24px] sm:py-[24px]",

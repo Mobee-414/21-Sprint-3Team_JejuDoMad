@@ -25,12 +25,12 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
   const menuItems = [
     { label: "내 정보", icon: IconUser, href: "/mypage/myInfo" },
     { label: "예약내역", icon: IconList, href: "/mypage/myReservations" },
-    { label: "내 체험", icon: IconSetting, href: "/mypage/experiences" },
+    { label: "내 체험 관리", icon: IconSetting, href: "/mypage/activities" },
     { label: "예약 현황", icon: IconCalendar, href: "/mypage/status" },
   ];
 
   return (
-    <div className="flex h-auto w-[327px] flex-col items-center rounded-[12px] border border-[#EDEEF2] bg-white py-[16px] shadow-[0_4px_12px_rgba(156,180,202,0.2)] md:w-[178px] md:py-[16px] lg:h-[450px] lg:w-[291px] lg:py-[24px]">
+    <div className="flex h-auto w-full flex-col items-center rounded-[12px] border border-[#EDEEF2] bg-white py-[16px] shadow-[0_4px_12px_rgba(156,180,202,0.2)] md:w-[178px] md:px-4 md:py-[16px] lg:h-[450px] lg:w-[291px] lg:py-[24px]">
       {/* 프로필 이미지 */}
       <div className="relative flex h-[70px] w-[70px] items-center justify-center rounded-full bg-secondary md:h-[70px] md:w-[70px] lg:h-[120px] lg:w-[120px]">
         <Button
