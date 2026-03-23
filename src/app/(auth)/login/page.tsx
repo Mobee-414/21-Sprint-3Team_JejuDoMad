@@ -1,5 +1,6 @@
-import { KakaoLoginButton } from "@/features/auth/components/kakaoLoginButton";
-import LoginForm from "@/features/auth/components/loginForm";
+import AuthFormHelper from "@/features/auth/components/authFormHelper";
+import { KakaoLoginButton } from "@/features/auth/components/login/kakaoLoginButton";
+import LoginForm from "@/features/auth/components/login/loginForm";
 import { Suspense } from "react";
 
 export default function LoginPage() {
@@ -14,6 +15,11 @@ export default function LoginPage() {
       <Suspense fallback={<div>인가코드 받아오는중...</div>}>
         <KakaoLoginButton />
       </Suspense>
+      <AuthFormHelper
+        mainText="회원이 아니신가요?"
+        linkText="회원가입하기"
+        linkUrl="/signup"
+      />
     </>
   );
 }

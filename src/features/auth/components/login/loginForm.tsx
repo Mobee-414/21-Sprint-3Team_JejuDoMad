@@ -2,19 +2,33 @@
 
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/ui/input/FormInput";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { LoginRequest } from "../types/auth";
+import { LoginRequest } from "../../types/auth";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "../api/login";
+import { loginUser } from "../../api/login";
 import { AxiosError } from "axios";
+
+const alertInit = {
+  open: false,
+  msg: "",
+  onClose: () => {},
+};
 
 const EMAIL_REGEXP = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function LoginForm() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
+  const [alertModal, setAlertModal] = useState(alertInit);
 
   const {
     register,
@@ -26,11 +40,21 @@ export default function LoginForm() {
     mutationFn: (data: LoginRequest) => loginUser(data),
     onSuccess: (res) => {
       setAuth(res.user, res.accessToken);
-      alert(`${res.user.nickname}님, 환영합니다.`);
-      router.push("/");
+      setAlertModal({
+        open: true,
+        msg: `${res.user.nickname}님, 환영합니다.`,
+        onClose: () => {
+          setAlertModal(alertInit);
+          router.push("/");
+        },
+      });
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      alert(error.response?.data?.message || "로그인에 실패했습니다.");
+      setAlertModal({
+        open: true,
+        msg: error.response?.data?.message || "로그인에 실패했습니다.",
+        onClose: () => setAlertModal(alertInit),
+      });
     },
   });
 
@@ -84,6 +108,16 @@ export default function LoginForm() {
           {loginMutation.isPending ? "로그인중..." : "로그인하기"}
         </Button>
       </form>
+      <Dialog open={alertModal.open} onOpenChange={alertModal.onClose}>
+        <DialogContent showOverlay>
+          <DialogTitle className="p-6 text-center text-[16px] font-bold">
+            {alertModal.msg}
+          </DialogTitle>
+          <DialogFooter>
+            <Button onClick={alertModal.onClose}>확인</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
