@@ -8,17 +8,32 @@ import ReviewSection from "./review/ReviewSection";
 
 export default function ActivityDetail() {
   return (
-    <div className="mx-auto mt-10 max-w-[1120px] px-4 md:px-0">
+    <div className="mx-auto mt-10 w-full max-w-[375px] px-4 sm:max-w-[744px] sm:px-6 md:px-0 lg:max-w-[1120px]">
       <div className="flex flex-col gap-6 md:flex-row md:gap-10">
-        <div className="md:w-[670px]">
+        <div className="md:max-w-[670px] md:flex-1">
           <ImageGallery />
-          <DescriptionSection />
-          <KakaoMap />
-          <ReviewSection />
+
+          <div className="mt-6 sm:mt-8 md:hidden">
+            <TitleSection />
+          </div>
+
+          <div className="mt-6 sm:mt-8">
+            <DescriptionSection />
+          </div>
+
+          <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
+            <KakaoMap />
+          </div>
+
+          <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
+            <ReviewSection />
+          </div>
         </div>
 
-        <div className="md:w-[410px]">
-          <TitleSection />
+        <div className="md:w-[320px] lg:w-[410px]">
+          <div className="hidden md:block">
+            <TitleSection />
+          </div>
 
           <div className="mt-10 block md:hidden">
             <ActivityCalender />
