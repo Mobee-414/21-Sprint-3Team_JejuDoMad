@@ -1,54 +1,39 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import MyActivityCard from "@/components/ui/card/MyActivityCard";
 import { cn } from "@/lib/utils";
+import { useMyActivities } from "@/features/myActivities/hooks/useMyActivities";
+import MyActivityCardSkeleton from "@/features/myActivities/components/myActivityCardSkeleton";
+import MyActivityEmpty from "@/features/myActivities/components/myActivityEmpty";
 
 export default function MyActivitiesPage() {
-  const myActivities = [
-    {
-      id: 1,
-      userId: 123,
-      title: "함께 배우면 즐거운 스트릿 댄스",
-      description: "재미있는 댄스 수업",
-      category: "스포츠",
-      price: 10000,
-      address: "서울시 강남구",
-      bannerImageUrl: "https://picsum.photos/seed/picsum/400/400",
-      subImages: [],
-      schedules: [],
-      reviewCount: 293,
-      rating: 4.9,
-      createdAt: "2024-03-19",
-      updatedAt: "2024-03-19",
-    },
-    {
-      id: 2,
-      userId: 125,
-      title: "함께 배우면 즐거운 스트릿 댄스",
-      description: "재미있는 댄스 수업",
-      category: "스포츠",
-      price: 50000,
-      address: "서울시 강남구",
-      bannerImageUrl: "https://picsum.photos/seed/picsum/400/400",
-      subImages: [],
-      schedules: [],
-      reviewCount: 23,
-      rating: 4.1,
-      createdAt: "2024-03-19",
-      updatedAt: "2024-03-19",
-    },
-  ];
+  const { activities, isLoading, error } = useMyActivities();
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col gap-4 py-4 lg:gap-6">
+        {[1, 2, 3].map((i) => (
+          <MyActivityCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  if (error)
+    return (
+      <div className="py-20 text-center text-red-500">
+        데이터를 불러오는 중 오류가 발생했습니다.
+      </div>
+    );
 
   return (
-    <section className="flex flex-col gap-[24px] py-[16px]">
-      <div className="flex w-full flex-row items-center justify-between gap-[16px]">
-        <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
-          <h3 className="truncate text-18-b text-foreground lg:text-32-b">
+    <section className="flex flex-col gap-6 py-4">
+      <div className="flex w-full flex-row items-center justify-between gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <h3 className="truncate text-18-b text-foreground lg:text-18-b">
             내 체험 관리
           </h3>
-          <p className="line-clamp-1 text-14-m break-keep text-muted-foreground">
+          <p className="text-sm break-keep text-muted-foreground">
             내 체험 관리 아래에 체험을 등록하거나 수정 및 삭제가 가능합니다.
           </p>
         </div>
@@ -56,24 +41,22 @@ export default function MyActivitiesPage() {
         <Link
           href="/mypage/manage/register"
           className={cn(
-            buttonVariants({ variant: "default", size: "sm" }),
-            "shrink-0 px-[12px] py-[16px] text-white sm:w-[144px] sm:px-[24px] sm:py-[24px]",
-            "text-[14px] sm:text-[16px]",
+            buttonVariants({ variant: "default", size: "lg" }),
+            "shrink-0 px-3 py-4 text-white sm:w-36 sm:px-6 sm:py-6",
+            "text-sm sm:text-base",
           )}
         >
           체험 등록하기
         </Link>
       </div>
 
-      <div className="flex flex-col gap-[16px] lg:gap-[24px]">
-        {myActivities.length > 0 ? (
-          myActivities.map((activity) => (
+      <div className="flex flex-col gap-4 lg:gap-6">
+        {activities.length > 0 ? (
+          activities.map((activity) => (
             <MyActivityCard key={activity.id} {...activity} />
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center py-[80px] text-gray-400">
-            <p>아직 등록한 체험이 없습니다.</p>
-          </div>
+          <MyActivityEmpty />
         )}
       </div>
     </section>

@@ -14,7 +14,7 @@ function TextareaInput({ className, ref, ...props }: TextareaProps) {
       {...props}
       ref={ref}
       className={clsx(
-        "h-[140px] w-full resize-none rounded-[16px] border border-gray-100 pt-[16px] pr-[20px] pb-[16px] pl-[20px] transition-colors duration-200 md:h-[200px]",
+        "h-[140px] w-full resize-none rounded-[16px] border border-gray-100 bg-white pt-[16px] pr-[20px] pb-[16px] pl-[20px] transition-colors duration-200 md:h-[200px]",
         className,
       )}
     />
