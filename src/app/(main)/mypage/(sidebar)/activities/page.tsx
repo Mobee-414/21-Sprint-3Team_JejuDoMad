@@ -14,7 +14,7 @@ export default function MyActivitiesPage() {
   if (isLoading)
     return (
       <div className="flex flex-col gap-4 py-4 lg:gap-6">
-        {[1, 2, 3].map((i) => (
+        {Array.from({ length: 6 }).map((_, i) => (
           <MyActivityCardSkeleton key={i} />
         ))}
       </div>
