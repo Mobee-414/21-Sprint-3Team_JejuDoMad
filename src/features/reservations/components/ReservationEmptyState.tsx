@@ -8,7 +8,7 @@ export default function ReservationEmptyState() {
   const router = useRouter();
 
   return (
-    <div className="flex h-[287px] w-[182px] flex-col items-center justify-between">
+    <div className="w-f flex h-[287px] flex-col items-center justify-between">
       <div className="flex h-[203px] w-full flex-col items-center justify-center gap-[30px]">
         <Image
           src="/images/icons/emptyImage.svg"
@@ -26,7 +26,7 @@ export default function ReservationEmptyState() {
         type="button"
         size="lg"
         onClick={() => router.push("/activities")}
-        className="h-[54px] w-full"
+        className="h-[54px] w-[182px] text-white"
       >
         둘러보기
       </Button>
