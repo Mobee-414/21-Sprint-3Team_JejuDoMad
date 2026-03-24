@@ -31,6 +31,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts",
     "**/*.d.ts",
+    "src/components/skeleton"
   ],
   "exclude": ["node_modules"]
 }
