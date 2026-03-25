@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { KAKAO_AUTH_URL } from "../constants/kakao";
+import { KAKAO_AUTH_URL } from "../../constants/kakao";
 import { Button } from "@/components/ui/button";
 import KakaoIcon from "public/images/icons/kakaoIcon.svg";
 import Image from "next/image";

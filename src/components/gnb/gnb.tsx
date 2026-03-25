@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAuthStore } from "@/store/authStore";
 
 export default function GNB() {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const isLogin = !!user;
 
   //mock data
@@ -49,6 +49,7 @@ export default function GNB() {
                 />
               </button>
               <span>{user?.nickname}</span>
+              <button onClick={logout}>로그아웃</button>
             </>
           ) : (
             <>
