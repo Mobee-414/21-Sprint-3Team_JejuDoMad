@@ -2,12 +2,16 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { FieldErrors } from "react-hook-form";
+import { type ActivityFormType } from "@/features/myActivities/schema";
 
 interface ImageUploaderProps {
   bannerValue: string | null;
   subImagesValue: string[];
   onBannerChange: (url: string) => void;
   onSubImagesChange: (urls: string[]) => void;
+  errors: FieldErrors<ActivityFormType>;
 }
 
 export const ImageUploader = ({
@@ -15,6 +19,7 @@ export const ImageUploader = ({
   subImagesValue,
   onBannerChange,
   onSubImagesChange,
+  errors,
 }: ImageUploaderProps) => {
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const subInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +61,10 @@ export const ImageUploader = ({
         </label>
         <div
           onClick={() => bannerInputRef.current?.click()}
-          className="relative flex h-[160px] w-[160px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[8px] border border-[2px] border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black"
+          className={cn(
+            "relative flex h-[160px] w-[160px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[8px] border-[2px] border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black",
+            errors.bannerImageUrl && "border-red-500",
+          )}
         >
           {bannerValue ? (
             <Image
@@ -75,6 +83,11 @@ export const ImageUploader = ({
             </>
           )}
         </div>
+        {errors.bannerImageUrl && (
+          <p className="px-2 text-[14px] text-red-500">
+            {errors.bannerImageUrl.message}
+          </p>
+        )}
         <input
           type="file"
           ref={bannerInputRef}

@@ -1,4 +1,4 @@
-import { ActivityForm } from "@/features/myExperiences/components/activityForm";
+import { ActivityForm } from "@/features/myActivities/components/form/activityForm";
 
 export default function Page() {
   return (
