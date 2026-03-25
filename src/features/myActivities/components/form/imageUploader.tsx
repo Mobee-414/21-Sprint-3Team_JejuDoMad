@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { FieldErrors } from "react-hook-form";
-import { type ActivityFormType } from "@/features/myActivities/schema";
+import { type ActivityFormType } from "@/features/myActivities/types/schema";
 
 interface ImageUploaderProps {
   bannerValue: string | null;

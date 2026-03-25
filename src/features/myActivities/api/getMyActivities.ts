@@ -1,8 +1,9 @@
-import apiClient from "@/shared/api/apiClient";
-import { GetMyActivitiesResponse } from "@/features/myActivities/types/activity.types";
+import { Get } from "@/shared/api/request";
+import {
+  MyActivitiesResponseSchema,
+  type MyActivitiesResponse,
+} from "@/features/myActivities/types/schema";
 
-export const getMyActivities = async (): Promise<GetMyActivitiesResponse> => {
-  const { data } =
-    await apiClient.get<GetMyActivitiesResponse>("my-activities");
-  return data;
+export const getMyActivities = async (): Promise<MyActivitiesResponse> => {
+  return await Get("/my-activities", MyActivitiesResponseSchema);
 };

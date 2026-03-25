@@ -7,16 +7,17 @@ import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/features/myActivities/components/form/imageUploader";
 import { CategoryInput } from "@/features/myActivities/components/form/categoryInput";
 import { ScheduleInput } from "@/features/myActivities/components/form/scheduleInput";
-
 import {
-  activitySchema,
+  ActivityFormSchema,
   type ActivityFormType,
-} from "@/features/myActivities/schema";
+  type ActivityRequest,
+  type Activity,
+} from "@/features/myActivities/types/schema";
 import { useWatch } from "react-hook-form";
 
 interface ActivityFormProps {
   mode: "register" | "edit";
-  initialData?: ActivityFormType;
+  initialData?: Partial<Activity | ActivityFormType>;
 }
 
 export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
@@ -28,18 +29,24 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
     formState: { errors, isSubmitting },
   } = useForm<ActivityFormType>({
     resolver: zodResolver(
-      activitySchema,
+      ActivityFormSchema,
     ) as unknown as Resolver<ActivityFormType>,
-    defaultValues: initialData || {
-      title: "",
-      category: "",
-      description: "",
-      price: "" as unknown as number,
-      address: "",
-      bannerImageUrl: "",
-      subImageUrls: [],
-      schedules: [{ date: "", startTime: "12:00", endTime: "13:00" }],
-    },
+    defaultValues: initialData
+      ? ({
+          ...initialData,
+          price:
+            initialData.price !== undefined ? String(initialData.price) : "",
+        } as ActivityFormType)
+      : {
+          title: "",
+          category: "",
+          description: "",
+          price: "",
+          address: "",
+          bannerImageUrl: "",
+          subImageUrls: [],
+          schedules: [{ date: "", startTime: "12:00", endTime: "13:00" }],
+        },
   });
 
   const bannerImageUrl = useWatch({ control, name: "bannerImageUrl" });
@@ -47,14 +54,14 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
   const selectedCategory = useWatch({ control, name: "category" });
 
   const onSubmit: SubmitHandler<ActivityFormType> = (data) => {
-    console.log(`${mode === "register" ? "등록" : "수정"} 데이터:`, data);
+    const payload: ActivityRequest = {
+      ...data,
+      price: Number(data.price), // 여기서 변환
+    };
+    console.log(`${mode === "register" ? "등록" : "수정"} 완료:`, payload);
   };
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-[32px] pb-[80px] text-gray-950"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
       <FormInput
         {...register("title")}
         label="제목"
