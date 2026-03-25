@@ -58,22 +58,22 @@ const calendarSizeStyles = {
       "h-[var(--calendar-weekday-height,32px)] w-[var(--calendar-weekday-width,40px)]",
   },
   lg: {
-    root: "rounded-[24px] bg-background px-[12px] pb-[8px] shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] [--calendar-width:640px]",
+    root: "rounded-[24px] bg-background pb-2 shadow-[0_4px_24px_0_rgba(156,180,202,0.2)] w-full [--calendar-width:640px]",
     monthCaption: "flex h-[56px] w-full items-center justify-center",
     captionInner:
-      "flex h-full w-full translate-y-[1px] items-center justify-center gap-[16px]",
+      "flex h-full w-full items-center justify-center gap-4 translate-y-[1px] mb-8 mt-5",
     captionText:
       "inline-flex translate-y-[1px] items-center text-20-b leading-none text-foreground",
     navButton:
       "inline-flex h-[32px] w-[32px] shrink-0 items-center justify-center disabled:opacity-40",
     weekday:
-      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)] text-16-m",
-    week: "mt-0",
-    day: "h-[var(--calendar-day-height,124px)] w-[var(--calendar-day-width,91px)] p-0 align-top",
+      "h-[var(--calendar-weekday-height,40px)] w-[calc(100%/7)] text-16-b",
+    week: "mt-5 ",
+    day: "h-[var(--calendar-day-height,124px)] w-[calc(100%/7)] p-0 align-top text-16-m",
     dayButton:
-      "inline-flex h-full w-full items-start justify-start rounded-none p-[8px] text-left leading-none",
-    weekNumber:
-      "h-[var(--calendar-weekday-height,40px)] w-[var(--calendar-weekday-width,91px)]",
+      "inline-flex h-full w-full items-start justify-center rounded-none p-[8px] pt-[16px] text-left leading-none",
+    weekNumber: "h-[var(--calendar-weekday-height,40px)] w-[calc(100%/7)]",
+    outside: "text-[#B3B4BC] opacity-100",
   },
 } as const;
 
@@ -142,7 +142,7 @@ function Calendar({
         ...formatters,
       }}
       className={cn(
-        "group/calendar w-(--calendar-width) [--cell-radius:var(--radius-md)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
+        "group/calendar w-full [--cell-radius:var(--radius-md)] in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         styles.root,

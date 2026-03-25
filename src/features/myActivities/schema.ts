@@ -1,5 +1,5 @@
 import * as z from "zod";
-export type { ActivityRequest as ActivityFormType } from "@/features/myExperiences/types/activity.types";
+export type { ActivityRequest as ActivityFormType } from "@/features/myActivities/types/activity.types";
 
 export const activitySchema = z.object({
   title: z.string().min(1, "제목을 등록해 주세요"),
