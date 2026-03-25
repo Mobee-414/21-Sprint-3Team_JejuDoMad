@@ -1,13 +1,50 @@
+"use client";
+
+import { useEffect } from "react";
+
 export default function KakaoMap() {
-  return (
-    <section className="mt-10">
-      <h2 className="text-lg font-bold md:text-xl">오시는 길</h2>
+  useEffect(() => {
+    console.log("카카오 키:", process.env.NEXT_PUBLIC_KAKAO_MAP_KEY);
 
-      <p className="mt-3 text-sm text-gray-700">서울 중구 청계천로 100 10F</p>
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false`;
+    script.async = true;
 
-      <div className="mt-4 flex h-[450px] w-full items-center justify-center rounded-2xl bg-gray-200 md:w-[670px]">
-        지도 영역 (카카오 지도 들어갈 자리)
-      </div>
-    </section>
-  );
+    script.onload = () => {
+      console.log("스크립트 로드 완료");
+      window.kakao.maps.load(() => {
+        console.log("카카오맵 초기화 완료");
+        const container = document.getElementById("map");
+        if (!container) {
+          console.log("map 컨테이너 없음");
+          return;
+        }
+
+        const options = {
+          center: new window.kakao.maps.LatLng(37.5665, 126.978),
+          level: 3,
+        };
+
+        const map = new window.kakao.maps.Map(container, options);
+
+        const marker = new window.kakao.maps.Marker({
+          position: new window.kakao.maps.LatLng(37.5665, 126.978),
+        });
+
+        marker.setMap(map);
+      });
+    };
+
+    script.onerror = () => {
+      console.log("스크립트 로드 실패");
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  return <div id="map" className="mt-4 h-[450px] w-full rounded-2xl" />;
 }

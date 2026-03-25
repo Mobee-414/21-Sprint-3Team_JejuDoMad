@@ -8,6 +8,10 @@ export default function GNB() {
   const { user } = useAuthStore();
   const isLogin = !!user;
 
+  //mock data
+  const notificationCount = 0;
+  const hasNotification = notificationCount > 0;
+
   return (
     <header className="w-full">
       <div className="mx-auto flex h-[48px] items-center justify-between px-[16px] md:h-[80px] md:px-[200px]">
@@ -34,7 +38,11 @@ export default function GNB() {
             <>
               <button>
                 <Image
-                  src="/images/icons/bell.svg"
+                  src={
+                    hasNotification
+                      ? "/images/icons/icon_bell.svg"
+                      : "/images/icons/bell.svg"
+                  }
                   alt="Bell"
                   width={24}
                   height={24}
