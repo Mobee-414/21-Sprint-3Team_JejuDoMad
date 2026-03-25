@@ -8,7 +8,7 @@ import {
   FieldErrors,
 } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import { ActivityFormType } from "@/features/myActivities/schema";
+import { ActivityFormType } from "@/features/myActivities/types/schema";
 
 interface ScheduleInputProps {
   control: Control<ActivityFormType>;
