@@ -6,7 +6,12 @@ import { useAuthStore } from "@/store/authStore";
 
 export default function GNB() {
   const { user } = useAuthStore();
-  const isLogin = !!user;
+  // const isLogin = !!user;
+  const isLogin = true; // 로그인
+
+  //mock data
+  const notificationCount = 0;
+  const hasNotification = notificationCount > 0;
 
   return (
     <header className="w-full">
@@ -34,7 +39,11 @@ export default function GNB() {
             <>
               <button>
                 <Image
-                  src="/images/icons/bell.svg"
+                  src={
+                    hasNotification
+                      ? "/images/icons/icon_bell.svg"
+                      : "/images/icons/bell.svg"
+                  }
                   alt="Bell"
                   width={24}
                   height={24}
