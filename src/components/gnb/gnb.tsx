@@ -6,8 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 
 export default function GNB() {
   const { user } = useAuthStore();
-  // const isLogin = !!user;
-  const isLogin = true; // 로그인
+  const isLogin = !!user;
 
   //mock data
   const notificationCount = 0;
