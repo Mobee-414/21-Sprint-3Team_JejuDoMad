@@ -5,6 +5,7 @@ import ReservationEmptyState from "./ReservationEmptyState";
 
 interface Props {
   reservations: MyReservationItem[];
+  onClickReview: (reservation: MyReservationItem) => void;
 }
 
 type ReservationPage = {
