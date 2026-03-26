@@ -155,7 +155,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
       <div className="mt-[32px] flex items-center justify-center">
         <Button
           type="submit"
-          disabled={isSubmitLoading || isPending} // 💡 수정됨
+          disabled={isSubmitLoading || isPending}
           variant="default"
           size="lg"
           className="w-full rounded-[8px] py-[24px] text-[16px] font-bold text-white md:w-[120px]"
