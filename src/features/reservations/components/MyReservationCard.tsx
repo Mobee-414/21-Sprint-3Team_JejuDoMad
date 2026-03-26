@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { MyReservationItem } from "@/features/reservations/types/reservation.schema";
 import Image from "next/image";

@@ -10,15 +10,15 @@ interface Schedule {
   endTime: string;
 }
 
-interface ReservationCardProps {
+interface ReservationFormProps {
   price: number;
   schedules: Schedule[];
 }
 
-export default function ReservationCard({
+export default function ReservationForm({
   price,
   schedules,
-}: ReservationCardProps) {
+}: ReservationFormProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [guestCount, setGuestCount] = useState(10);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
