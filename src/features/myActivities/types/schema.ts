@@ -34,12 +34,9 @@ export const ActivityFormSchema = z.object({
   description: z.string().min(1, "내용을 입력해 주세요"),
   price: z
     .string()
-    .transform((val) => (val === "" ? undefined : Number(val)))
-    .pipe(
-      z
-        .number({ error: "가격을 입력해 주세요" })
-        .min(0, "가격을 입력해 주세요"),
-    ),
+    .min(1, "가격을 입력해 주세요")
+    .refine((val) => !isNaN(Number(val)), "숫자만 입력 가능합니다")
+    .transform((val) => Number(val)),
   address: z.string().min(1, "주소를 입력해 주세요"),
   bannerImageUrl: z.string().min(1, "배너 이미지를 등록해 주세요"),
   subImageUrls: z
@@ -53,4 +50,4 @@ export type Activity = z.infer<typeof ActivitySchema>;
 export type MyActivitiesResponse = z.infer<typeof MyActivitiesResponseSchema>;
 export type Schedule = z.infer<typeof ScheduleSchema>;
 export type ActivityFormType = z.input<typeof ActivityFormSchema>;
-export type ActivityRequest = z.infer<typeof ActivityFormSchema>;
+export type ActivityRequest = z.output<typeof ActivityFormSchema>;

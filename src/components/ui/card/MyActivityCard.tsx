@@ -19,7 +19,7 @@ export default function MyExperienceCard({
         <h1 className="text-[16px] font-bold lg:text-[18px]">{title}</h1>
         <div className="flex gap-[2px]">
           <Image
-            src="/images/icons/star.svg"
+            src="/images/icons/icon_star_on.svg"
             width={20}
             height={20}
             alt="별 아이콘"

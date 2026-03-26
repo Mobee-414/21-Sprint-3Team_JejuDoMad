@@ -11,7 +11,6 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
-
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -19,3 +18,14 @@ apiClient.interceptors.request.use((config) => {
 });
 
 export default apiClient;
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const response = await apiClient.post("activities/image", formData, {
+    headers: {
+      "Content-Type": undefined,
+    },
+  });
+  return response.data.activityImageUrl;
+};
