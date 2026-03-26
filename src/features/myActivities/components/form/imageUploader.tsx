@@ -5,6 +5,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { FieldErrors } from "react-hook-form";
 import { type ActivityFormType } from "@/features/myActivities/types/schema";
+import { uploadImage } from "@/shared/api/apiClient";
 
 interface ImageUploaderProps {
   bannerValue: string | null;
@@ -24,29 +25,33 @@ export const ImageUploader = ({
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const subInputRef = useRef<HTMLInputElement>(null);
 
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onBannerChange(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const url = await uploadImage(file);
+        onBannerChange(url);
+      } catch {
+        alert("이미지 업로드에 실패했습니다."); //추후 토스트
+      }
     }
   };
 
-  const handleSubImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubImagesChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const files = Array.from(e.target.files || []);
     const remaining = 4 - subImagesValue.length;
     const targetFiles = files.slice(0, remaining);
 
-    targetFiles.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onSubImagesChange([...subImagesValue, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+    try {
+      const uploadedUrls = await Promise.all(
+        targetFiles.map((file) => uploadImage(file)),
+      );
+      onSubImagesChange([...subImagesValue, ...uploadedUrls]);
+    } catch {
+      alert("일부 이미지 업로드에 실패했습니다."); //추후 토스트
+    }
   };
 
   const handleDeleteSubImage = (index: number) => {

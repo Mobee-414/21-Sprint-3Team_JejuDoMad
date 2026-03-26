@@ -1,5 +1,6 @@
 import { Dropdown } from "@/components/ui/dropdown";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const CATEGORIES = ["문화 · 예술", "식음료", "스포츠", "투어", "관광", "웰빙"];
 
@@ -26,6 +27,12 @@ export const CategoryInput = ({
           )}
         >
           {value || "카테고리 선택"}
+          <Image
+            src="/images/icons/icon_arrow_down.svg"
+            alt="열기"
+            width={24}
+            height={24}
+          />
         </Dropdown.Trigger>
         <Dropdown.Menu className="rounded-[16px] border border-gray-100 bg-white py-[8px] shadow-xl">
           {CATEGORIES.map((category) => (
