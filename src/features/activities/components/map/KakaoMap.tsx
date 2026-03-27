@@ -2,7 +2,11 @@
 
 import { useEffect } from "react";
 
-export default function KakaoMap() {
+type Props = {
+  address: string;
+};
+
+export default function KakaoMap({ address }: Props) {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false`;
@@ -22,6 +26,7 @@ export default function KakaoMap() {
 
         const map = new window.kakao.maps.Map(container, options);
 
+        // 주소 좌표 넣기 수정
         const marker = new window.kakao.maps.Marker({
           position: new window.kakao.maps.LatLng(37.5665, 126.978),
         });

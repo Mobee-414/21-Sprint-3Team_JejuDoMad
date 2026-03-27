@@ -1,32 +1,59 @@
 import Image from "next/image";
+import { ReviewItem } from "../../schemas/activity.schema";
 
-export default function ReviewList() {
+type Props = {
+  reviews: ReviewItem[];
+};
+
+export default function ReviewList({ reviews }: Props) {
+  if (reviews.length === 0) {
+    return <p className="text-sm text-gray-500">아직 후기가 없습니다.</p>;
+  }
+
   return (
-    <div>
-      <div className="rounded-2xl border border-gray-200 p-5 shadow-sm">
-        <div className="flex items-center gap-3">
-          <span className="font-medium">김태현</span>
-          <span className="text-sm text-gray-400">2026.03.20</span>
-        </div>
+    <div className="flex flex-col gap-4">
+      {reviews.map((review) => (
+        <div
+          key={review.id}
+          className="rounded-2xl border border-gray-200 p-5 shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            {review.user.profileImageUrl ? (
+              <Image
+                src={review.user.profileImageUrl}
+                alt={review.user.nickname}
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-[40px] w-[40px] rounded-full bg-gray-200" />
+            )}
+            <div>
+              <span className="font-medium">{review.user.nickname}</span>
+              <span className="ml-2 text-sm text-gray-400">
+                {new Date(review.createdAt).toLocaleDateString("ko-KR")}
+              </span>
+            </div>
+          </div>
 
-        <div className="mt-2 flex items-center gap-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Image
-              key={i}
-              src="/images/icons/star.svg"
-              alt="별점"
-              width={14}
-              height={14}
-            />
-          ))}
-        </div>
+          <div className="mt-2 flex items-center gap-1">
+            {Array.from({ length: Math.round(review.rating) }).map((_, i) => (
+              <Image
+                key={i}
+                src="/images/icons/star.svg"
+                alt="별점"
+                width={14}
+                height={14}
+              />
+            ))}
+          </div>
 
-        <p className="mt-3 text-sm leading-relaxed text-gray-700">
-          전문가가 직접 강사로 참여하기 때문에 어떤 수준의 춤추는 사람도 쉼게
-          이해할 수 있었습니다. 이번 체험을 거쳐 저의 춤추기 실력은 더욱
-          향상되었어요.
-        </p>
-      </div>
+          <p className="mt-3 text-sm leading-relaxed text-gray-700">
+            {review.content}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

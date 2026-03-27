@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function Pagination() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+type Props = {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+};
 
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: Props) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="mt-[40px] flex justify-center gap-[8px]">
       <button
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        disabled={currentPage === 1}
         className="rounded-[6px] px-[12px] py-[8px]"
       >
         {"<"}
@@ -21,7 +28,7 @@ export default function Pagination() {
       {pages.map((page) => (
         <button
           key={page}
-          onClick={() => setCurrentPage(page)}
+          onClick={() => onPageChange(page)}
           className={cn(
             "rounded-[6px] px-[12px] py-[8px] text-[14px]",
             currentPage === page ? "bg-black text-white" : "hover:bg-gray-100",
@@ -32,7 +39,8 @@ export default function Pagination() {
       ))}
 
       <button
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+        disabled={currentPage === totalPages}
         className="rounded-[6px] px-[12px] py-[8px]"
       >
         {">"}

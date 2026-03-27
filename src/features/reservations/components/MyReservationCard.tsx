@@ -5,6 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
 interface Schedule {
+  id: number;
   date: string;
   startTime: string;
   endTime: string;

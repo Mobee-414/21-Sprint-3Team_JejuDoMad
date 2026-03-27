@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function Card({
+  id,
   bannerImageUrl,
   title,
   rating,
@@ -13,7 +14,7 @@ export default function Card({
 }: CardProps) {
   return (
     <Link
-      href={``}
+      href={`/activities/${id}`}
       className={cn(
         "block w-[155px] max-w-[260px] overflow-hidden rounded-[18px] md:w-[260px] md:rounded-[32px]",
         className,

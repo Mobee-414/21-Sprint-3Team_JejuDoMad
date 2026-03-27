@@ -1,33 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ReviewHeader from "./ReviewHeader";
 import ReviewList from "./ReviewList";
 import ReviewPagination from "./ReviewPagination";
-import ReviewSkeleton from "@/components/skeleton/reviewSkeleton";
+import { useActivityReviews } from "../../hooks/useActivityReviews";
 
-export default function ReviewSection() {
-  const [isLoading, setIsLoading] = useState(true);
+const PAGE_SIZE = 3;
 
-  //목업: 로딩 흉내
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+type Props = {
+  activityId: number;
+};
 
-    return () => clearTimeout(timer);
-  }, []);
+export default function ReviewSection({ activityId }: Props) {
+  const [page, setPage] = useState(1);
+
+  const { data, isLoading, error } = useActivityReviews(activityId, {
+    page,
+    size: PAGE_SIZE,
+  });
+
+  const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
+
+  if (isLoading) return <div>로딩중...</div>;
+  if (error) return <div>에러 발생</div>;
+  if (!data) return null;
 
   return (
     <div className="mb-40">
       <section className="mt-10">
-        <ReviewHeader />
+        <ReviewHeader
+          averageRating={data.averageRating}
+          totalCount={data.totalCount}
+        />
 
         <div className="mt-6">
-          {isLoading ? <ReviewSkeleton /> : <ReviewList />}
+          <ReviewList reviews={data.reviews} />
         </div>
 
-        <div className="mt-6">{isLoading ? null : <ReviewPagination />}</div>
+        <div className="mt-6">
+          <ReviewPagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       </section>
     </div>
   );
