@@ -1,51 +1,71 @@
-import { MyReservationItem } from "@/features/reservations/types/reservation";
-import ReservationCard from "@/components/ui/card/MyReservationCard";
+import { ReactNode } from "react";
+import {
+  MyReservationItem,
+  MyReservationsResponse,
+  ReservationStatus,
+} from "@/features/reservations/types/reservation.schema";
+import ReservationCard from "@/features/reservations/components/MyReservationCard";
 import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
-import ReservationEmptyState from "./ReservationEmptyState";
+import {
+  getMyReservations,
+  cancelMyReservation,
+} from "../api/myReservations.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
-  reservations: MyReservationItem[];
+  selectedStatus: ReservationStatus | null;
   onClickReview: (reservation: MyReservationItem) => void;
+  empty: ReactNode;
 }
-
-type ReservationPage = {
-  reservations: MyReservationItem[];
-  nextCursor: number | null;
-};
 
 const PAGE_SIZE = 3;
 
-export default function MyReservationList({ reservations }: Props) {
-  const getReservationPage = (
-    cursor: number | null,
-  ): Promise<ReservationPage> => {
-    const startIndex = cursor ?? 0;
-    const endIndex = startIndex + PAGE_SIZE;
+export default function MyReservationList({
+  selectedStatus,
+  onClickReview,
+  empty,
+}: Props) {
+  const queryClient = useQueryClient();
 
-    const currentReservations = reservations.slice(startIndex, endIndex);
-    const nextCursor = endIndex < reservations.length ? endIndex : null;
+  const cancelReservationMutation = useMutation({
+    mutationFn: cancelMyReservation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["myReservations"],
+      });
+    },
+  });
 
-    return Promise.resolve({
-      reservations: currentReservations,
-      nextCursor,
+  const getReservationPage = (cursor: number | null) => {
+    return getMyReservations({
+      cursor,
+      size: PAGE_SIZE,
+      status: selectedStatus,
     });
   };
 
-  const filteredReservations = [];
-
   return (
-    <InfiniteScrollList<ReservationPage, MyReservationItem, number | null>
-      queryKey={["myReservations", reservations.length]}
+    <InfiniteScrollList<
+      MyReservationsResponse,
+      MyReservationItem,
+      number | null
+    >
+      queryKey={["myReservations", selectedStatus ?? "all"]}
       queryFn={getReservationPage}
-      initialPageParam={0}
-      getNextCursor={(lastPage) => lastPage.nextCursor}
+      initialPageParam={null}
+      getNextCursor={(lastPage) => lastPage.cursorId}
       getItems={(page) => page.reservations}
       renderItem={(reservation) => (
-        <ReservationCard key={reservation.id} {...reservation} />
+        <ReservationCard
+          key={reservation.id}
+          {...reservation}
+          onClickReview={() => onClickReview(reservation)}
+          onCancel={() => cancelReservationMutation.mutate(reservation.id)}
+        />
       )}
       listClassName="flex flex-col gap-[16px]"
       triggerClassName="h-[1px]"
-      empty={<ReservationEmptyState />}
+      empty={empty}
       loading={<div>로딩중</div>}
       error={<div>에러가 발생했습니다.</div>}
       loadingMore={

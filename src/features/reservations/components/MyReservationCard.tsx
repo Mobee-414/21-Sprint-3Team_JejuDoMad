@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { MyReservationItem } from "@/features/reservations/types/reservation.schema";
+import Image from "next/image";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { StateBadge } from "@/components/ui/badge/StateBadge";
+import { reservationStatusMap } from "@/features/reservations/constants/reservationStatus";
+import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
 
 interface Schedule {
   id: number;
@@ -10,147 +15,121 @@ interface Schedule {
   startTime: string;
   endTime: string;
 }
-
-interface ReservationCardProps {
-  price: number;
-  schedules: Schedule[];
+interface MyReservationCardProps extends MyReservationItem {
+  onClickReview?: () => void;
+  onCancel?: () => void;
 }
+export default function MyReservationCard({
+  activity,
+  status,
+  reviewSubmitted,
+  totalPrice,
+  headCount,
+  date,
+  startTime,
+  endTime,
+  onClickReview,
+  onCancel,
+}: MyReservationCardProps) {
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
-export default function ReservationCard({
-  price,
-  schedules,
-}: ReservationCardProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [guestCount, setGuestCount] = useState(10);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
-    null,
-  );
+  const hasButtonUI = status === "pending" || status === "completed";
 
-  const totalPrice = price * guestCount;
-  const canReserve = Boolean(selectedDate && selectedSchedule);
-
-  const decreaseGuest = () => {
-    if (guestCount > 1) {
-      setGuestCount(guestCount - 1);
-    }
+  const handleCancelClick = () => {
+    setIsCancelDialogOpen(true);
   };
 
-  const increaseGuest = () => {
-    if (guestCount < 50) {
-      setGuestCount(guestCount + 1);
-    }
-  };
-
-  const isSameDate = (scheduleDate: string, date: Date) => {
-    const [year, month, day] = scheduleDate.split("-").map(Number);
-
-    return (
-      date.getFullYear() === year &&
-      date.getMonth() + 1 === month &&
-      date.getDate() === day
-    );
-  };
-
-  const selectedSchedules = selectedDate
-    ? schedules.filter((schedule) => isSameDate(schedule.date, selectedDate))
-    : [];
-
-  const handleSelectDate = (date: Date | undefined) => {
-    setSelectedDate(date);
-    setSelectedSchedule(null);
+  const handleCancelReservation = () => {
+    onCancel?.();
+    setIsCancelDialogOpen(false);
   };
 
   return (
-    <div className="flex min-h-[856px] w-[410px] flex-col gap-[24px] rounded-[24px] border border-border bg-card p-[30px] shadow-sm">
-      <section className="flex items-end gap-[4px]">
-        <span className="text-24-b text-foreground">
-          ₩ {price.toLocaleString()}
-        </span>
-        <span className="text-20-m text-muted-foreground">/ 인</span>
-      </section>
+    <>
+      <div className="text-16 px-[8px] pb-[12px] font-bold text-gray-800 lg:hidden">
+        {date}
+      </div>
+      <div className={cn("relative", hasButtonUI && "pb-[48px] lg:pb-0")}>
+        <div className="rounded-[24px] pr-[88px] shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-[116px] lg:pr-[155px]">
+          <div className="rounded-[24px] shadow-[0px_-8px_20px_rgba(0,0,0,0.05)] lg:relative">
+            <Link
+              href={``}
+              className="relative z-[1] block rounded-[24px] bg-white p-[20px] lg:px-[40px] lg:py-[30px]"
+            >
+              <StateBadge variant={reservationStatusMap[status].variant}>
+                {reservationStatusMap[status].label}
+              </StateBadge>
 
-      <section className="flex flex-col gap-[8px]">
-        <span className="text-16-b text-foreground">날짜</span>
-
-        <Calendar
-          mode="single"
-          selected={selectedDate}
-          onSelect={handleSelectDate}
-          className="rounded-[6px] border border-border p-0"
-          modifiers={{ todayHighlight: new Date() }}
-          size="md"
-        />
-      </section>
-
-      <section className="flex items-center justify-between">
-        <p className="text-16-b text-foreground">참여 인원 수</p>
-
-        <div className="flex h-[40px] w-[140px] items-center justify-between rounded-[24px] border border-border px-[9px]">
-          <button
-            type="button"
-            onClick={decreaseGuest}
-            disabled={guestCount <= 1}
-            className="h-[40px] w-[40px] cursor-pointer rounded-[6px] p-[10px]"
+              <h4 className="mt-[8px] overflow-hidden text-[14px] font-bold text-ellipsis whitespace-nowrap lg:mt-[12px] lg:text-[18px]">
+                {activity.title}
+              </h4>
+              <div className="mt-[4px] text-[13px] font-medium text-gray-500 lg:mt-[10px] lg:text-[16px]">
+                <span className="hidden lg:mr-[4px] lg:inline-block">
+                  {date}
+                  <i className="ml-[4px] inline-block h-[2px] w-[2px] rounded-full bg-gray-500 align-middle" />
+                </span>
+                {startTime} - {endTime}
+              </div>
+              <div className="mt-[8px] flex items-center gap-[4px] lg:mt-[10px]">
+                <strong className="text-[16px] lg:text-[18px]">
+                  &#8361;{totalPrice.toLocaleString()}
+                </strong>
+                <span className="text-[14px] text-gray-400 lg:text-[16px]">
+                  /{headCount}명
+                </span>
+              </div>
+            </Link>
+            <div className="text-14 absolute right-0 bottom-0 left-0 flex h-[36px] gap-[12px] px-[8px] font-medium text-gray-600 md:px-0 lg:right-[40px] lg:bottom-[30px] lg:left-auto lg:z-[1] lg:h-[29px] lg:gap-[8px]">
+              {status === "pending" && (
+                <>
+                  <button className="flex h-full grow items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]">
+                    예약 변경
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelClick}
+                    className="flex h-full grow items-center justify-center rounded-[12px] bg-gray-50 px-[10px] py-[6px]"
+                  >
+                    예약 취소
+                  </button>
+                </>
+              )}
+              {status === "completed" && (
+                <button
+                  type="button"
+                  onClick={onClickReview}
+                  className="flex h-full grow cursor-pointer items-center justify-center rounded-[12px] bg-primary px-[10px] py-[6px] text-white"
+                  disabled={reviewSubmitted}
+                >
+                  {reviewSubmitted ? "후기 작성 완료!" : "후기 작성"}
+                </button>
+              )}
+            </div>
+          </div>
+          <div
+            className={cn(
+              "absolute top-0 right-0 bottom-0 h-auto w-[128px] overflow-hidden rounded-r-[24px] md:w-[136px] lg:w-[181px]",
+              hasButtonUI && "bottom-[50px] lg:bottom-0",
+            )}
           >
-            −
-          </button>
-
-          <span className="w-[40px] text-center leading-[40px]">
-            {guestCount}
-          </span>
-
-          <button
-            type="button"
-            onClick={increaseGuest}
-            disabled={guestCount >= 50}
-            className="h-[40px] w-[40px] cursor-pointer rounded-[6px] p-[10px]"
-          >
-            +
-          </button>
+            <Image
+              width={181}
+              height={181}
+              src={activity.bannerImageUrl}
+              alt={activity.title}
+              className="block h-full w-full object-cover"
+            />
+          </div>
         </div>
-      </section>
-
-      <section className="flex flex-col gap-[14px]">
-        <p className="text-16-b text-foreground">예약 가능한 시간</p>
-
-        <div className="flex flex-col gap-[12px]">
-          {selectedSchedules.map((schedule) => {
-            const isSelected =
-              selectedSchedule?.startTime === schedule.startTime;
-
-            return (
-              <button
-                key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
-                type="button"
-                onClick={() => setSelectedSchedule(schedule)}
-                className={cn(
-                  "cursor-pointer rounded-[6px] border px-[16px] py-[12px] text-left",
-                  isSelected && "border-primary bg-primary/10",
-                )}
-              >
-                {schedule.startTime} - {schedule.endTime}
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="flex w-full items-center justify-between border-t border-border pt-[20px] pb-[10px]">
-        <div className="flex items-center gap-[6px]">
-          <span className="text-20-m text-muted-foreground">총 합계</span>
-          <span className="text-20-b text-foreground">
-            ₩ {totalPrice.toLocaleString()}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          disabled={!canReserve}
-          className="h-[50px] min-w-[135px] cursor-pointer rounded-[14px] bg-primary px-[24px] py-[14px] text-16-b text-primary-foreground disabled:opacity-50"
-        >
-          예약하기
-        </button>
-      </section>
-    </div>
+      </div>
+      <ConfirmDialog
+        open={isCancelDialogOpen}
+        title="예약을 취소하시겠어요?"
+        confirmText="취소하기"
+        cancelText="아니요"
+        onCancel={() => setIsCancelDialogOpen(false)}
+        onConfirm={handleCancelReservation}
+      />
+    </>
   );
 }

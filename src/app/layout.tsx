@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
-import "@/styles/globals.css";
 import QueryProvider from "@/shared/providers/queryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
   children,
@@ -11,7 +11,10 @@ export default function RootLayout({
   return (
     <html lang="ko" className={cn("font-sans")}>
       <QueryProvider>
-        <body>{children}</body>
+        <body>
+          {children}
+          <Toaster />
+        </body>
       </QueryProvider>
     </html>
   );
