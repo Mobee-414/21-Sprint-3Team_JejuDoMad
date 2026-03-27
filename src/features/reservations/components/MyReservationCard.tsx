@@ -9,12 +9,6 @@ import { StateBadge } from "@/components/ui/badge/StateBadge";
 import { reservationStatusMap } from "@/features/reservations/constants/reservationStatus";
 import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
 
-interface Schedule {
-  id: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
 interface MyReservationCardProps extends MyReservationItem {
   onClickReview?: () => void;
   onCancel?: () => void;

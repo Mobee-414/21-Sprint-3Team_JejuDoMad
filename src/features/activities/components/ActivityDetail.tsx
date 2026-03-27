@@ -68,7 +68,7 @@ export default function ActivityDetail({ activityId }: Props) {
           </div>
 
           <div className="mt-10 hidden md:block">
-            <ReservationCard price={data.price} schedules={data.schedules} />
+            <ReservationForm price={data.price} schedules={data.schedules} />
           </div>
         </div>
       </div>
