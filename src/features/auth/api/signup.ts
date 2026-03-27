@@ -1,19 +1,5 @@
 import apiClient from "@/shared/api/apiClient";
-
-export interface UserResponseType {
-  id: number;
-  email: string;
-  nickname: string;
-  profileImageUrl: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface TokenUserResponseType {
-  user: UserResponseType;
-  refreshToken: string;
-  accessToken: string;
-}
+import { TokenUserResponseType } from "../types/auth";
 
 interface SignupRequestBody {
   email: string;
@@ -30,7 +16,7 @@ interface KakaoSignupRequestBody {
 // 일반 회원가입
 export async function createUser(
   signupBody: SignupRequestBody,
-): Promise<UserResponseType> {
+): Promise<TokenUserResponseType> {
   const res = await apiClient.post("/users", signupBody);
   return res.data;
 }

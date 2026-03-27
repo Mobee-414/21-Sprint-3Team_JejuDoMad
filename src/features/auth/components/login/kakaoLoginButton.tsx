@@ -14,7 +14,10 @@ export function KakaoLoginButton() {
     ? `${KAKAO_AUTH_URL}&state=${redirectPath}`
     : KAKAO_AUTH_URL;
 
-  const handleClick = () => router.replace(linkUrl);
+  const handleClick = () => {
+    console.log("[kakao login] 인증 URL:", linkUrl);
+    router.replace(linkUrl);
+  };
   return (
     <>
       <Button
