@@ -1,4 +1,10 @@
-export const reservationStatusMap = {
+import type { ReservationStatus } from "../types/reservation.schema";
+import type { StateBadgeProps } from "@/components/ui/badge/StateBadge";
+
+export const reservationStatusMap: Record<
+  ReservationStatus,
+  { label: string; variant: StateBadgeProps["variant"] }
+> = {
   pending: {
     label: "예약 완료",
     variant: "complete",

@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRef, useState } from "react";
 import IconEdit from "@/../public/images/icons/icon_edit.svg";
 import IconUser from "@/../public/images/icons/icon_user.svg";
 import IconList from "@/../public/images/icons/icon_list.svg";
 import IconSetting from "@/../public/images/icons/icon_setting.svg";
 import IconCalendar from "@/../public/images/icons/icon_calendar.svg";
+import { useMe } from "@/features/mypage/users/hooks/useMe";
+import { useUpdateMe } from "@/features/mypage/users/hooks/useUpdateMe";
+import { useUploadProfileImage } from "@/features/mypage/users/hooks/useUploadProfileImage";
+import { toast } from "sonner";
 
 interface SideMenuProps {
   onMenuClick?: () => void;
@@ -17,10 +22,50 @@ interface SideMenuProps {
 export default function SideMenu({ onMenuClick }: SideMenuProps) {
   const pathname = usePathname();
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  const { data: me } = useMe();
+  const { mutate: uploadProfileImage, isPending } = useUploadProfileImage();
+  const { mutate: updateMe } = useUpdateMe();
+
   const filterDefault =
     "invert(48%) sepia(3%) saturate(728%) hue-rotate(194deg) brightness(90%) contrast(87%)";
   const filterActive =
     "invert(58%) sepia(38%) saturate(5896%) hue-rotate(160deg) brightness(93%) contrast(101%)";
+
+  const handleEditClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    uploadProfileImage(file, {
+      onSuccess: (data) => {
+        updateMe(
+          {
+            profileImageUrl: data.profileImageUrl,
+          },
+          {
+            onSuccess: () => {
+              setProfileImageUrl(data.profileImageUrl);
+
+              toast.success("프로필 이미지가 변경되었습니다.");
+            },
+            onError: () => {
+              toast.error("프로필 저장에 실패했습니다.");
+            },
+          },
+        );
+      },
+      onError: () => {
+        toast.error("이미지 업로드에 실패했습니다.");
+      },
+    });
+  };
 
   const menuItems = [
     { label: "내 정보", icon: IconUser, href: "/mypage/myInfo" },
@@ -33,9 +78,41 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
     <div className="flex h-auto w-full flex-col items-center rounded-[12px] border border-[#EDEEF2] bg-white py-[16px] shadow-[0_4px_12px_rgba(156,180,202,0.2)] md:w-[178px] md:px-4 md:py-[16px] lg:h-[450px] lg:w-[291px] lg:py-[24px]">
       {/* 프로필 이미지 */}
       <div className="relative flex h-[70px] w-[70px] items-center justify-center rounded-full bg-secondary md:h-[70px] md:w-[70px] lg:h-[120px] lg:w-[120px]">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+
+        <div className="relative h-full w-full overflow-hidden rounded-full bg-secondary">
+          {profileImageUrl || me?.profileImageUrl ? (
+            <Image
+              src={profileImageUrl || me?.profileImageUrl || ""}
+              alt="프로필 이미지"
+              fill
+              className="object-cover object-center"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <Image
+                src={IconUser}
+                alt="기본 프로필 이미지"
+                width={24}
+                height={24}
+                className="h-[24px] w-[24px] lg:h-[40px] lg:w-[40px]"
+              />
+            </div>
+          )}
+        </div>
+
         <Button
+          type="button"
           size="icon-sm"
-          className="absolute right-[2px] bottom-[4px] flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#B3B4BC]"
+          onClick={handleEditClick}
+          disabled={isPending}
+          className="absolute right-[2px] bottom-[4px] flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-[#B3B4BC] disabled:cursor-not-allowed"
         >
           <Image
             src={IconEdit}

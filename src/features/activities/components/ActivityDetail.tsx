@@ -2,7 +2,7 @@ import ImageGallery from "./header/ImageGallery";
 import TitleSection from "./header/TitleSection";
 import DescriptionSection from "./header/DescriptionSection";
 import ActivityCalender from "./reservation/ActivityCalender";
-import ReservationCard from "@/features/reservations/components/MyReservationCard";
+import ReservationForm from "@/features/reservations/components/ReservationForm";
 import KakaoMap from "./map/KakaoMap";
 import ReviewSection from "./review/ReviewSection";
 
@@ -40,7 +40,7 @@ export default function ActivityDetail() {
           </div>
 
           <div className="mt-10 hidden md:block">
-            <ReservationCard
+            <ReservationForm
               price={25000}
               schedules={[
                 { date: "2026-03-22", startTime: "10:00", endTime: "11:00" },

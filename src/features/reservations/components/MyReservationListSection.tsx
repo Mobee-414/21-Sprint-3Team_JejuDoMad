@@ -5,29 +5,35 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import MyReservationList from "./MyReservationList";
-import { mockReservations } from "../constants/mockReservations";
-import { ReservationStatus, MyReservationItem } from "../types/reservation";
+import {
+  ReservationStatus,
+  MyReservationItem,
+} from "../types/reservation.schema";
 import EmptyState from "./EmptyState";
-import ReviewModal from "./ReviewModal";
+import ReviewDialog from "./ReviewDialog";
+import { reservationStatusMap } from "../constants/reservationStatus";
+import { useCreateReview } from "@/features/reservations/hooks/useCreateReview";
+import { toast } from "sonner";
 
-const filterOptions: { label: string; value: ReservationStatus }[] = [
-  { label: "예약 완료", value: "pending" },
-  { label: "예약 취소", value: "canceled" },
-  { label: "예약 승인", value: "confirmed" },
-  { label: "예약 거절", value: "declined" },
-  { label: "체험 완료", value: "completed" },
-];
+const filterOptions = Object.entries(reservationStatusMap).map(
+  ([value, { label }]) => ({
+    value: value as ReservationStatus,
+    label,
+  }),
+);
 
 export default function ReservationListSection() {
   const [selectedStatus, setSelectedStatus] =
     useState<ReservationStatus | null>(null);
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] =
     useState<MyReservationItem | null>(null);
 
+  const { mutate: createReview, isPending } = useCreateReview();
+
   const handleClickReview = (reservation: MyReservationItem) => {
     setSelectedReservation(reservation);
-    setIsReviewModalOpen(true);
+    setIsReviewDialogOpen(true);
   };
 
   const handleSubmitReview = ({
@@ -39,24 +45,24 @@ export default function ReservationListSection() {
   }) => {
     if (!selectedReservation) return;
 
-    console.log("리뷰 작성", {
-      reservationId: selectedReservation.id,
-      rating,
-      content,
-    });
-
-    setIsReviewModalOpen(false);
-    setSelectedReservation(null);
+    createReview(
+      {
+        reservationId: selectedReservation.id,
+        rating,
+        content,
+      },
+      {
+        onSuccess: () => {
+          toast.success("리뷰 작성 완료!");
+          setIsReviewDialogOpen(false);
+          setSelectedReservation(null);
+        },
+        onError: () => {
+          toast.error("리뷰 작성에 실패했어요");
+        },
+      },
+    );
   };
-
-  const filteredReservations =
-    selectedStatus === null
-      ? mockReservations
-      : mockReservations.filter(
-          (reservation) => reservation.status === selectedStatus,
-        );
-
-  const isEmpty = filteredReservations.length === 0;
 
   const router = useRouter();
 
@@ -68,7 +74,7 @@ export default function ReservationListSection() {
           예약내역 변경 및 취소할 수 있습니다.
         </p>
 
-        {!isEmpty && (
+        {
           <div className="w-full">
             <div className="scrollbar-hide flex h-[39px] items-center gap-[8px] overflow-x-auto whitespace-nowrap">
               {filterOptions.map((option) => {
@@ -99,30 +105,29 @@ export default function ReservationListSection() {
               })}
             </div>
           </div>
-        )}
+        }
       </div>
 
       <div>
-        {filteredReservations.length === 0 ? (
-          <div className="flex w-full justify-center">
-            <EmptyState
-              message="아직 예약한 체험이 없어요"
-              buttonText="둘러보기"
-              onButtonClick={() => router.push("/activities")}
-            />
-          </div>
-        ) : (
-          <MyReservationList
-            reservations={filteredReservations}
-            onClickReview={handleClickReview}
-          />
-        )}
+        <MyReservationList
+          selectedStatus={selectedStatus}
+          onClickReview={handleClickReview}
+          empty={
+            <div className="flex w-full justify-center">
+              <EmptyState
+                message="아직 예약한 체험이 없어요"
+                buttonText="둘러보기"
+                onButtonClick={() => router.push("/activities")}
+              />
+            </div>
+          }
+        />
       </div>
       {selectedReservation && (
-        <ReviewModal
-          open={isReviewModalOpen}
+        <ReviewDialog
+          open={isReviewDialogOpen}
           onOpenChange={(open) => {
-            setIsReviewModalOpen(open);
+            setIsReviewDialogOpen(open);
 
             if (!open) {
               setSelectedReservation(null);
@@ -133,6 +138,7 @@ export default function ReservationListSection() {
           reviewTime={`${selectedReservation.startTime} - ${selectedReservation.endTime}`}
           participantCount={selectedReservation.headCount}
           onSubmit={handleSubmitReview}
+          isPending={isPending}
         />
       )}
     </section>

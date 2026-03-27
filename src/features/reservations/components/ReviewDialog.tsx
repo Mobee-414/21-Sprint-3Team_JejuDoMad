@@ -6,7 +6,7 @@ import type { Dispatch, SetStateAction, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 
-interface ReviewModalProps {
+interface ReviewDialogProps {
   open: boolean;
   onOpenChange: Dispatch<SetStateAction<boolean>>;
   activityTitle: string;
@@ -19,7 +19,7 @@ interface ReviewModalProps {
 
 const MAX_CONTENT_LENGTH = 100;
 
-export default function ReviewModal({
+export default function ReviewDialog({
   open,
   onOpenChange,
   activityTitle,
@@ -28,7 +28,7 @@ export default function ReviewModal({
   participantCount,
   onSubmit,
   isPending = false,
-}: ReviewModalProps) {
+}: ReviewDialogProps) {
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
 

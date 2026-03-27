@@ -1,22 +1,15 @@
 "use client";
 
-import { useState, Ref } from "react";
+import { useState, type Ref, type ComponentProps } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import Input from "./Input";
 
-interface PasswordInputProps {
-  placeholder?: string;
-  className?: string;
+interface PasswordInputProps extends ComponentProps<"input"> {
   ref?: Ref<HTMLInputElement>;
 }
 
-function PasswordInput({
-  placeholder,
-  className,
-  ref,
-  ...props
-}: PasswordInputProps) {
+function PasswordInput({ className, ref, type, ...props }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -25,7 +18,6 @@ function PasswordInput({
         {...props}
         ref={ref}
         type={showPassword ? "text" : "password"}
-        placeholder={placeholder}
         className={clsx(className, "pr-[40px]")}
       />
       <button
