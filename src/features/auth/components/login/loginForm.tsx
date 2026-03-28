@@ -27,7 +27,7 @@ const EMAIL_REGEXP = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function LoginForm() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setUser = useAuthStore((state) => state.setUser);
   const [alertModal, setAlertModal] = useState(alertInit);
 
   const {
@@ -39,7 +39,7 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => loginUser(data),
     onSuccess: (res) => {
-      setAuth(res.user, res.accessToken);
+      setUser(res.user);
       setAlertModal({
         open: true,
         msg: `${res.user.nickname}님, 환영합니다.`,
