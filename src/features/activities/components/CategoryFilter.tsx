@@ -9,13 +9,27 @@ const themes = [
   { name: "웰빙", icon: "/images/icons/icon_wellbeing.svg" },
 ];
 
-export default function ThemeFilter() {
+type Props = {
+  selected: string | undefined;
+  onSelect: (category: string | undefined) => void;
+};
+
+export default function ThemeFilter({ selected, onSelect }: Props) {
+  const handleClick = (name: string) => {
+    onSelect(selected === name ? undefined : name);
+  };
+
   return (
     <div className="mt-6 flex flex-wrap gap-3">
       {themes.map((theme) => (
         <button
           key={theme.name}
-          className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition"
+          onClick={() => handleClick(theme.name)}
+          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+            selected === theme.name
+              ? "bg-black text-white"
+              : "hover:bg-gray-100"
+          }`}
         >
           {theme.icon && (
             <Image src={theme.icon} alt={theme.name} width={20} height={20} />

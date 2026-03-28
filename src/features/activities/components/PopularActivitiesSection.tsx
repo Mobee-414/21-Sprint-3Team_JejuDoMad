@@ -1,39 +1,38 @@
+"use client";
+
+import { useActivities } from "../hooks/useActivities";
 import Card from "@/components/ui/card/card";
 
 export default function PopularActivitiesSection() {
+  const { data, isLoading, error } = useActivities({
+    page: 1,
+    size: 10,
+  });
+
+  if (isLoading) return <div>로딩중...</div>;
+  if (error) return <div>에러 발생</div>;
+
+  const popularActivities = data?.activities
+    .slice()
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 4);
+
   return (
     <div className="mx-auto mt-[80px] max-w-[1120px]">
       <h2 className="text-[20px] font-bold"> 인기 체험</h2>
 
       <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
-        <Card
-          bannerImageUrl="/images/photos/street_dance.svg"
-          title="함께 배우면 즐거운 스트릿 댄스"
-          rating={4.9}
-          reviewCount={703}
-          price={38000}
-        />
-        <Card
-          bannerImageUrl="/images/photos/stepping_stones.svg"
-          title="연인과 사랑의 징검다리"
-          rating={3.9}
-          reviewCount={108}
-          price={35000}
-        />
-        <Card
-          bannerImageUrl="/images/photos/vr.svg"
-          title="VR 게임 마스터 하는 법"
-          rating={4.9}
-          reviewCount={293}
-          price={38000}
-        />
-        <Card
-          bannerImageUrl="/images/photos/camp.svg"
-          title="자연 속에서 캠핑하기"
-          rating={4.7}
-          reviewCount={236}
-          price={45000}
-        />
+        {popularActivities?.map((item) => (
+          <Card
+            key={item.id}
+            id={item.id}
+            bannerImageUrl={item.bannerImageUrl}
+            title={item.title}
+            rating={item.rating}
+            reviewCount={item.reviewCount}
+            price={item.price}
+          />
+        ))}
       </div>
     </div>
   );
