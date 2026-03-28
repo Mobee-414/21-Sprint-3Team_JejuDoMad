@@ -19,5 +19,12 @@ export const queryKeys = {
       [...queryKeys.activities.lists(), params] as const,
     reviews: (activityId: number, params?: object) =>
       [...queryKeys.activities.all, activityId, "reviews", params] as const,
+    availableSchedule: (activityId: number, params?: object) =>
+      [
+        ...queryKeys.activities.all,
+        activityId,
+        "available-schedule",
+        params,
+      ] as const,
   },
 } as const;

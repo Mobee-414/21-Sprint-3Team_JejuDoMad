@@ -5,7 +5,7 @@ import ImageGallery from "./header/ImageGallery";
 import TitleSection from "./header/TitleSection";
 import DescriptionSection from "./header/DescriptionSection";
 import ActivityCalender from "./reservation/ActivityCalender";
-import ReservationForm from "@/features/reservations/components/ReservationForm";
+import ActivityReservationForm from "./reservation/ActivityReservationForm";
 import KakaoMap from "./map/KakaoMap";
 import ReviewSection from "./review/ReviewSection";
 
@@ -64,11 +64,14 @@ export default function ActivityDetail({ activityId }: Props) {
           </div>
 
           <div className="mt-10 block md:hidden">
-            <ActivityCalender schedules={data.schedules} />
+            <ActivityCalender activityId={activityId} />
           </div>
 
           <div className="mt-10 hidden md:block">
-            <ReservationForm price={data.price} schedules={data.schedules} />
+            <ActivityReservationForm
+              activityId={activityId}
+              price={data.price}
+            />
           </div>
         </div>
       </div>

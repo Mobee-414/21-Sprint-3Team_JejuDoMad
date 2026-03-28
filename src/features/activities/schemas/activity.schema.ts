@@ -98,6 +98,39 @@ export const ReviewsResponseSchema = z.object({
   reviews: z.array(ReviewItemSchema),
 });
 
+export const AvailableTimeSchema = z.object({
+  id: z.number(),
+  startTime: z.string(),
+  endTime: z.string(),
+});
+
+export const AvailableScheduleSchema = z.object({
+  date: z.string(),
+  times: z.array(AvailableTimeSchema),
+});
+
+export const CreateReservationRequestSchema = z.object({
+  scheduleId: z.number(),
+  headCount: z.number(),
+});
+
+export const CreateReservationResponseSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activityId: z.number(),
+  scheduleId: z.number(),
+  status: z.string(),
+  reviewSubmitted: z.boolean(),
+  totalPrice: z.number(),
+  headCount: z.number(),
+  date: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 export type Schedule = z.infer<typeof ScheduleSchema>;
 export type CreateActivityRequest = z.infer<typeof CreateActivitySchema>;
 
@@ -108,3 +141,20 @@ export type ActivityDetail = z.infer<typeof ActivityDetailSchema>;
 export type ReviewUser = z.infer<typeof ReviewUserSchema>;
 export type ReviewItem = z.infer<typeof ReviewItemSchema>;
 export type ReviewsResponse = z.infer<typeof ReviewsResponseSchema>;
+
+export const AvailableSchedulesResponseSchema = z.array(
+  AvailableScheduleSchema,
+);
+
+export type AvailableTime = z.infer<typeof AvailableTimeSchema>;
+export type AvailableSchedule = z.infer<typeof AvailableScheduleSchema>;
+export type AvailableSchedulesResponse = z.infer<
+  typeof AvailableSchedulesResponseSchema
+>;
+
+export type CreateReservationRequest = z.infer<
+  typeof CreateReservationRequestSchema
+>;
+export type CreateReservationResponse = z.infer<
+  typeof CreateReservationResponseSchema
+>;
