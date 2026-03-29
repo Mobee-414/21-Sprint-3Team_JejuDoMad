@@ -35,9 +35,13 @@ export const ActivityFormSchema = z.object({
   price: z
     .string()
     .min(1, "가격을 입력해 주세요")
-    .refine((val) => !isNaN(Number(val)), "숫자만 입력 가능합니다")
-    .transform((val) => Number(val)),
+    .refine(
+      (val) => !isNaN(Number(val.replace(/,/g, ""))),
+      "숫자만 입력 가능합니다",
+    )
+    .transform((val) => Number(val.replace(/,/g, ""))),
   address: z.string().min(1, "주소를 입력해 주세요"),
+  detailAddress: z.string().optional(),
   bannerImageUrl: z.string().min(1, "배너 이미지를 등록해 주세요"),
   subImageUrls: z
     .array(z.string())
