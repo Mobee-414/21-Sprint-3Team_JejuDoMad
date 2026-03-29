@@ -41,7 +41,7 @@ export default function ReviewList({ reviews }: Props) {
             {Array.from({ length: Math.round(review.rating) }).map((_, i) => (
               <Image
                 key={i}
-                src="/images/icons/star.svg"
+                src="/images/icons/icon_star_on.svg"
                 alt="별점"
                 width={14}
                 height={14}

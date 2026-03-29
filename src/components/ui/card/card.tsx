@@ -34,7 +34,7 @@ export default function Card({
         </h4>
         <div className="mt-[4px] flex items-center text-[12px] font-medium md:mt-[2px] md:text-[14px]">
           <Image
-            src="/images/icons/star.svg"
+            src="/images/icons/icon_star_on.svg"
             width={20}
             height={20}
             alt="별 아이콘"
