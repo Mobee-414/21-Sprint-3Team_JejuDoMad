@@ -27,7 +27,7 @@ export default function TitleSection({
 
           <div className="mt-2 flex items-center gap-1 text-sm text-gray-500">
             <Image
-              src="/images/icons/star.svg"
+              src="/images/icons/icon_star_on.svg"
               alt="별점"
               width={16}
               height={16}

@@ -1,7 +1,7 @@
-import AllActivitiesSection from "@/features/activities/components/AllActivitiesSection";
-import PopularActivitiesSection from "@/features/activities/components/PopularActivitiesSection";
+import { Suspense } from "react";
 import HeroSection from "@/features/home/components/HeroSection";
 import SearchSection from "@/features/home/components/SearchSection";
+import MainPageClient from "./MainPageClient";
 
 export default function Home() {
   return (
@@ -10,8 +10,9 @@ export default function Home() {
       <div className="mt-[40px]">
         <SearchSection />
       </div>
-      <PopularActivitiesSection />
-      <AllActivitiesSection />
+      <Suspense>
+        <MainPageClient />
+      </Suspense>
     </div>
   );
 }
