@@ -41,7 +41,6 @@ const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
 
 export const ScheduleInput = ({
   control,
-  register,
   errors,
   setValue,
   watch,
@@ -178,7 +177,6 @@ export const ScheduleInput = ({
                     />
                   </Dropdown.Trigger>
                   <Dropdown.Menu className="max-h-[240px] overflow-y-auto rounded-[16px]">
-                    {/* 시작 시간보다 이후 시간만 필터링 🕵️‍♂️ */}
                     {TIME_OPTIONS.filter(
                       (t) => !startTime || t > startTime,
                     ).map((time) => (

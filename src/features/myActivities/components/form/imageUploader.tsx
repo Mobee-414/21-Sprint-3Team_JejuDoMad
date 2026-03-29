@@ -32,7 +32,7 @@ export const ImageUploader = ({
         const url = await uploadImage(file);
         onBannerChange(url);
       } catch {
-        alert("이미지 업로드에 실패했습니다."); //추후 토스트
+        alert("이미지 업로드에 실패했습니다.");
       }
     }
   };
@@ -50,7 +50,7 @@ export const ImageUploader = ({
       );
       onSubImagesChange([...subImagesValue, ...uploadedUrls]);
     } catch {
-      alert("일부 이미지 업로드에 실패했습니다."); //추후 토스트
+      alert("일부 이미지 업로드에 실패했습니다.");
     }
   };
 
