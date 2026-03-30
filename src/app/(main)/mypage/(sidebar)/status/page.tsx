@@ -379,7 +379,7 @@ export default function StatusPage() {
             <p className="mb-2 text-18-b text-[#1B1B1B]">예약 내역</p>
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-1">
               {/* ✨ 공통 컴포넌트로 교체 */}
-              <InfiniteScrollList
+              <InfiniteScrollList<any, any, number | null>
                 // 쿼리 키 (필터가 바뀔 때마다 새로 로드)
                 queryKey={[
                   ...queryKeys.reservation.all,
@@ -398,7 +398,7 @@ export default function StatusPage() {
                 }
                 initialPageParam={null}
                 // 다음 페이지 ID 추출 (서버 응답 데이터 구조에 맞게)
-                getNextCursor={(lastPage) => lastPage.nextCursorId}
+                getNextCursor={(lastPage) => lastPage.cursorId}
                 // 페이지 데이터에서 리스트 추출
                 getItems={(page) => page.reservations}
                 // 리스트 아이템 하나하나 렌더링 (기존 카드 UI 그대로 복사)

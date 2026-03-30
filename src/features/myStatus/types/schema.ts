@@ -97,7 +97,12 @@ export const fetchReservedSchedule = async (
 /** 상세 예약 내역 조회 */
 export const fetchReservationList = async (
   activityId: number,
-  params: { cursorId?: number | null; size: number; status?: string },
+  params: {
+    cursorId?: number | null;
+    size: number;
+    status?: string;
+    scheduleId?: number | null;
+  },
 ) => {
   return await Get(
     `/my-activities/${activityId}/reservations`,
