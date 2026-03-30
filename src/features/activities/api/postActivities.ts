@@ -1,16 +1,12 @@
-import axios from "axios";
+import { Post } from "@/shared/api/request";
 import {
-  CreateActivitySchema,
+  CreateActivityResponse,
+  CreateActivityResponseSchema,
   CreateActivityRequest,
 } from "../schemas/activity.schema";
 
-export const postActivity = async (body: CreateActivityRequest) => {
-  const validated = CreateActivitySchema.parse(body);
-
-  const res = await axios.post(
-    "https://sp-globalnomad-api.vercel.app/21-3/activities",
-    validated,
-  );
-
-  return res.data;
+export const postActivity = async (
+  body: CreateActivityRequest,
+): Promise<CreateActivityResponse> => {
+  return Post("activities", CreateActivityResponseSchema, body);
 };

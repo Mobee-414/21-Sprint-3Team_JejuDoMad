@@ -7,6 +7,8 @@ type Props = {
   rating: number;
   reviewCount: number;
   address: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 export default function TitleSection({
@@ -15,12 +17,14 @@ export default function TitleSection({
   rating,
   reviewCount,
   address,
+  onEdit,
+  onDelete,
 }: Props) {
   const isMyActivity = true;
 
   return (
-    <div className="mt-6 flex h-[190px] w-full items-start justify-between md:mt-0">
-      <div className="flex h-full flex-col gap-5">
+    <div className="mt-6 flex w-full items-start gap-2 md:mt-0">
+      <div className="flex flex-1 flex-col gap-5">
         <div>
           <p className="text-sm text-gray-500">{category}</p>
           <h1 className="text-xl font-bold md:text-2xl">{title}</h1>
@@ -34,19 +38,15 @@ export default function TitleSection({
             />
             <span>{rating}</span>
             <span>({reviewCount})</span>
-            <span>서울</span>
           </div>
         </div>
 
         <div className="text-sm text-gray-700">
           <p>{address}</p>
-          <p className="mt-1 line-clamp-2">
-            초보자부터 전문가까지 춤추는 즐거움을 함께 느껴보세요
-          </p>
         </div>
       </div>
 
-      {isMyActivity && <KebabMenu />}
+      {isMyActivity && <KebabMenu onEdit={onEdit} onDelete={onDelete} />}
     </div>
   );
 }
