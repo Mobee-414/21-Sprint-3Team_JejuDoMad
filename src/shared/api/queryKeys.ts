@@ -27,4 +27,12 @@ export const queryKeys = {
         params,
       ] as const,
   },
+
+  // 알림 myNotifications
+  myNotifications: {
+    all: ["myNotifications"] as const,
+    lists: () => [...queryKeys.myNotifications.all, "list"] as const,
+    list: (params: object) =>
+      [...queryKeys.myNotifications.lists(), params] as const,
+  },
 } as const;
