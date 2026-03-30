@@ -21,7 +21,7 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-type CalendarSize = "md" | "lg";
+type CalendarSize = "sm" | "md" | "lg";
 
 type CalendarStyle = React.CSSProperties & {
   "--calendar-width"?: string;
@@ -39,6 +39,21 @@ type CalendarProps = React.ComponentProps<typeof DayPicker> & {
 };
 
 const calendarSizeStyles = {
+  sm: {
+    root: "bg-background [--calendar-width:359px] w-full",
+    monthCaption: "flex h-[40px] w-full items-center justify-center",
+    captionInner: "flex h-full w-full items-center justify-center gap-[8px]",
+    captionText: "inline-flex items-center text-16-b text-foreground",
+    navButton: "inline-flex h-[24px] w-[24px] items-center justify-center",
+    weekdays: "flex w-full justify-between border-b border-border",
+    weekday:
+      "flex h-[40px] w-[calc(100%/7)] items-center justify-center text-12-m text-muted-foreground",
+    week: "flex w-full justify-between gap-[4px]",
+    day: "flex h-[46px] w-[calc(100%/7)] items-center justify-center",
+    dayButton:
+      "flex h-[46px] w-[46px] items-center justify-center rounded-full text-14-m",
+    weekNumber: "hidden",
+  },
   md: {
     root: "bg-background px-[8px] [--calendar-width:350px]",
     monthCaption: "flex h-[44px] w-full items-center justify-center",
@@ -344,7 +359,7 @@ function CalendarDayButton({
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground",
         "dark:hover:text-foreground [&>span]:text-[12px] [&>span]:opacity-70",
         modifiers.today && !modifiers.selected && "bg-primary/20 text-primary",
-        calendarSizeStyles.md.dayButton,
+        calendarSizeStyles[size].dayButton,
         className,
       )}
       {...props}
