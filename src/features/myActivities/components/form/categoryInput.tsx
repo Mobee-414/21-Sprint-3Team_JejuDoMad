@@ -22,6 +22,7 @@ export const CategoryInput = ({
         <Dropdown.Trigger
           className={cn(
             "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white p-[16px]",
+            "group outline-none",
             !value ? "text-gray-400" : "text-gray-950",
             error && "border-red-500",
           )}
@@ -32,6 +33,10 @@ export const CategoryInput = ({
             alt="열기"
             width={24}
             height={24}
+            className={cn(
+              "transition-transform duration-200",
+              "group-focus-within:rotate-180",
+            )}
           />
         </Dropdown.Trigger>
         <Dropdown.Menu className="rounded-[16px] border border-gray-100 bg-white py-[8px] shadow-xl">
