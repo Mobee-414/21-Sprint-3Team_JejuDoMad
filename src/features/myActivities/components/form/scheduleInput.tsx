@@ -12,9 +12,9 @@ import {
 } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import {
-  ActivityFormType,
-  ActivityRequest,
-} from "@/features/myActivities/types/schema";
+  type ActivityFormInput,
+  type ActivityRequest,
+} from "@/features/activities/schemas/activity.schema";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -27,11 +27,11 @@ import {
 import { Dropdown } from "@/components/ui/dropdown";
 
 interface ScheduleInputProps {
-  control: Control<ActivityFormType, undefined, ActivityRequest>;
-  register: UseFormRegister<ActivityFormType>;
-  errors: FieldErrors<ActivityFormType>;
-  setValue: UseFormSetValue<ActivityFormType>;
-  watch: UseFormWatch<ActivityFormType>;
+  control: Control<ActivityFormInput, undefined, ActivityRequest>;
+  register: UseFormRegister<ActivityFormInput>;
+  errors: FieldErrors<ActivityFormInput>;
+  setValue: UseFormSetValue<ActivityFormInput>;
+  watch: UseFormWatch<ActivityFormInput>;
 }
 
 const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {

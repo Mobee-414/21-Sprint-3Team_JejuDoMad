@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, SubmitHandler, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  type Resolver,
+  useWatch,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@/components/ui/input/FormInput";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -13,25 +18,34 @@ import { AddressSearchModal } from "@/features/myActivities/components/form/addr
 import { AddressInput } from "@/features/myActivities/components/form/addressInput";
 import {
   ActivityFormSchema,
-  type ActivityFormType,
+  type ActivityFormInput,
   type ActivityRequest,
-  type Activity,
-} from "@/features/myActivities/types/schema";
-import { useWatch } from "react-hook-form";
-import { useRegisterActivity } from "../../hooks/useRegisterActivity";
-import { formatPrice, parsePriceToNumber } from "@/shared/utils/formatPrice";
+  type ActivityDetail,
+} from "@/features/activities/schemas/activity.schema";
+import { useCreateActivity } from "@/features/activities/hooks/useCreateActivity";
+import { useUpdateMyActivity } from "@/features/myActivities/hooks/useUpdateMyActivity";
+import { formatPrice } from "@/shared/utils/formatPrice";
+import { AxiosError } from "axios";
 
 interface ActivityFormProps {
   mode: "register" | "edit";
-  initialData?: Partial<Activity | ActivityFormType>;
+  initialData?: Partial<ActivityDetail>;
 }
 
 export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
-  const { mutateAsync: registerActivity, isPending } = useRegisterActivity();
+  const { mutateAsync: createActivity } = useCreateActivity();
+  const { mutateAsync: updateActivity } = useUpdateMyActivity(
+    Number(initialData?.id),
+  );
+
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [tempData, setTempData] = useState<ActivityRequest | null>(null);
+
+  const isActivityDetail = (data: unknown): data is ActivityDetail => {
+    return data !== null && typeof data === "object" && "subImages" in data;
+  };
 
   const {
     register,
@@ -40,31 +54,44 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<ActivityFormType, undefined, ActivityRequest>({
+  } = useForm<ActivityFormInput, undefined, ActivityRequest>({
     resolver: zodResolver(ActivityFormSchema) as unknown as Resolver<
-      ActivityFormType,
+      ActivityFormInput,
       undefined,
       ActivityRequest
     >,
-    defaultValues: initialData
-      ? ({
-          ...initialData,
-          price:
-            initialData.price !== undefined ? String(initialData.price) : "",
-        } as ActivityFormType)
-      : {
-          title: "",
-          category: "",
-          description: "",
-          price: "",
-          address: "",
-          bannerImageUrl: "",
-          subImageUrls: [],
-          schedules: [{ date: "", startTime: "12:00", endTime: "13:00" }],
-        },
+    defaultValues:
+      mode === "edit" && initialData
+        ? {
+            title: initialData.title ?? "",
+            category: initialData.category ?? "",
+            description: initialData.description ?? "",
+            address: initialData.address ?? "",
+            bannerImageUrl: initialData.bannerImageUrl ?? "",
+            price:
+              initialData.price !== undefined ? String(initialData.price) : "",
+            subImageUrls: isActivityDetail(initialData)
+              ? (initialData.subImages?.map((img) => img.imageUrl) ?? [])
+              : [],
+            schedules: initialData.schedules?.map((s) => ({
+              date: s.date,
+              startTime: s.startTime,
+              endTime: s.endTime,
+            })) ?? [{ date: "", startTime: "12:00", endTime: "13:00" }],
+          }
+        : {
+            title: "",
+            category: "",
+            description: "",
+            price: "",
+            address: "",
+            bannerImageUrl: "",
+            subImageUrls: [],
+            schedules: [{ date: "", startTime: "12:00", endTime: "13:00" }],
+          },
   });
-
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
   const handleAddressComplete = (address: string) => {
     setValue("address", address, { shouldValidate: true });
     setIsAddressModalOpen(false);
@@ -84,17 +111,26 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
     try {
       setIsSubmitLoading(true);
       setIsConfirmOpen(false);
+
       const combinedAddress =
         `${tempData.address} ${tempData.detailAddress || ""}`.trim();
-      const finalPayload = {
-        ...tempData,
-        price: parsePriceToNumber(String(tempData.price)),
-        address: combinedAddress,
-      };
-      await registerActivity(finalPayload);
+      const finalPayload = { ...tempData, address: combinedAddress };
+
+      if (mode === "register") {
+        await createActivity(finalPayload);
+      } else {
+        await updateActivity(finalPayload);
+      }
+
       setIsSuccessOpen(true);
     } catch (error) {
-      console.error("전송 중 에러 발생:", error);
+      const axiosError = error as AxiosError<{ message: string }>;
+      const msg =
+        axiosError.response?.data?.message ||
+        (mode === "register"
+          ? "등록 중 오류가 발생했습니다."
+          : "수정 중 오류가 발생했습니다.");
+      alert(msg);
     } finally {
       setIsSubmitLoading(false);
     }
@@ -182,12 +218,12 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         <div className="mt-[32px] flex items-center justify-center">
           <Button
             type="submit"
-            disabled={isSubmitLoading || isPending}
+            disabled={isSubmitLoading}
             variant="default"
             size="lg"
             className="w-full rounded-[8px] py-[24px] text-[16px] font-bold text-white md:w-[120px]"
           >
-            {isSubmitLoading || isPending
+            {isSubmitLoading
               ? "처리 중..."
               : mode === "register"
                 ? "등록하기"

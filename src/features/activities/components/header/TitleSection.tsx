@@ -1,5 +1,6 @@
 import Image from "next/image";
 import KebabMenu from "./KebabMenu";
+import { useRouter } from "next/navigation";
 
 type Props = {
   title: string;
@@ -9,6 +10,8 @@ type Props = {
   address: string;
   onEdit?: () => void;
   onDelete?: () => void;
+  isOwner?: boolean;
+  activityId?: number;
 };
 
 export default function TitleSection({
@@ -19,8 +22,10 @@ export default function TitleSection({
   address,
   onEdit,
   onDelete,
+  isOwner,
+  activityId,
 }: Props) {
-  const isMyActivity = true;
+  const router = useRouter();
 
   return (
     <div className="mt-6 flex w-full items-start gap-2 md:mt-0">
@@ -46,7 +51,14 @@ export default function TitleSection({
         </div>
       </div>
 
-      {isMyActivity && <KebabMenu onEdit={onEdit} onDelete={onDelete} />}
+      {isOwner && (
+        <KebabMenu
+          onEdit={
+            onEdit || (() => router.push(`/mypage/manage/edit/${activityId}`))
+          }
+          onDelete={onDelete}
+        />
+      )}
     </div>
   );
 }

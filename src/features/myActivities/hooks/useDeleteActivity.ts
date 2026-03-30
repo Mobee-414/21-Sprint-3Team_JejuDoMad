@@ -12,8 +12,6 @@ export const useDeleteActivity = () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.myActivities.lists(),
       });
-      // 토스트 교체
-      alert("체험이 성공적으로 삭제되었습니다.");
     },
 
     onError: (error) => {
