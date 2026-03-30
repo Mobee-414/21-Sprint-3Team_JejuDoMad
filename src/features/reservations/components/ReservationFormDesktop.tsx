@@ -1,63 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useReservationForm } from "../hooks/useReservationForm";
+import type { Schedule } from "../types/reservation.schema";
 
-interface Schedule {
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-interface ReservationFormProps {
+interface ReservationFormDesktopProps {
   price: number;
   schedules: Schedule[];
 }
 
-export default function ReservationForm({
+export default function ReservationFormDesktop({
   price,
   schedules,
-}: ReservationFormProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [guestCount, setGuestCount] = useState(10);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
-    null,
-  );
-
-  const totalPrice = price * guestCount;
-  const canReserve = Boolean(selectedDate && selectedSchedule);
-
-  const decreaseGuest = () => {
-    if (guestCount > 1) {
-      setGuestCount(guestCount - 1);
-    }
-  };
-
-  const increaseGuest = () => {
-    if (guestCount < 50) {
-      setGuestCount(guestCount + 1);
-    }
-  };
-
-  const isSameDate = (scheduleDate: string, date: Date) => {
-    const [year, month, day] = scheduleDate.split("-").map(Number);
-
-    return (
-      date.getFullYear() === year &&
-      date.getMonth() + 1 === month &&
-      date.getDate() === day
-    );
-  };
-
-  const selectedSchedules = selectedDate
-    ? schedules.filter((schedule) => isSameDate(schedule.date, selectedDate))
-    : [];
-
-  const handleSelectDate = (date: Date | undefined) => {
-    setSelectedDate(date);
-    setSelectedSchedule(null);
-  };
+}: ReservationFormDesktopProps) {
+  const {
+    selectedDate,
+    guestCount,
+    selectedSchedule,
+    availableSchedules,
+    totalPrice,
+    canReserve,
+    handleSelectDate,
+    handleSelectSchedule,
+    decreaseGuest,
+    increaseGuest,
+  } = useReservationForm({
+    price,
+    schedules,
+  });
 
   return (
     <div className="flex min-h-[856px] w-[410px] flex-col gap-[24px] rounded-[24px] border border-border bg-card p-[30px] shadow-sm">
@@ -113,15 +84,17 @@ export default function ReservationForm({
         <p className="text-16-b text-foreground">예약 가능한 시간</p>
 
         <div className="flex flex-col gap-[12px]">
-          {selectedSchedules.map((schedule) => {
+          {availableSchedules.map((schedule) => {
             const isSelected =
-              selectedSchedule?.startTime === schedule.startTime;
+              selectedSchedule?.date === schedule.date &&
+              selectedSchedule?.startTime === schedule.startTime &&
+              selectedSchedule?.endTime === schedule.endTime;
 
             return (
               <button
                 key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
                 type="button"
-                onClick={() => setSelectedSchedule(schedule)}
+                onClick={() => handleSelectSchedule(schedule)}
                 className={cn(
                   "cursor-pointer rounded-[6px] border px-[16px] py-[12px] text-left",
                   isSelected && "border-primary bg-primary/10",
