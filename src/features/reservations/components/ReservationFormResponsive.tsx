@@ -42,7 +42,9 @@ export default function ReservationFormResponsive({
       </div>
 
       <div className="hidden min-[744px]:block min-[1024px]:hidden">
-        <ReservationFormBar price={price} onOpen={handleOpenReservation} />
+        {!isReservationOpen && (
+          <ReservationFormBar price={price} onOpen={handleOpenReservation} />
+        )}
         <ReservationFormTablet
           open={isReservationOpen}
           onClose={handleCloseReservation}
