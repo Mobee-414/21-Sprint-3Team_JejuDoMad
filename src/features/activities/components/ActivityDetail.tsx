@@ -77,13 +77,14 @@ export default function ActivityDetail({ activityId }: Props) {
               <ReviewSection activityId={activityId} />
             </div>
           </div>
+        </div>
 
-          <div className="mt-10">
-            <ReservationFormResponsive
-              activityId={activityId}
-              price={data.price}
-              schedules={data.schedules as Schedule[]}
-            />
+        <div className="mt-10">
+          <ReservationFormResponsive
+            activityId={activityId}
+            price={activity.price}
+            schedules={activity.schedules as Schedule[]}
+          />
           <div className="min-[1024px]:w-[410px] min-[1024px]:shrink-0">
             <div className="hidden min-[1024px]:block">
               <TitleSection
@@ -100,6 +101,7 @@ export default function ActivityDetail({ activityId }: Props) {
 
             <div className="mt-10">
               <ReservationFormResponsive
+                activityId={activityId}
                 price={activity.price}
                 schedules={activity.schedules as Schedule[]}
               />
