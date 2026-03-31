@@ -1,6 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { getMyActivities } from "@/features/myStatus/api/getMyActivitys";
+import { useGetReservationDashboard } from "@/features/myStatus/hooks/useGetReservationDashboard";
+import { useGetReservedSchedule } from "@/features/myStatus/hooks/useGetReservedSchedule";
+import { useUpdateReservationStatus } from "@/features/myStatus/hooks/useUpdateReservationStatus";
+import { fetchReservationList } from "@/features/myStatus/types/schema";
+import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
+import { queryKeys } from "@/shared/api/queryKeys";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -12,7 +20,7 @@ import { Dropdown } from "@/components/ui/dropdown";
 import { Calendar } from "@/components/ui/calendar";
 import { EventBadge } from "@/components/ui/badge/EventBadge";
 import { StateBadge } from "@/components/ui/badge/StateBadge";
-import MyStatusEmpty from "@/features/myStatus/myStatusEmpty";
+import MyStatusEmpty from "@/features/myStatus/components/myStatusEmpty";
 
 import IconArrowDown from "@/../public/images/icons/icon_arrow_down.svg";
 import IconClose from "@/../public/images/icons/icon_close.svg";
@@ -29,70 +37,15 @@ interface ReservationItem {
   status: ReservationStatus;
 }
 
-const reservationsByDate: Record<
-  string,
-  {
-    summary: {
-      type: "reservation" | "approved" | "completed";
-      count: number;
-    }[];
-    details: Record<string, ReservationItem[]>;
-  }
-> = {
-  "2026-03-09": {
-    summary: [{ type: "reservation", count: 2 }],
-    details: {
-      "13:00 - 14:00": [
-        { id: 1, nickname: "정만철", headCount: 10, status: "신청" },
-        { id: 2, nickname: "김예은", headCount: 11, status: "신청" },
-      ],
-    },
-  },
-  "2026-03-10": {
-    summary: [
-      { type: "approved", count: 1 },
-      { type: "completed", count: 1 },
-    ],
-    details: {
-      "14:00 - 15:00": [
-        { id: 1, nickname: "정철만", headCount: 11, status: "승인" },
-        { id: 2, nickname: "정은지", headCount: 12, status: "거절" },
-      ],
-    },
-  },
-  "2026-03-11": {
-    summary: [{ type: "reservation", count: 2 }],
-    details: {
-      "15:00 - 16:00": [
-        { id: 1, nickname: "정인수", headCount: 12, status: "신청" },
-        { id: 2, nickname: "이혜수", headCount: 13, status: "신청" },
-      ],
-    },
-  },
-  "2026-03-12": {
-    summary: [{ type: "reservation", count: 2 }],
-    details: {
-      "16:00 - 17:00": [
-        { id: 1, nickname: "정만철", headCount: 13, status: "신청" },
-        { id: 2, nickname: "정만철", headCount: 14, status: "신청" },
-      ],
-    },
-  },
-};
-
 export default function StatusPage() {
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
-  const [activityItems, setActivityItems] = useState<string[]>([
-    "함께 배우면 즐거운 스트릿 댄스",
-    "연인과 사랑의 징검다리",
-    "자연 속에서 캠핑하기",
-  ]);
-
-  const [selectedActivity, setSelectedActivity] = useState(
-    activityItems[0] || "",
-  );
+  // 1. 모든 상태(State) 선언 (중복 금지!)
+  const [selectedActivity, setSelectedActivity] = useState<{
+    id: number;
+    title: string;
+  } | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date(),
   );
@@ -100,16 +53,71 @@ export default function StatusPage() {
   const [activeTab, setActiveTab] = useState<"신청" | "승인" | "거절">("신청");
   const [selectedTime, setSelectedTime] = useState("14:00 - 15:00");
 
-  // 현재 데이터 추출
+  // 2. 현재 날짜 계산
+  const currentYear = selectedDate
+    ? format(selectedDate, "yyyy")
+    : format(new Date(), "yyyy");
+  const currentMonth = selectedDate
+    ? format(selectedDate, "MM")
+    : format(new Date(), "MM");
   const dateKey = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
-  const dayData = reservationsByDate[dateKey];
-  const timeSlots = dayData ? Object.keys(dayData.details) : [];
-  const currentReservations = dayData?.details[selectedTime] || [];
 
-  // 탭 필터링 (실제 데이터 연동)
-  const filteredItems = currentReservations.filter(
-    (item) => item.status === activeTab,
+  // 3. API 데이터 호출
+  const { data: myActivitiesData } = useQuery({
+    queryKey: queryKeys.myActivities.all,
+    queryFn: getMyActivities,
+  });
+
+  const { data: dashboardData } = useGetReservationDashboard(
+    selectedActivity?.id,
+    currentYear,
+    currentMonth,
   );
+
+  // 1. 날짜별 스케줄(시간대) 조회
+  const { data: scheduleData } = useGetReservedSchedule(
+    selectedActivity?.id,
+    dateKey,
+  );
+
+  // 2. 시간대 목록 추출 (Dropdown에 뿌려줄 데이터)
+  const timeSlots =
+    scheduleData?.map((s) => `${s.startTime} - ${s.endTime}`) || [];
+
+  // 3. 선택된 시간의 scheduleId 찾기 (명단을 불러오기 위해 필요)
+  const currentScheduleId = scheduleData?.find(
+    (s) => `${s.startTime} - ${s.endTime}` === selectedTime,
+  )?.scheduleId;
+
+  // 4. 진짜 예약자 명단 불러오기
+  // (탭이 '신청'이면 pending, '승인'이면 confirmed, '거절'이면 declined)
+  const statusMap = { 신청: "pending", 승인: "confirmed", 거절: "declined" };
+
+  const { mutate: updateStatus, isPending: isUpdating } =
+    useUpdateReservationStatus(selectedActivity?.id || 0);
+
+  const activityItems = myActivitiesData?.activities || [];
+
+  useEffect(() => {
+    if (activityItems.length > 0 && !selectedActivity) {
+      setSelectedActivity({
+        id: activityItems[0].id,
+        title: activityItems[0].title,
+      });
+    }
+  }, [activityItems, selectedActivity]);
+
+  // scheduleData가 로드되거나 날짜(dateKey)가 바뀔 때 실행됩니다.
+  // 이 로직이 "데이터에 맞는 시간"을 찾아주는 핵심입니다.
+  useEffect(() => {
+    if (timeSlots && timeSlots.length > 0) {
+      // 데이터가 있다면 그 날의 첫 번째 시간을 선택
+      setSelectedTime(timeSlots[0]);
+    } else {
+      // 그 날에 운영하는 시간대가 아예 없다면 비워둠
+      setSelectedTime("선택 가능한 시간이 없습니다");
+    }
+  }, [dateKey, scheduleData]);
 
   // Hydration 에러 방지: 컴포넌트가 브라우저에 마운트된 후 렌더링 허용
   useEffect(() => {
@@ -140,7 +148,10 @@ export default function StatusPage() {
           <div className="mb-8 w-full lg:max-w-160">
             <Dropdown className="w-full" matchTriggerWidth>
               <Dropdown.Trigger className="h-14 w-full justify-between rounded-[10px] border border-[#CCCCCC] bg-white px-5">
-                <span className="text-16-m">{selectedActivity}</span>
+                {/* 1. 글자 대신 selectedActivity?.title을 보여줍니다. */}
+                <span className="text-16-m">
+                  {selectedActivity?.title || "체험을 선택해주세요"}
+                </span>
                 <Image
                   src={IconArrowDown}
                   alt="icon_arrow_down"
@@ -151,17 +162,19 @@ export default function StatusPage() {
               <Dropdown.Menu className="rounded-[10px] border-[#EEEEEE] py-2 shadow-lg">
                 {activityItems.map((item) => (
                   <Dropdown.Item
-                    key={item}
-                    onClick={() => setSelectedActivity(item)}
-                    isActive={selectedActivity === item}
+                    key={item.id} // 2. key를 item 대신 item.id로 변경
+                    onClick={() =>
+                      setSelectedActivity({ id: item.id, title: item.title })
+                    } // 3. 클릭 시 객체 저장
+                    isActive={selectedActivity?.id === item.id} // 4. 활성화 체크도 id로 변경
                     className={cn(
                       "px-5 py-3 text-left transition-colors hover:bg-[#F1F1F5]",
-                      selectedActivity === item
+                      selectedActivity?.id === item.id
                         ? "text-16-b text-[#3390FF]"
                         : "text-16-m text-[#1F1F22]",
                     )}
                   >
-                    {item}
+                    {item.title} {/* 5. 글자 대신 item.title 출력 */}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -172,14 +185,30 @@ export default function StatusPage() {
               <Calendar
                 mode="single"
                 selected={selectedDate}
-                onSelect={(d) => d && handleDateClick(d)}
+                onSelect={(d) => {
+                  if (d) {
+                    setSelectedDate(d);
+                    setIsPopupOpen(true);
+                  } else {
+                    // 이미 선택된 날짜를 다시 눌렀을 때 (d가 undefined로 들어옴)
+                    // 현재 선택된 날짜(selectedDate)를 그대로 유지하며 팝업만 열어줍니다.
+                    setIsPopupOpen(true);
+                  }
+                }}
+                // 달력의 화살표를 눌러 월을 바꿀 때, 선택된 날짜를 해당 월의 1일로 변경합니다.
+                onMonthChange={(month) => setSelectedDate(month)}
                 locale={ko}
                 size="lg"
                 className="w-full rounded-3xl border bg-white shadow-sm"
                 components={{
                   DayButton: ({ day, ...props }) => {
                     const dKey = format(day.date, "yyyy-MM-dd");
-                    const data = reservationsByDate[dKey];
+
+                    // 진짜 데이터(dashboardData)에서 현재 날짜와 일치하는 정보를 찾습니다.
+                    const dayInfo = dashboardData?.find(
+                      (item) => item.date === dKey,
+                    );
+
                     const isSelected =
                       selectedDate &&
                       dKey === format(selectedDate, "yyyy-MM-dd");
@@ -192,9 +221,13 @@ export default function StatusPage() {
                           "relative flex min-h-25 w-full flex-col items-center! pt-4",
                         )}
                       >
-                        {data && (
-                          <div className="absolute top-2 h-1.5 w-1.5 rounded-full bg-[#FF4747]" />
-                        )}
+                        {/* 1. 예약이 하나라도 있으면 빨간 점 표시 */}
+                        {dayInfo &&
+                          (dayInfo.reservations.pending > 0 ||
+                            dayInfo.reservations.confirmed > 0) && (
+                            <div className="absolute top-2 h-1.5 w-1.5 rounded-full bg-[#FF4747]" />
+                          )}
+
                         <span
                           className={cn(
                             "text-14-m",
@@ -203,14 +236,27 @@ export default function StatusPage() {
                         >
                           {day.date.getDate()}
                         </span>
+
+                        {/* 2. 실제 데이터 숫자에 맞춰 배지 표시 */}
                         <div className="mt-2 flex flex-col gap-1">
-                          {data?.summary.map((res, i) => (
+                          {dayInfo && dayInfo.reservations.pending > 0 && (
                             <EventBadge
-                              key={i}
-                              type={res.type}
-                              count={res.count}
+                              type="reservation"
+                              count={dayInfo.reservations.pending}
                             />
-                          ))}
+                          )}
+                          {dayInfo && dayInfo.reservations.confirmed > 0 && (
+                            <EventBadge
+                              type="approved"
+                              count={dayInfo.reservations.confirmed}
+                            />
+                          )}
+                          {dayInfo && dayInfo.reservations.completed > 0 && (
+                            <EventBadge
+                              type="completed"
+                              count={dayInfo.reservations.completed}
+                            />
+                          )}
                         </div>
                       </button>
                     );
@@ -286,7 +332,18 @@ export default function StatusPage() {
                   : "border-transparent text-[#84858C]",
               )}
             >
-              {tab} {currentReservations.filter((i) => i.status === tab).length}
+              {tab}{" "}
+              {tab === "신청"
+                ? scheduleData?.find(
+                    (s) => `${s.startTime} - ${s.endTime}` === selectedTime,
+                  )?.count.pending || 0
+                : tab === "승인"
+                  ? scheduleData?.find(
+                      (s) => `${s.startTime} - ${s.endTime}` === selectedTime,
+                    )?.count.confirmed || 0
+                  : scheduleData?.find(
+                      (s) => `${s.startTime} - ${s.endTime}` === selectedTime,
+                    )?.count.declined || 0}
             </button>
           ))}
         </div>
@@ -321,11 +378,34 @@ export default function StatusPage() {
           <div className="w-full md:w-1/2 lg:w-full">
             <p className="mb-2 text-18-b text-[#1B1B1B]">예약 내역</p>
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-1">
-              {filteredItems.length > 0 ? (
-                filteredItems.map((item) => (
+              {/* ✨ 공통 컴포넌트로 교체 */}
+              <InfiniteScrollList<any, any, number | null>
+                // 쿼리 키 (필터가 바뀔 때마다 새로 로드)
+                queryKey={[
+                  ...queryKeys.reservation.all,
+                  "details",
+                  currentScheduleId,
+                  activeTab,
+                ]}
+                // 데이터 요청 함수 (cursor 파라미터 활용)
+                queryFn={(cursor) =>
+                  fetchReservationList(selectedActivity!.id, {
+                    size: 10,
+                    status: statusMap[activeTab],
+                    scheduleId: currentScheduleId,
+                    cursorId: cursor as number | null,
+                  })
+                }
+                initialPageParam={null}
+                // 다음 페이지 ID 추출 (서버 응답 데이터 구조에 맞게)
+                getNextCursor={(lastPage) => lastPage.cursorId}
+                // 페이지 데이터에서 리스트 추출
+                getItems={(page) => page.reservations}
+                // 리스트 아이템 하나하나 렌더링 (기존 카드 UI 그대로 복사)
+                renderItem={(item) => (
                   <div
                     key={item.id}
-                    className="rounded-[12px] border border-[#EEEEEE] bg-white p-4"
+                    className="mb-4 rounded-[12px] border border-[#EEEEEE] bg-white p-4"
                   >
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
@@ -349,6 +429,13 @@ export default function StatusPage() {
                               variant="secondary"
                               size="sm"
                               className="h-9 w-20 rounded-lg"
+                              onClick={() =>
+                                updateStatus({
+                                  reservationId: item.id,
+                                  status: "confirmed",
+                                })
+                              }
+                              disabled={isUpdating}
                             >
                               승인하기
                             </Button>
@@ -356,6 +443,13 @@ export default function StatusPage() {
                               variant="destructive"
                               size="sm"
                               className="h-9 w-20 rounded-lg"
+                              onClick={() =>
+                                updateStatus({
+                                  reservationId: item.id,
+                                  status: "declined",
+                                })
+                              }
+                              disabled={isUpdating}
                             >
                               거절하기
                             </Button>
@@ -372,12 +466,19 @@ export default function StatusPage() {
                       </div>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="py-14 text-center text-gray-400">
-                  내역이 없습니다.
-                </div>
-              )}
+                )}
+                // 예외 상황 UI
+                empty={
+                  <div className="py-14 text-center text-gray-400">
+                    내역이 없습니다.
+                  </div>
+                }
+                loading={
+                  <div className="py-14 text-center text-gray-400">
+                    로딩 중...
+                  </div>
+                }
+              />
             </div>
           </div>
         </div>
