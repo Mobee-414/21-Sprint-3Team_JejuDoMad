@@ -25,9 +25,9 @@ export default function ThemeFilter({ selected, onSelect }: Props) {
         <button
           key={theme.name}
           onClick={() => handleClick(theme.name)}
-          className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+          className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
             selected === theme.name
-              ? "bg-black text-white"
+              ? "border-[#DAF0FF] bg-[#DAF0FF] text-[#0D6CD1]"
               : "hover:bg-gray-100"
           }`}
         >
