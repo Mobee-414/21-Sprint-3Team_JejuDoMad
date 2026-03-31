@@ -3,7 +3,7 @@ import {
   MyReservationItem,
   MyReservationsResponse,
   ReservationStatus,
-} from "@/features/reservations/types/reservation.schema";
+} from "@/features/reservations/types/myReservation.schema";
 import ReservationCard from "@/features/reservations/components/MyReservationCard";
 import ReservationFormResponsive from "@/features/reservations/components/ReservationFormResponsive";
 import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";

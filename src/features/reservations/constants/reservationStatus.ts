@@ -1,4 +1,4 @@
-import type { ReservationStatus } from "../types/reservation.schema";
+import type { ReservationStatus } from "../types/myReservation.schema";
 import type { StateBadgeProps } from "@/components/ui/badge/StateBadge";
 
 export const reservationStatusMap: Record<

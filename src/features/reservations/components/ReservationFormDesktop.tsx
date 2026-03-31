@@ -3,7 +3,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
-import type { Schedule } from "../types/reservation.schema";
+import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormDesktopProps {

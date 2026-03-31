@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
 import { useEffect } from "react";
 import useUpdateApplication from "../hooks/useUpdateApplication";
-import type { Schedule } from "../types/reservation.schema";
+import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
+import { X } from "lucide-react";
 
 interface ReservationFormTabletProps {
   open: boolean;
@@ -96,20 +97,32 @@ export default function ReservationFormTablet({
     setGuestCount(initialHeadCount);
   }, [open, mode, initialScheduleId, initialHeadCount, schedules]);
 
+  if (!open) return null;
+
   return (
     <>
       <button
         type="button"
-        aria-label="예약 폼 닫기"
         onClick={onClose}
-        className="fixed inset-0 z-40 bg-black/45"
-      />
+        className="rounded-md p-1 text-muted-foreground hover:bg-muted"
+      >
+        <X className="h-4 w-4" />
+      </button>
 
       <div className="fixed inset-x-0 bottom-0 z-50">
         <div className="mx-auto w-[744px] rounded-t-[24px] border-t border-border bg-card px-[30px] pt-[24px] pb-[18px] shadow-[0_-10px_24px_rgba(156,180,202,0.38)]">
           <div className="flex flex-col">
             <div className="mx-auto w-fit">
-              <p className="mb-[12px] text-16-b text-foreground">날짜</p>
+              <div className="mb-[12px] flex items-center justify-between">
+                <p className="mb-[12px] text-16-b text-foreground">날짜</p>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="text-14-m text-muted-foreground hover:text-foreground"
+                >
+                  X
+                </button>
+              </div>
 
               <div className="flex items-stretch gap-[40px]">
                 <div className="w-[359px] shrink-0">
