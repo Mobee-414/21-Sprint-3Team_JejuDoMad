@@ -50,6 +50,17 @@ export const createReviewRequestSchema = z.object({
     .max(100, "리뷰는 100자 이하로 입력해주세요."),
 });
 
+export const createReviewResponseSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activityId: z.number(),
+  rating: z.number(),
+  content: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 export const scheduleSchema = z.object({
   id: z.number(),
   date: z.string(),
@@ -95,6 +106,7 @@ export type CancelReservationRequest = z.infer<
   typeof cancelReservationRequestSchema
 >;
 export type CreateReviewRequest = z.infer<typeof createReviewRequestSchema>;
+export type CreateReviewResponse = z.infer<typeof createReviewResponseSchema>;
 export type Schedule = z.infer<typeof scheduleSchema>;
 export type ReservationFormData = z.infer<typeof reservationFormSchema>;
 

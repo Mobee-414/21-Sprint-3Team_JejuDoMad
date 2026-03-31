@@ -3,12 +3,14 @@ import type {
   ReservationStatus,
   CreateReviewRequest,
   MyReservationItem,
+  CreateReviewResponse,
 } from "../types/myReservation.schema";
 import { Get, Patch, Post } from "@/shared/api/request";
 import {
   myReservationsResponseSchema,
   myReservationItemSchema,
   updateApplicationResponseSchema,
+  createReviewResponseSchema,
 } from "../types/myReservation.schema";
 
 export const getMyReservations = async ({
@@ -57,10 +59,10 @@ export const createReview = async ({
   content,
 }: {
   reservationId: number;
-} & CreateReviewRequest): Promise<MyReservationItem> => {
+} & CreateReviewRequest): Promise<CreateReviewResponse> => {
   return Post(
     `/my-reservations/${reservationId}/reviews`,
-    myReservationItemSchema,
+    createReviewResponseSchema,
     {
       rating,
       content,
