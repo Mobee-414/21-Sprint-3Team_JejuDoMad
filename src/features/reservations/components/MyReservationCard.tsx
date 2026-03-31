@@ -12,6 +12,7 @@ import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
 interface MyReservationCardProps extends MyReservationItem {
   onClickReview?: () => void;
   onCancel?: () => void;
+  onChangeReservation?: () => void;
 }
 export default function MyReservationCard({
   activity,
@@ -22,8 +23,15 @@ export default function MyReservationCard({
   date,
   startTime,
   endTime,
+  scheduleId,
+  id,
+  teamId,
+  userId,
+  createdAt,
+  updatedAt,
   onClickReview,
   onCancel,
+  onChangeReservation,
 }: MyReservationCardProps) {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
@@ -76,7 +84,11 @@ export default function MyReservationCard({
             <div className="text-14 absolute right-0 bottom-0 left-0 flex h-[36px] gap-[12px] px-[8px] font-medium text-gray-600 md:px-0 lg:right-[40px] lg:bottom-[30px] lg:left-auto lg:z-[1] lg:h-[29px] lg:gap-[8px]">
               {status === "pending" && (
                 <>
-                  <button className="flex h-full grow items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]">
+                  <button
+                    type="button"
+                    onClick={onChangeReservation}
+                    className="flex h-full grow items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]"
+                  >
                     예약 변경
                   </button>
                   <button

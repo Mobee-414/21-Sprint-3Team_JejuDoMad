@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { DateRange } from "react-day-picker";
 import type { Schedule } from "../types/reservation.schema";
 
 interface UseReservationFormParams {
   price: number;
   schedules: Schedule[];
+  initialScheduleId?: number;
 }
 
 interface UseReservationFormReturn {
@@ -21,6 +21,8 @@ interface UseReservationFormReturn {
   decreaseGuest: () => void;
   increaseGuest: () => void;
   isSelectedSchedule: (schedule: Schedule) => boolean;
+  setGuestCount: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedSchedule: React.Dispatch<React.SetStateAction<Schedule | null>>;
 }
 
 function isSameDate(scheduleDate: string, date: Date) {
@@ -98,5 +100,7 @@ export function useReservationForm({
     decreaseGuest,
     increaseGuest,
     isSelectedSchedule,
+    setGuestCount,
+    setSelectedSchedule,
   };
 }

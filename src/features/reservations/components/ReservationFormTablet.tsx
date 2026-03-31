@@ -3,13 +3,22 @@
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
+import { useEffect } from "react";
+import useUpdateApplication from "../hooks/useUpdateApplication";
 import type { Schedule } from "../types/reservation.schema";
+import { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormTabletProps {
   open: boolean;
   onClose: () => void;
   price: number;
   schedules: Schedule[];
+  mode?: "create" | "edit";
+  reservationId?: number;
+  initialScheduleId?: number;
+  initialHeadCount?: number;
+  onSubmitReservation: (params: CreateReservationParams) => void;
+  isPending: boolean;
 }
 
 export default function ReservationFormTablet({
@@ -17,6 +26,12 @@ export default function ReservationFormTablet({
   onClose,
   price,
   schedules,
+  mode = "create",
+  reservationId,
+  initialScheduleId,
+  initialHeadCount = 1,
+  onSubmitReservation,
+  isPending,
 }: ReservationFormTabletProps) {
   const {
     selectedDate,
@@ -28,12 +43,58 @@ export default function ReservationFormTablet({
     handleSelectSchedule,
     decreaseGuest,
     increaseGuest,
+    setGuestCount,
   } = useReservationForm({
     price,
     schedules,
+    initialScheduleId,
   });
 
-  if (!open) return null;
+  const updateMutation = useUpdateApplication();
+
+  const handleSubmit = async () => {
+    if (!selectedSchedule) return;
+
+    try {
+      if (mode === "edit") {
+        const isSameSchedule = selectedSchedule.id === initialScheduleId;
+        const isSameGuest = guestCount === initialHeadCount;
+
+        if (isSameSchedule && isSameGuest) return;
+        if (!reservationId) return;
+
+        await updateMutation.mutateAsync({
+          reservationId,
+          scheduleId: selectedSchedule.id,
+          headCount: guestCount,
+        });
+      } else {
+        onSubmitReservation({
+          scheduleId: selectedSchedule.id,
+          headCount: guestCount,
+        });
+      }
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    if (mode !== "edit" || !initialScheduleId) return;
+
+    const targetSchedule = schedules.find(
+      (schedule) => schedule.id === initialScheduleId,
+    );
+
+    if (!targetSchedule) return;
+
+    handleSelectDate(new Date(targetSchedule.date));
+    handleSelectSchedule(targetSchedule);
+    setGuestCount(initialHeadCount);
+  }, [open, mode, initialScheduleId, initialHeadCount, schedules]);
 
   return (
     <>
@@ -132,10 +193,11 @@ export default function ReservationFormTablet({
 
             <button
               type="button"
-              disabled={!canReserve}
+              onClick={handleSubmit}
+              disabled={!canReserve || isPending || updateMutation.isPending}
               className="mt-[24px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground disabled:opacity-50"
             >
-              확인
+              {mode === "edit" ? "예약 변경" : "예약하기"}
             </button>
           </div>
         </div>
