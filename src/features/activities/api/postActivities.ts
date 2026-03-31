@@ -1,12 +1,12 @@
 import { Post } from "@/shared/api/request";
+import { z } from "zod";
 import {
-  CreateActivityResponse,
-  CreateActivityResponseSchema,
-  CreateActivityRequest,
-} from "../schemas/activity.schema";
+  type ActivityDetail,
+  type ActivityRequest,
+} from "@/features/activities/schemas/activity.schema";
 
 export const postActivity = async (
-  body: CreateActivityRequest,
-): Promise<CreateActivityResponse> => {
-  return Post("activities", CreateActivityResponseSchema, body);
+  data: ActivityRequest,
+): Promise<ActivityDetail> => {
+  return (await Post("activities", z.looseObject({}), data)) as ActivityDetail;
 };

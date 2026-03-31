@@ -4,15 +4,15 @@ import { useRef } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { FieldErrors } from "react-hook-form";
-import { type ActivityFormType } from "@/features/myActivities/types/schema";
-import { uploadImage } from "@/shared/api/apiClient";
+import { uploadActivityImage } from "@/features/activities/api/uploadActivityImage";
+import { type ActivityFormInput } from "@/features/activities/schemas/activity.schema";
 
 interface ImageUploaderProps {
   bannerValue: string | null;
   subImagesValue: string[];
   onBannerChange: (url: string) => void;
   onSubImagesChange: (urls: string[]) => void;
-  errors: FieldErrors<ActivityFormType>;
+  errors: FieldErrors<ActivityFormInput>;
 }
 
 export const ImageUploader = ({
@@ -29,7 +29,7 @@ export const ImageUploader = ({
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const url = await uploadImage(file);
+        const url = await uploadActivityImage(file);
         onBannerChange(url);
       } catch {
         alert("이미지 업로드에 실패했습니다.");
@@ -46,7 +46,7 @@ export const ImageUploader = ({
 
     try {
       const uploadedUrls = await Promise.all(
-        targetFiles.map((file) => uploadImage(file)),
+        targetFiles.map((file) => uploadActivityImage(file)),
       );
       onSubImagesChange([...subImagesValue, ...uploadedUrls]);
     } catch {
