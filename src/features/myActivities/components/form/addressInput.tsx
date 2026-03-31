@@ -1,10 +1,10 @@
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import FormInput from "@/components/ui/input/FormInput";
-import { ActivityFormType } from "../../types/schema";
+import { type ActivityFormInput } from "@/features/activities/schemas/activity.schema";
 
 interface AddressInputProps {
-  register: UseFormRegister<ActivityFormType>;
-  errors: FieldErrors<ActivityFormType>;
+  register: UseFormRegister<ActivityFormInput>;
+  errors: FieldErrors<ActivityFormInput>;
   onSearchClick: () => void;
 }
 

@@ -1,9 +1,9 @@
 import { Get } from "@/shared/api/request";
 import {
-  MyActivitiesResponseSchema,
-  type MyActivitiesResponse,
-} from "@/features/myActivities/types/schema";
+  ActivitiesListResponseSchema,
+  type ActivitiesListResponse,
+} from "@/features/activities/schemas/activity.schema";
 
-export const getMyActivities = async (): Promise<MyActivitiesResponse> => {
-  return await Get("/my-activities", MyActivitiesResponseSchema);
+export const getMyActivities = async (): Promise<ActivitiesListResponse> => {
+  return await Get("my-activities", ActivitiesListResponseSchema);
 };

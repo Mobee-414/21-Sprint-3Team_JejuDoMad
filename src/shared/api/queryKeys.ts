@@ -28,6 +28,27 @@ export const queryKeys = {
       ] as const,
   },
 
+  // 예약관련
+  reservation: {
+    all: ["reservations"] as const,
+    dashboard: (activityId: number, year: string, month: string) =>
+      [
+        ...queryKeys.reservation.all,
+        "dashboard",
+        activityId,
+        { year, month },
+      ] as const,
+    schedules: (activityId: number, date: string) =>
+      [
+        ...queryKeys.reservation.all,
+        "schedules",
+        activityId,
+        { date },
+      ] as const,
+    list: (activityId: number, params: object) =>
+      [...queryKeys.reservation.all, "list", activityId, params] as const,
+  },
+
   // 알림 myNotifications
   myNotifications: {
     all: ["myNotifications"] as const,
