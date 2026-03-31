@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/authStore";
+import NotificationList from "../ui/NotificationList";
 
 export default function GNB() {
   const { user, logout } = useAuthStore();
@@ -36,20 +37,16 @@ export default function GNB() {
         <div className="flex items-center gap-[16px]">
           {isLogin ? (
             <>
-              <button>
-                <Image
-                  src={
-                    hasNotification
-                      ? "/images/icons/icon_bell.svg"
-                      : "/images/icons/bell.svg"
-                  }
-                  alt="Bell"
-                  width={24}
-                  height={24}
-                />
+              {/* 기존 버튼 대신 NotificationList 컴포넌트 삽입 */}
+              <NotificationList />
+
+              <span className="text-sm font-medium">{user?.nickname}</span>
+              <button
+                onClick={logout}
+                className="text-sm text-gray-500 hover:text-gray-900"
+              >
+                로그아웃
               </button>
-              <span>{user?.nickname}</span>
-              <button onClick={logout}>로그아웃</button>
             </>
           ) : (
             <>
