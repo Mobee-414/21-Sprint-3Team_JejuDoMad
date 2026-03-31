@@ -28,6 +28,7 @@ const handleProxyRequest = async (
       {
         method: "POST",
         headers: refreshHeaders,
+        cache: "no-store",
       },
     );
 

@@ -24,7 +24,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             />
           </Link>
         </h1>
-        <main className="mt-10.5 md:mt-15.5">{children}</main>
+        <main className="mt-5 md:mt-10">{children}</main>
       </div>
     </div>
   );
