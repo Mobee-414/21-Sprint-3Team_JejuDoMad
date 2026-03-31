@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ReservationFormResponsive from "@/features/reservations/components/ReservationFormResponsive";
 import type { Schedule } from "@/features/reservations/types/myReservation.schema";
+import { AxiosError } from "axios";
 
 type Props = {
   activityId: number;
@@ -22,7 +23,11 @@ type Props = {
 export default function ActivityDetail({ activityId }: Props) {
   const router = useRouter();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [isDeleteSuccessOpen, setIsDeleteSuccessOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [isDeleteErrorOpen, setIsDeleteErrorOpen] = useState(false);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
 
   const { data: activity, isLoading, error } = useActivityDetail(activityId);
   const { data: me } = useMe();
@@ -37,7 +42,15 @@ export default function ActivityDetail({ activityId }: Props) {
     deleteActivity(activityId, {
       onSuccess: () => {
         setIsDeleteConfirmOpen(false);
-        setIsDeleteSuccessOpen(true);
+        setSuccessMessage("체험 삭제가 완료되었습니다.");
+        setIsSuccessOpen(true);
+      },
+      onError: (error) => {
+        setIsDeleteConfirmOpen(false);
+        const axiosError = error as AxiosError<{ message: string }>;
+        const msg = axiosError.response?.data?.message || "삭제 실패";
+        setDeleteErrorMessage(msg);
+        setIsDeleteErrorOpen(true);
       },
     });
   };
@@ -116,7 +129,7 @@ export default function ActivityDetail({ activityId }: Props) {
               아니오
             </Button>
             <Button
-              className="h-[48px] flex-1 rounded-[12px] bg-red-500 text-white"
+              className="h-[48px] flex-1 rounded-[12px]"
               onClick={handleRealDelete}
               disabled={isPending}
             >
@@ -126,10 +139,10 @@ export default function ActivityDetail({ activityId }: Props) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isDeleteSuccessOpen} onOpenChange={setIsDeleteSuccessOpen}>
+      <Dialog open={isSuccessOpen} onOpenChange={setIsSuccessOpen}>
         <DialogContent className="flex w-[320px] flex-col items-center gap-[24px] rounded-[24px] p-[30px] md:w-[400px]">
           <DialogTitle className="pt-[40px] text-center text-[18px] font-medium">
-            체험 삭제가 완료되었습니다.
+            {successMessage}
           </DialogTitle>
           <Button
             className="h-[42px] w-[138px] rounded-[8px] text-[14px] font-semibold md:h-[48px] md:rounded-[12px] md:text-[16px]"
@@ -137,6 +150,13 @@ export default function ActivityDetail({ activityId }: Props) {
           >
             확인
           </Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isDeleteErrorOpen} onOpenChange={setIsDeleteErrorOpen}>
+        <DialogContent>
+          <DialogTitle>삭제 실패</DialogTitle>
+          <p>{deleteErrorMessage}</p>
+          <Button onClick={() => setIsDeleteErrorOpen(false)}>확인</Button>
         </DialogContent>
       </Dialog>
     </>

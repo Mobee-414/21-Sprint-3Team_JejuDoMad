@@ -41,6 +41,7 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [tempData, setTempData] = useState<ActivityRequest | null>(null);
 
   const isActivityDetail = (data: unknown): data is ActivityDetail => {
@@ -105,6 +106,8 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
     setTempData(data);
     setIsConfirmOpen(true);
   };
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRealSubmit = async () => {
     if (!tempData) return;
@@ -114,12 +117,18 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
 
       const combinedAddress =
         `${tempData.address} ${tempData.detailAddress || ""}`.trim();
-      const finalPayload = { ...tempData, address: combinedAddress };
+      const finalPayload = {
+        ...tempData,
+        address: combinedAddress,
+        price: Number(String(tempData.price).replace(/,/g, "")),
+      };
 
       if (mode === "register") {
         await createActivity(finalPayload);
+        setSuccessMessage("체험 등록이 완료되었습니다.");
       } else {
         await updateActivity(finalPayload);
+        setSuccessMessage("체험 수정이 완료되었습니다.");
       }
 
       setIsSuccessOpen(true);
@@ -130,7 +139,8 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         (mode === "register"
           ? "등록 중 오류가 발생했습니다."
           : "수정 중 오류가 발생했습니다.");
-      alert(msg);
+      setErrorMessage(msg);
+      setIsErrorOpen(true);
     } finally {
       setIsSubmitLoading(false);
     }
@@ -258,11 +268,29 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
       <Dialog open={isSuccessOpen} onOpenChange={setIsSuccessOpen}>
         <DialogContent className="flex w-[320px] flex-col items-center gap-[24px] rounded-[24px] p-[30px] md:w-[400px]">
           <DialogTitle className="pt-[40px] text-center text-[18px] font-medium">
-            체험 {mode === "register" ? "등록" : "수정"}이 완료되었습니다.
+            {successMessage}
           </DialogTitle>
           <Button
             className="h-[42px] w-[138px] rounded-[8px] text-[14px] font-semibold md:h-[48px] md:rounded-[12px] md:text-[16px]"
             onClick={() => (window.location.href = "/mypage/activities")}
+          >
+            확인
+          </Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isErrorOpen} onOpenChange={setIsErrorOpen}>
+        <DialogContent className="flex w-[320px] flex-col items-center gap-[24px] rounded-[24px] p-[30px] md:w-[400px]">
+          <DialogTitle className="pt-[20px] text-center text-[18px] font-bold text-gray-950">
+            {mode === "register" ? "등록" : "수정"} 실패
+          </DialogTitle>
+
+          <p className="text-center text-[15px] text-gray-600">
+            {errorMessage}
+          </p>
+
+          <Button
+            className="h-[48px] w-full rounded-[12px] font-bold"
+            onClick={() => setIsErrorOpen(false)}
           >
             확인
           </Button>
