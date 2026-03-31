@@ -41,6 +41,23 @@ export const cancelReservationRequestSchema = z.object({
   status: z.literal("canceled"),
 });
 
+export const cancelReservationResponseSchema = z.object({
+  id: z.number(),
+  teamId: z.string(),
+  userId: z.number(),
+  activityId: z.number(),
+  scheduleId: z.number(),
+  status: reservationStatusSchema,
+  reviewSubmitted: z.boolean(),
+  totalPrice: z.number(),
+  headCount: z.number(),
+  date: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
 export const createReviewRequestSchema = z.object({
   rating: z.number().min(1, "별점을 선택해주세요.").max(5),
   content: z
@@ -104,6 +121,9 @@ export type MyReservationsResponse = z.infer<
 >;
 export type CancelReservationRequest = z.infer<
   typeof cancelReservationRequestSchema
+>;
+export type CancelReservationResponse = z.infer<
+  typeof cancelReservationResponseSchema
 >;
 export type CreateReviewRequest = z.infer<typeof createReviewRequestSchema>;
 export type CreateReviewResponse = z.infer<typeof createReviewResponseSchema>;
