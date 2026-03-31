@@ -1,12 +1,17 @@
 import { Patch } from "@/shared/api/request";
 import {
-  ActivitySchema,
-  ActivityRequest,
-} from "@/features/myActivities/types/schema";
+  PostActivityResponseSchema,
+  type ActivityRequest,
+  type ActivityDetail,
+} from "@/features/activities/schemas/activity.schema";
 
 export const updateMyActivity = async (
   activityId: number,
   data: ActivityRequest,
-) => {
-  return await Patch(`my-activities/${activityId}`, ActivitySchema, data);
+): Promise<ActivityDetail> => {
+  return (await Patch(
+    `my-activities/${activityId}`,
+    PostActivityResponseSchema,
+    data,
+  )) as ActivityDetail;
 };

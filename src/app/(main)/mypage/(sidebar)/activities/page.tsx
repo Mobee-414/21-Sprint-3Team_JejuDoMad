@@ -5,11 +5,13 @@ import { buttonVariants } from "@/components/ui/button";
 import MyActivityCard from "@/components/ui/card/MyActivityCard";
 import { cn } from "@/lib/utils";
 import { useMyActivities } from "@/features/myActivities/hooks/useMyActivities";
+import { ActivityListItem } from "@/features/activities/schemas/activity.schema";
 import MyActivityCardSkeleton from "@/features/myActivities/components/myActivityCardSkeleton";
 import MyActivityEmpty from "@/features/myActivities/components/myActivityEmpty";
 
 export default function MyActivitiesPage() {
   const { activities, isLoading, error } = useMyActivities();
+  const activityList: ActivityListItem[] = activities || [];
 
   if (isLoading)
     return (
@@ -52,7 +54,7 @@ export default function MyActivitiesPage() {
 
       <div className="flex flex-col gap-4 lg:gap-6">
         {activities.length > 0 ? (
-          activities.map((activity) => (
+          activityList.map((activity) => (
             <MyActivityCard key={activity.id} {...activity} />
           ))
         ) : (
