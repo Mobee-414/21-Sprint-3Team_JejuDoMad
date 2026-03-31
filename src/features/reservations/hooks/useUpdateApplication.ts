@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateReservation } from "../api/myReservations.api";
 
 interface UpdateApplicationParams {
@@ -8,6 +8,8 @@ interface UpdateApplicationParams {
 }
 
 export default function useUpdateApplication() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({
       reservationId,
@@ -18,5 +20,11 @@ export default function useUpdateApplication() {
         scheduleId,
         headCount,
       }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["myReservations"],
+      });
+    },
   });
 }

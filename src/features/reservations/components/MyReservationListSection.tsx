@@ -8,7 +8,7 @@ import MyReservationList from "./MyReservationList";
 import {
   ReservationStatus,
   MyReservationItem,
-} from "../types/reservation.schema";
+} from "../types/myReservation.schema";
 import EmptyState from "./EmptyState";
 import ReviewDialog from "./ReviewDialog";
 import { reservationStatusMap } from "../constants/reservationStatus";

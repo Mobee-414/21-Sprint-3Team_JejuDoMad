@@ -7,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
 import useUpdateApplication from "../hooks/useUpdateApplication";
-import type { Schedule } from "../types/reservation.schema";
+import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormMobileProps {
@@ -126,7 +126,16 @@ export default function ReservationFormMobile({
           {step === "select" && (
             <div className="flex flex-col">
               <section>
-                <p className="mb-[10px] text-14-b text-foreground">날짜</p>
+                <div className="mb-[12px] flex items-center justify-between">
+                  <p className="mb-[10px] text-14-b text-foreground">날짜</p>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="text-14-m text-muted-foreground hover:text-foreground"
+                  >
+                    X
+                  </button>
+                </div>
 
                 <Calendar
                   mode="single"

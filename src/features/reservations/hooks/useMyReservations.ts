@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMyReservations } from "../api/myReservations.api";
-import type { MyReservationsResponse } from "../types/reservation.schema";
+import type { MyReservationsResponse } from "../types/myReservation.schema";
 
 export function useMyReservations() {
   return useInfiniteQuery({

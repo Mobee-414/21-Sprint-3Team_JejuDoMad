@@ -3,13 +3,13 @@ import type {
   ReservationStatus,
   CreateReviewRequest,
   MyReservationItem,
-} from "../types/reservation.schema";
+} from "../types/myReservation.schema";
 import { Get, Patch, Post } from "@/shared/api/request";
 import {
   myReservationsResponseSchema,
   myReservationItemSchema,
   updateApplicationResponseSchema,
-} from "../types/reservation.schema";
+} from "../types/myReservation.schema";
 
 export const getMyReservations = async ({
   cursor,

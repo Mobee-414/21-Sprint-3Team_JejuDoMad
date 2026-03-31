@@ -62,7 +62,13 @@ export const reservationFormSchema = z.object({
   schedules: z.array(scheduleSchema),
 });
 
-export const updateApplicationSchema = z.object({
+export const updateApplicationRequestSchema = z.object({
+  status: reservationStatusSchema,
+  headCount: z.number().optional(),
+  scheduleId: z.number().optional(),
+});
+
+export const updateApplicationResponseSchema = z.object({
   id: z.number(),
   teamId: z.string(),
   userId: z.number(),
@@ -92,9 +98,9 @@ export type CreateReviewRequest = z.infer<typeof createReviewRequestSchema>;
 export type Schedule = z.infer<typeof scheduleSchema>;
 export type ReservationFormData = z.infer<typeof reservationFormSchema>;
 
-export type UpdateApplicationRequest = z.infer<typeof updateApplicationSchema>;
-export const updateApplicationResponseSchema = myReservationItemSchema;
-
+export type UpdateApplicationRequest = z.infer<
+  typeof updateApplicationRequestSchema
+>;
 export type UpdateApplicationResponse = z.infer<
   typeof updateApplicationResponseSchema
 >;

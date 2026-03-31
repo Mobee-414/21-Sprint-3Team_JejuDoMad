@@ -13,7 +13,7 @@ import { useDeleteActivity } from "@/features/myActivities/hooks/useDeleteActivi
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ReservationFormResponsive from "@/features/reservations/components/ReservationFormResponsive";
-import type { Schedule } from "@/features/reservations/types/reservation.schema";
+import type { Schedule } from "@/features/reservations/types/myReservation.schema";
 
 type Props = {
   activityId: number;
@@ -45,8 +45,8 @@ export default function ActivityDetail({ activityId }: Props) {
   return (
     <>
       <div className="mx-auto mt-10 w-full max-w-[375px] px-4 min-[744px]:max-w-[744px] min-[744px]:px-6 min-[1024px]:max-w-[1120px] min-[1024px]:px-0">
-        <div className="flex flex-col gap-6 md:flex-row md:gap-10">
-          <div className="md:max-w-[670px] md:flex-1">
+        <div className="flex flex-col gap-6 min-[1024px]:flex-row min-[1024px]:gap-10">
+          <div className="min-[1024px]:max-w-[670px] min-[1024px]:flex-1">
             <ImageGallery
               bannerImageUrl={activity.bannerImageUrl}
               subImages={activity.subImages ?? []}
@@ -77,15 +77,8 @@ export default function ActivityDetail({ activityId }: Props) {
               <ReviewSection activityId={activityId} />
             </div>
           </div>
-        </div>
 
-        <div className="mt-10">
-          <ReservationFormResponsive
-            activityId={activityId}
-            price={activity.price}
-            schedules={activity.schedules as Schedule[]}
-          />
-          <div className="min-[1024px]:w-[410px] min-[1024px]:shrink-0">
+          <div className="flex flex-col gap-10 min-[1024px]:w-[410px] min-[1024px]:shrink-0">
             <div className="hidden min-[1024px]:block">
               <TitleSection
                 title={activity.title}
@@ -98,14 +91,13 @@ export default function ActivityDetail({ activityId }: Props) {
                 onDelete={() => setIsDeleteConfirmOpen(true)}
               />
             </div>
-
-            <div className="mt-10">
+            {!isOwner && (
               <ReservationFormResponsive
                 activityId={activityId}
                 price={activity.price}
                 schedules={activity.schedules as Schedule[]}
               />
-            </div>
+            )}
           </div>
         </div>
       </div>

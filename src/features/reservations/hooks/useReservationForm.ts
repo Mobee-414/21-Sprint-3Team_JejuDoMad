@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Schedule } from "../types/reservation.schema";
+import type { Schedule } from "../types/myReservation.schema";
 
 interface UseReservationFormParams {
   price: number;
