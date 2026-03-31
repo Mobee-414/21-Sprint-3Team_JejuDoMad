@@ -1,4 +1,3 @@
-import apiClient from "@/shared/api/apiClient";
 import {
   profileImageResponseSchema,
   updateUserRequestSchema,
@@ -9,16 +8,15 @@ import type {
   UpdateUserRequest,
   User,
 } from "../types/user.schema";
+import { Get, Patch, Post } from "@/shared/api/request";
 
 export const getMe = async (): Promise<User> => {
-  const response = await apiClient.get("/users/me");
-  return userSchema.parse(response.data);
+  return Get("/users/me", userSchema);
 };
 
 export const updateMe = async (data: UpdateUserRequest): Promise<User> => {
   const validatedData = updateUserRequestSchema.parse(data);
-  const response = await apiClient.patch("/users/me", validatedData);
-  return userSchema.parse(response.data);
+  return Patch("/users/me", userSchema, validatedData);
 };
 
 export async function uploadProfileImage(
@@ -27,11 +25,9 @@ export async function uploadProfileImage(
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await apiClient.post("/users/me/image", formData, {
+  return Post("/users/me/image", profileImageResponseSchema, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
-
-  return profileImageResponseSchema.parse(response.data);
 }

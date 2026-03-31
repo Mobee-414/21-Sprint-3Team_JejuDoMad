@@ -43,6 +43,7 @@ export const Patch = async <T>(
   config?: AxiosRequestConfig,
 ): Promise<T> => {
   const response = await apiClient.patch(url, data, config);
+  console.log("🔥 실제 응답", response.data);
   return validateResponse(response.data, schema);
 };
 

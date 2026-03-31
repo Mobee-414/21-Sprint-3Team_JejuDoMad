@@ -6,13 +6,21 @@ import { ko } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
+import useUpdateApplication from "../hooks/useUpdateApplication";
 import type { Schedule } from "../types/reservation.schema";
+import { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormMobileProps {
   open: boolean;
   onClose: () => void;
   price: number;
   schedules: Schedule[];
+  mode?: "create" | "edit";
+  reservationId?: number;
+  initialScheduleId?: number;
+  initialHeadCount?: number;
+  onSubmitReservation: (params: CreateReservationParams) => void;
+  isPending: boolean;
 }
 
 type MobileStep = "select" | "guest" | "summary";
@@ -22,6 +30,12 @@ export default function ReservationFormMobile({
   onClose,
   price,
   schedules,
+  mode = "create",
+  reservationId,
+  initialScheduleId,
+  initialHeadCount = 1,
+  onSubmitReservation,
+  isPending,
 }: ReservationFormMobileProps) {
   const {
     selectedDate,
@@ -33,20 +47,68 @@ export default function ReservationFormMobile({
     handleSelectSchedule,
     decreaseGuest,
     increaseGuest,
+    setGuestCount,
   } = useReservationForm({
     price,
     schedules,
+    initialScheduleId,
   });
 
   const [step, setStep] = useState<MobileStep>("select");
+  const updateMutation = useUpdateApplication();
 
   const totalPrice = useMemo(() => {
     return price * guestCount;
   }, [price, guestCount]);
+  useEffect(() => {
+    if (!open) return;
+    if (mode !== "edit" || !initialScheduleId) return;
+
+    const targetSchedule = schedules.find(
+      (schedule) => schedule.id === initialScheduleId,
+    );
+
+    if (!targetSchedule) return;
+
+    if (selectedSchedule?.id === initialScheduleId) return;
+
+    handleSelectDate(new Date(targetSchedule.date));
+    handleSelectSchedule(targetSchedule);
+    setGuestCount(initialHeadCount);
+  }, [open, mode, initialScheduleId, schedules]);
 
   useEffect(() => {
     if (open) setStep("select");
   }, [open]);
+
+  const handleSubmit = async () => {
+    if (!selectedSchedule) return;
+
+    try {
+      if (mode === "edit") {
+        const isSameSchedule = selectedSchedule.id === initialScheduleId;
+        const isSameGuest = guestCount === initialHeadCount;
+
+        if (isSameSchedule && isSameGuest) return;
+        if (!reservationId) return;
+
+        await updateMutation.mutateAsync({
+          reservationId,
+          scheduleId: selectedSchedule.id,
+          headCount: guestCount,
+        });
+      } else {
+        onSubmitReservation({
+          scheduleId: selectedSchedule.id,
+          headCount: guestCount,
+        });
+      }
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (!open) return null;
 
@@ -232,10 +294,11 @@ export default function ReservationFormMobile({
 
                 <button
                   type="button"
-                  disabled={!canReserve}
+                  onClick={handleSubmit}
+                  disabled={!canReserve || isPending}
                   className="mt-[16px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground disabled:opacity-50"
                 >
-                  예약하기
+                  {mode === "edit" ? "예약 변경" : "예약하기"}
                 </button>
               </section>
             </div>

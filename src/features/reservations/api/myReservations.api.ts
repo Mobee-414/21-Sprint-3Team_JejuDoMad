@@ -1,8 +1,14 @@
-import apiClient from "@/shared/api/apiClient";
 import type {
   MyReservationsResponse,
   ReservationStatus,
   CreateReviewRequest,
+  MyReservationItem,
+} from "../types/reservation.schema";
+import { Get, Patch, Post } from "@/shared/api/request";
+import {
+  myReservationsResponseSchema,
+  myReservationItemSchema,
+  updateApplicationResponseSchema,
 } from "../types/reservation.schema";
 
 export const getMyReservations = async ({
@@ -14,23 +20,35 @@ export const getMyReservations = async ({
   size: number;
   status?: ReservationStatus | null;
 }): Promise<MyReservationsResponse> => {
-  const response = await apiClient.get("/my-reservations", {
+  return Get("/my-reservations", myReservationsResponseSchema, {
     params: {
       cursorId: cursor,
       size,
       status: status ?? undefined,
     },
   });
-
-  return response.data;
 };
 
-export const cancelMyReservation = async (reservationId: number) => {
-  const response = await apiClient.patch(`/my-reservations/${reservationId}`, {
+export const cancelMyReservation = async (
+  reservationId: number,
+): Promise<MyReservationItem> => {
+  return Patch(`/my-reservations/${reservationId}`, myReservationItemSchema, {
     status: "canceled",
   });
+};
 
-  return response.data;
+export const updateReservation = (
+  reservationId: number,
+  body: {
+    scheduleId: number;
+    headCount: number;
+  },
+) => {
+  return Patch(
+    `/my-reservations/${reservationId}/application`,
+    updateApplicationResponseSchema,
+    body,
+  );
 };
 
 export const createReview = async ({
@@ -39,14 +57,13 @@ export const createReview = async ({
   content,
 }: {
   reservationId: number;
-} & CreateReviewRequest) => {
-  const response = await apiClient.post(
+} & CreateReviewRequest): Promise<MyReservationItem> => {
+  return Post(
     `/my-reservations/${reservationId}/reviews`,
+    myReservationItemSchema,
     {
       rating,
       content,
     },
   );
-
-  return response.data;
 };

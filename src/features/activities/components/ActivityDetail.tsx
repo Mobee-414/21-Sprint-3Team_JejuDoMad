@@ -66,6 +66,7 @@ export default function ActivityDetail({ activityId }: Props) {
 
           <div className="mt-10">
             <ReservationFormResponsive
+              activityId={activityId}
               price={data.price}
               schedules={data.schedules as Schedule[]}
             />

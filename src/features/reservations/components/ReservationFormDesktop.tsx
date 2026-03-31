@@ -4,15 +4,20 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
 import type { Schedule } from "../types/reservation.schema";
+import { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormDesktopProps {
   price: number;
   schedules: Schedule[];
+  onSubmitReservation: (params: CreateReservationParams) => void;
+  isPending: boolean;
 }
 
 export default function ReservationFormDesktop({
   price,
   schedules,
+  onSubmitReservation,
+  isPending,
 }: ReservationFormDesktopProps) {
   const {
     selectedDate,
@@ -29,6 +34,14 @@ export default function ReservationFormDesktop({
     price,
     schedules,
   });
+  const handleSubmit = () => {
+    if (!selectedSchedule) return;
+
+    onSubmitReservation({
+      scheduleId: selectedSchedule.id,
+      headCount: guestCount,
+    });
+  };
 
   return (
     <div className="flex min-h-[856px] w-[410px] flex-col gap-[24px] rounded-[24px] border border-border bg-card p-[30px] shadow-sm">
@@ -117,7 +130,8 @@ export default function ReservationFormDesktop({
 
         <button
           type="button"
-          disabled={!canReserve}
+          onClick={handleSubmit}
+          disabled={!canReserve || isPending}
           className="h-[50px] min-w-[135px] cursor-pointer rounded-[14px] bg-primary px-[24px] py-[14px] text-16-b text-primary-foreground disabled:opacity-50"
         >
           예약하기
