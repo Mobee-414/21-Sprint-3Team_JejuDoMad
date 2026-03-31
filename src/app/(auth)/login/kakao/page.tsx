@@ -59,7 +59,7 @@ function KakaoCallbackContent() {
   }, [code, router]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="flex flex-col items-center pt-10">
       <div className="mb-4 h-10 w-10 animate-spin rounded-full border-4 border-yellow-400 border-t-transparent" />
       <p className="text-lg font-medium text-gray-600">
         카카오 로그인 처리 중...
