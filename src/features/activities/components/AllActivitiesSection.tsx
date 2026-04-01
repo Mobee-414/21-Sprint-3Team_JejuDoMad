@@ -7,6 +7,7 @@ import PriceSortDropdown from "./PriceSortDropdown";
 import Pagination from "./Pagination";
 import { useActivities } from "../hooks/useActivities";
 import { usePageSize } from "../hooks/usePageSize";
+import CardSkeleton from "@/components/skeleton/cardSkeleton";
 
 export default function AllActivitiesSection() {
   const PAGE_SIZE = usePageSize();
@@ -34,7 +35,19 @@ export default function AllActivitiesSection() {
     setPage(1);
   };
 
-  if (isLoading) return <div>로딩중...</div>;
+  if (isLoading) {
+    return (
+      <div className="mx-auto mt-[80px] max-w-[1120px]">
+        <h2 className="text-[20px] font-bold"> 모든 체험</h2>
+
+        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
+          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (error) return <div>에러 발생</div>;
 
   return (

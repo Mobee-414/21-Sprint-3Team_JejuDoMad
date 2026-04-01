@@ -9,6 +9,7 @@ import {
 import Card from "@/components/ui/card/card";
 import { queryKeys } from "@/shared/api/queryKeys";
 import { useRef } from "react";
+import CardSkeleton from "@/components/skeleton/cardSkeleton";
 
 export default function PopularActivitiesSection() {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -80,6 +81,14 @@ export default function PopularActivitiesSection() {
             />
           )}
           listClassName="flex gap-[16px] mt-[24px] pb-[8px] w-full"
+          loading={
+            <div className="mt-[24px] flex gap-[16px]">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
+            </div>
+          }
+          error={<div className="mt-[24px]">에러 발생</div>}
         />
       </div>
     </div>
