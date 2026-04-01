@@ -23,7 +23,7 @@ function PasswordInput({ className, ref, type, ...props }: PasswordInputProps) {
       <button
         type="button"
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute top-1/2 right-[12px] -translate-y-1/2"
+        className="absolute top-1/2 right-[12px] -translate-y-1/2 cursor-pointer"
       >
         <Image
           src={

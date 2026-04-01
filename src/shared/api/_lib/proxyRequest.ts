@@ -27,6 +27,7 @@ export const fetchWithAccessToken = async (
     headers,
     body: req.body ? req.clone().body : null,
     duplex: "half",
+    cache: "no-store",
   };
 
   // request 요청

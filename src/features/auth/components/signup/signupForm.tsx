@@ -18,6 +18,7 @@ interface FormDataType {
   nickname: string;
   password: string;
   passwordConfirm: string;
+  termsAgreed: boolean;
 }
 
 const EMAIL_REGEXP = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -103,6 +104,12 @@ export default function SignupForm() {
               message: "10자 이하로 작성해주세요.",
             },
             setValueAs: (v) => v.trim(),
+            validate: (value) => {
+              if (!value.trim()) return "닉네임을 입력해 주세요";
+              if (!/[a-zA-Z0-9가-힣]/.test(value))
+                return "닉네임은 한글, 영문, 숫자를 포함해야 합니다.";
+              return true;
+            },
           })}
         />
 
@@ -145,10 +152,21 @@ export default function SignupForm() {
           })}
         />
 
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground">
+          <input
+            type="checkbox"
+            className="h-4 w-4 cursor-pointer"
+            {...register("termsAgreed", {
+              required: true,
+            })}
+          />
+          이용약관에 동의합니다.
+        </label>
+
         <Button
           type="submit"
           size="lg"
-          className="mt-2 md:mt-[10px]"
+          className="mt-2 text-white md:mt-[10px]"
           disabled={!isValid || isSubmitting}
         >
           회원가입하기
