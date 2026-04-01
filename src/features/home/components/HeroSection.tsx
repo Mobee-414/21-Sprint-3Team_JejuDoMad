@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <div className="flex w-full justify-center">
-      <div className="relative mt-10 h-[180px] w-[327px] overflow-hidden rounded-xl sm:h-[375px] sm:w-[700px] md:h-[400px] md:w-[1120px]">
+    <div className="flex w-full justify-center px-6 md:px-10">
+      <div className="relative mt-10 flex aspect-[327/181] w-full max-w-[1200px] justify-end overflow-hidden rounded-xl pb-10 md:aspect-[684/375] lg:aspect-[1120/500]">
         <Image
           src="/images/photos/street_dance.svg"
           alt="mainbanner"
@@ -11,7 +11,7 @@ export default function HeroSection() {
           className="object-cover"
         />
 
-        <div className="absolute bottom-[80px] left-1/2 z-10 -translate-x-1/2 text-center text-lg font-bold text-white sm:text-2xl md:text-4xl">
+        <div className="absolute bottom-[80px] left-1/2 z-10 -translate-x-1/2 text-center text-lg font-bold break-keep text-white sm:text-2xl md:text-4xl">
           함께 배우면 즐거운 스트릿 댄스
         </div>
 
