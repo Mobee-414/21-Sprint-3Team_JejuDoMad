@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ReviewItem } from "../../schemas/activity.schema";
+import EmptyState from "@/features/reservations/components/EmptyState";
 
 type Props = {
   reviews: ReviewItem[];
@@ -7,7 +8,7 @@ type Props = {
 
 export default function ReviewList({ reviews }: Props) {
   if (reviews.length === 0) {
-    return <p className="text-sm text-gray-500">아직 후기가 없습니다.</p>;
+    return <EmptyState message="아직 후기가 없습니다" />;
   }
 
   return (

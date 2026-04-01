@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   getActivityReviews,
   GetReviewsParams,
@@ -15,5 +15,6 @@ export const useActivityReviews = (
     queryKey: ["activities", activityId, "reviews", params],
     queryFn: () => getActivityReviews(activityId, params),
     enabled: !!activityId,
+    placeholderData: keepPreviousData,
   });
 };

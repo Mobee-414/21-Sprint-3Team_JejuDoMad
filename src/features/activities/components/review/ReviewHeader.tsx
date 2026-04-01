@@ -20,15 +20,19 @@ export default function ReviewHeader({ averageRating, totalCount }: Props) {
         <span className="text-sm text-gray-500">{totalCount}</span>
       </div>
 
-      <div className="mt-6 flex flex-col items-center">
-        <span className="mt-2 text-2xl font-bold">
-          {averageRating.toFixed(1)}
-        </span>
-        <span className="mt-1 text-sm text-gray-600">
-          {getRatingLabel(averageRating)}
-        </span>
-        <span className="mt-1 text-sm text-gray-500">{totalCount}개 후기</span>
-      </div>
+      {totalCount > 0 && (
+        <div className="mt-6 flex flex-col items-center">
+          <span className="mt-2 text-2xl font-bold">
+            {averageRating.toFixed(1)}
+          </span>
+          <span className="mt-1 text-sm text-gray-600">
+            {getRatingLabel(averageRating)}
+          </span>
+          <span className="mt-1 text-sm text-gray-500">
+            {totalCount}개 후기
+          </span>
+        </div>
+      )}
     </div>
   );
 }
