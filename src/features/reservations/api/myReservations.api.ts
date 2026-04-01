@@ -2,13 +2,15 @@ import type {
   MyReservationsResponse,
   ReservationStatus,
   CreateReviewRequest,
-  MyReservationItem,
+  CreateReviewResponse,
+  CancelReservationResponse,
 } from "../types/myReservation.schema";
 import { Get, Patch, Post } from "@/shared/api/request";
 import {
   myReservationsResponseSchema,
-  myReservationItemSchema,
   updateApplicationResponseSchema,
+  createReviewResponseSchema,
+  cancelReservationResponseSchema,
 } from "../types/myReservation.schema";
 
 export const getMyReservations = async ({
@@ -31,10 +33,14 @@ export const getMyReservations = async ({
 
 export const cancelMyReservation = async (
   reservationId: number,
-): Promise<MyReservationItem> => {
-  return Patch(`/my-reservations/${reservationId}`, myReservationItemSchema, {
-    status: "canceled",
-  });
+): Promise<CancelReservationResponse> => {
+  return Patch(
+    `/my-reservations/${reservationId}`,
+    cancelReservationResponseSchema,
+    {
+      status: "canceled",
+    },
+  );
 };
 
 export const updateReservation = (
@@ -57,10 +63,10 @@ export const createReview = async ({
   content,
 }: {
   reservationId: number;
-} & CreateReviewRequest): Promise<MyReservationItem> => {
+} & CreateReviewRequest): Promise<CreateReviewResponse> => {
   return Post(
     `/my-reservations/${reservationId}/reviews`,
-    myReservationItemSchema,
+    createReviewResponseSchema,
     {
       rating,
       content,
