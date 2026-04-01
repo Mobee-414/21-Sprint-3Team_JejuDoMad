@@ -190,6 +190,17 @@
   --breakpoint-md: 744px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -800px 0;
+    }
+    100% {
+      background-position: 800px 0;
+    }
+  }
 }
 
 html,
