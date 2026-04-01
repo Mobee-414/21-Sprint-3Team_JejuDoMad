@@ -16,7 +16,7 @@ export default function HeroSection() {
         </div>
 
         <div className="absolute bottom-[40px] left-1/2 z-10 -translate-x-1/2 text-center text-xs font-medium text-white sm:text-sm md:text-lg">
-          1월의 인기 체험 BEST
+          4월의 인기 체험 BEST
         </div>
       </div>
     </div>

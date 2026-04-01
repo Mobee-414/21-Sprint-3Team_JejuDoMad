@@ -20,7 +20,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
-        className="rounded-[6px] px-[12px] py-[8px]"
+        className="cursor-pointer rounded-[6px] px-[12px] py-[8px] hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent"
       >
         {"<"}
       </button>
@@ -41,7 +41,7 @@ export default function Pagination({
       <button
         onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className="rounded-[6px] px-[12px] py-[8px]"
+        className="cursor-pointer rounded-[6px] px-[12px] py-[8px] hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent"
       >
         {">"}
       </button>

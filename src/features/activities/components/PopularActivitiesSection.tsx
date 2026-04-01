@@ -1,38 +1,86 @@
 "use client";
 
-import { useActivities } from "../hooks/useActivities";
+import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
+import { getActivities } from "../api/getActivities";
+import {
+  ActivitiesListResponse,
+  ActivityListItem,
+} from "../schemas/activity.schema";
 import Card from "@/components/ui/card/card";
+import { queryKeys } from "@/shared/api/queryKeys";
+import { useRef } from "react";
 
 export default function PopularActivitiesSection() {
-  const { data, isLoading, error } = useActivities({
-    page: 1,
-    size: 10,
-  });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
-  if (isLoading) return <div>로딩중...</div>;
-  if (error) return <div>에러 발생</div>;
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true;
+    startX.current = e.pageX - (wrapperRef.current?.offsetLeft ?? 0);
+    scrollLeft.current = wrapperRef.current?.scrollLeft ?? 0;
+  };
 
-  const popularActivities = data?.activities
-    .slice()
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 4);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !wrapperRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - wrapperRef.current.offsetLeft;
+    const walk = x - startX.current;
+    wrapperRef.current.scrollLeft = scrollLeft.current - walk;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
 
   return (
-    <div className="mx-auto mt-[80px] max-w-[1120px]">
+    <div className="mx-auto mt-[80px] max-w-[1120px] overflow-hidden">
       <h2 className="text-[20px] font-bold"> 인기 체험</h2>
 
-      <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
-        {popularActivities?.map((item) => (
-          <Card
-            key={item.id}
-            id={item.id}
-            bannerImageUrl={item.bannerImageUrl}
-            title={item.title}
-            rating={item.rating}
-            reviewCount={item.reviewCount}
-            price={item.price}
-          />
-        ))}
+      <div
+        ref={wrapperRef}
+        className="overflow-x-auto [&::-webkit-scrollbar]:hidden"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
+        <InfiniteScrollList<
+          ActivitiesListResponse,
+          ActivityListItem,
+          number | null
+        >
+          queryKey={queryKeys.activities.list({
+            method: "cursor",
+            sort: "most_reviewed",
+            size: 4,
+          })}
+          queryFn={(cursorId) =>
+            getActivities({
+              method: "cursor",
+              cursorId: cursorId ?? undefined,
+              sort: "most_reviewed",
+              size: 4,
+            })
+          }
+          initialPageParam={null}
+          getNextCursor={(lastPage) => lastPage.cursorId ?? null}
+          getItems={(page) => page.activities}
+          renderItem={(item) => (
+            <Card
+              key={item.id}
+              id={item.id}
+              bannerImageUrl={item.bannerImageUrl}
+              title={item.title}
+              rating={item.rating}
+              reviewCount={item.reviewCount}
+              price={item.price}
+              className="shrink-0"
+            />
+          )}
+          listClassName="flex gap-[16px] mt-[24px] pb-[8px] w-full"
+        />
       </div>
     </div>
   );
