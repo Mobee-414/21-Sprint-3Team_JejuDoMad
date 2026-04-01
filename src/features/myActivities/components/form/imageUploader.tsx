@@ -68,7 +68,7 @@ export const ImageUploader = ({
           onClick={() => bannerInputRef.current?.click()}
           className={cn(
             "relative flex h-[160px] w-[160px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[8px] border-[2px] border-gray-100 bg-white shadow-[0_2px_6px_0_#00000005] transition-all hover:border-black",
-            errors.bannerImageUrl && "border-red-500",
+            errors.bannerImageUrl && "border-[1px] border-red-500",
           )}
         >
           {bannerValue ? (

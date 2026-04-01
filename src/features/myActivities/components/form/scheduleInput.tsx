@@ -65,7 +65,7 @@ export const ScheduleInput = ({
           return (
             <div
               key={field.id}
-              className="flex items-center gap-[8px] max-md:flex-col md:gap-[12px]"
+              className="flex items-start gap-[8px] pt-1 max-md:flex-col md:gap-[12px]"
             >
               <div className="w-full md:flex-1">
                 <Popover
@@ -107,93 +107,111 @@ export const ScheduleInput = ({
                           setOpenIndex(null);
                         }
                       }}
+                      disabled={{ before: new Date() }}
                       locale={ko}
                       autoFocus={false}
                     />
                   </PopoverContent>
                 </Popover>
+                {errors.schedules?.[index]?.date && (
+                  <p className="mt-1.5 ml-1 text-[14px] text-red-500">
+                    {errors.schedules[index].date.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex w-full items-center gap-[6px] md:w-auto md:shrink-0 md:gap-[12px]">
-                <Dropdown matchTriggerWidth className="flex-1 md:w-[140px]">
-                  <Dropdown.Trigger
-                    className={cn(
-                      "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white px-[16px] text-[16px] outline-none focus:border-black",
-                      "group outline-none",
-                      !startTime && "text-gray-400",
-                    )}
-                  >
-                    {startTime || "시작 시간"}
-                    <Image
-                      src="/images/icons/icon_arrow_down.svg"
-                      alt="열기"
-                      width={24}
-                      height={24}
+                <div className="flex flex-1 flex-col md:w-[140px]">
+                  <Dropdown matchTriggerWidth className="flex-1 md:w-[140px]">
+                    <Dropdown.Trigger
                       className={cn(
-                        "transition-transform duration-200",
-                        "group-focus-within:rotate-180",
+                        "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white px-[16px] text-[16px] outline-none focus:border-black",
+                        "group outline-none",
+                        !startTime && "text-gray-400",
                       )}
-                    />
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu className="max-h-[240px] overflow-y-auto rounded-[16px]">
-                    {TIME_OPTIONS.map((time) => (
-                      <Dropdown.Item
-                        key={time}
-                        isActive={startTime === time}
-                        onClick={() =>
-                          setValue(`schedules.${index}.startTime`, time, {
-                            shouldValidate: true,
-                          })
-                        }
-                      >
-                        {time}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-
+                    >
+                      {startTime || "시작 시간"}
+                      <Image
+                        src="/images/icons/icon_arrow_down.svg"
+                        alt="열기"
+                        width={24}
+                        height={24}
+                        className={cn(
+                          "transition-transform duration-200",
+                          "group-focus-within:rotate-180",
+                        )}
+                      />
+                    </Dropdown.Trigger>
+                    <Dropdown.Menu className="max-h-[240px] overflow-y-auto rounded-[16px]">
+                      {TIME_OPTIONS.map((time) => (
+                        <Dropdown.Item
+                          key={time}
+                          isActive={startTime === time}
+                          onClick={() =>
+                            setValue(`schedules.${index}.startTime`, time, {
+                              shouldValidate: true,
+                            })
+                          }
+                        >
+                          {time}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  {errors.schedules?.[index]?.startTime && (
+                    <p className="mt-1 ml-1 text-[14px] text-red-500">
+                      {errors.schedules[index]?.startTime?.message}
+                    </p>
+                  )}
+                </div>
                 <div className="flex shrink-0 items-center">
                   <div className="h-[2px] w-[8px] bg-gray-300" />
                 </div>
-
-                <Dropdown matchTriggerWidth className="flex-1 md:w-[140px]">
-                  <Dropdown.Trigger
-                    className={cn(
-                      "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white px-[16px] text-[16px] outline-none focus:border-black",
-                      "group outline-none",
-                      !endTime && "text-gray-400",
-                    )}
-                  >
-                    {endTime || "종료 시간"}
-                    <Image
-                      src="/images/icons/icon_arrow_down.svg"
-                      alt="열기"
-                      width={20}
-                      height={20}
+                <div className="flex flex-1 flex-col md:w-[140px]">
+                  <Dropdown matchTriggerWidth className="flex-1 md:w-[140px]">
+                    <Dropdown.Trigger
                       className={cn(
-                        "transition-transform duration-200",
-                        "group-focus-within:rotate-180",
+                        "flex h-[56px] w-full items-center justify-between rounded-[16px] border border-gray-100 bg-white px-[16px] text-[16px] outline-none focus:border-black",
+                        "group outline-none",
+                        !endTime && "text-gray-400",
                       )}
-                    />
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu className="max-h-[240px] overflow-y-auto rounded-[16px]">
-                    {TIME_OPTIONS.filter(
-                      (t) => !startTime || t > startTime,
-                    ).map((time) => (
-                      <Dropdown.Item
-                        key={time}
-                        isActive={endTime === time}
-                        onClick={() =>
-                          setValue(`schedules.${index}.endTime`, time, {
-                            shouldValidate: true,
-                          })
-                        }
-                      >
-                        {time}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                    >
+                      {endTime || "종료 시간"}
+                      <Image
+                        src="/images/icons/icon_arrow_down.svg"
+                        alt="열기"
+                        width={20}
+                        height={20}
+                        className={cn(
+                          "transition-transform duration-200",
+                          "group-focus-within:rotate-180",
+                        )}
+                      />
+                    </Dropdown.Trigger>
+                    <Dropdown.Menu className="max-h-[240px] overflow-y-auto rounded-[16px]">
+                      {TIME_OPTIONS.filter(
+                        (t) => !startTime || t > startTime,
+                      ).map((time) => (
+                        <Dropdown.Item
+                          key={time}
+                          isActive={endTime === time}
+                          onClick={() =>
+                            setValue(`schedules.${index}.endTime`, time, {
+                              shouldValidate: true,
+                            })
+                          }
+                        >
+                          {time}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  {errors.schedules?.[index]?.endTime && (
+                    <p className="mt-1.5 ml-1 text-[14px] text-red-500">
+                      {errors.schedules[index]?.endTime?.message}
+                    </p>
+                  )}
+                </div>
                 <div className="flex shrink-0 items-center justify-center">
                   {index === 0 ? (
                     <button
