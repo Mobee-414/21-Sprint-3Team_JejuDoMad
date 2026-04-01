@@ -3,6 +3,7 @@ import { z } from "zod";
 //  공통 스키마
 
 export const ScheduleSchema = z.object({
+  id: z.number().optional(),
   date: z.string(),
   startTime: z.string(),
   endTime: z.string(),
@@ -175,3 +176,26 @@ export const PostActivityResponseSchema = z
   })
   .loose();
 export type PostActivityResponse = z.infer<typeof PostActivityResponseSchema>;
+
+export const UpdateActivityRequestSchema = z.object({
+  title: z.string().optional(),
+  category: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().optional(),
+  address: z.string().optional(),
+  bannerImageUrl: z.string().optional(),
+  subImageUrlsToAdd: z.array(z.string()).optional(),
+  subImageIdsToRemove: z.array(z.number()).optional(),
+  schedulesToAdd: z
+    .array(
+      z.object({
+        date: z.string(),
+        startTime: z.string(),
+        endTime: z.string(),
+      }),
+    )
+    .optional(),
+  scheduleIdsToRemove: z.array(z.number()).optional(),
+});
+
+export type UpdateActivityRequest = z.infer<typeof UpdateActivityRequestSchema>;

@@ -14,6 +14,8 @@ import {
   DialogClose,
   DialogIcon,
 } from "@/components/ui/dialog";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
 export default function MyActivityCard({
   id,
@@ -25,6 +27,31 @@ export default function MyActivityCard({
 }: MyActivity) {
   const { mutate: deleteActivity, isPending } = useDeleteActivity();
 
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleDelete = () => {
+    deleteActivity(id, {
+      onSuccess: () => {
+        setIsConfirmOpen(false);
+        setSuccessMessage("체험 삭제가 완료되었습니다.");
+        setIsSuccessOpen(true);
+      },
+      onError: (error) => {
+        setIsConfirmOpen(false);
+
+        const axiosError = error as AxiosError<{ message: string }>;
+        const msg =
+          axiosError.response?.data?.message || "삭제 중 오류가 발생했습니다.";
+
+        setErrorMessage(msg);
+        setIsErrorOpen(true);
+      },
+    });
+  };
   return (
     <div className="flex w-full justify-between rounded-[24px] bg-white p-[24px] shadow">
       <div className="flex flex-col gap-[10px] lg:gap-[12px]">
@@ -55,7 +82,7 @@ export default function MyActivityCard({
             </Button>
           </Link>
 
-          <Dialog>
+          <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
             <DialogTrigger>
               <Button
                 variant="secondary"
@@ -85,9 +112,44 @@ export default function MyActivityCard({
 
                 <Button
                   className="h-12 flex-1 rounded-xl bg-primary text-[14px] font-medium text-white transition-opacity hover:opacity-90 md:text-[16px]"
-                  onClick={() => deleteActivity(id)}
+                  onClick={handleDelete}
                 >
                   네
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={isSuccessOpen} onOpenChange={setIsSuccessOpen}>
+            <DialogContent className="max-w-[327px] md:max-w-[400px]">
+              <DialogBody className="py-8 text-center">
+                <p className="text-[18px] font-medium text-gray-900">
+                  {successMessage}
+                </p>
+              </DialogBody>
+              <DialogFooter>
+                <Button
+                  className="h-12 w-full rounded-xl font-bold"
+                  onClick={() => setIsSuccessOpen(false)}
+                >
+                  확인
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={isErrorOpen} onOpenChange={setIsErrorOpen}>
+            <DialogContent className="max-w-[327px] md:max-w-[400px]">
+              <DialogBody className="py-5 text-center">
+                <p className="mb-2 text-[18px] font-bold text-gray-900">
+                  삭제 실패
+                </p>
+                <p className="text-[15px] text-gray-600">{errorMessage}</p>
+              </DialogBody>
+              <DialogFooter>
+                <Button
+                  className="h-12 w-full rounded-xl"
+                  onClick={() => setIsErrorOpen(false)}
+                >
+                  확인
                 </Button>
               </DialogFooter>
             </DialogContent>

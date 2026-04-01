@@ -1,13 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  useForm,
-  SubmitHandler,
-  type Resolver,
-  useWatch,
-} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { SubmitHandler } from "react-hook-form";
 import FormInput from "@/components/ui/input/FormInput";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -17,13 +12,12 @@ import { ScheduleInput } from "@/features/myActivities/components/form/scheduleI
 import { AddressSearchModal } from "@/features/myActivities/components/form/addressSearchModal";
 import { AddressInput } from "@/features/myActivities/components/form/addressInput";
 import {
-  ActivityFormSchema,
-  type ActivityFormInput,
   type ActivityRequest,
   type ActivityDetail,
 } from "@/features/activities/schemas/activity.schema";
 import { useCreateActivity } from "@/features/activities/hooks/useCreateActivity";
 import { useUpdateMyActivity } from "@/features/myActivities/hooks/useUpdateMyActivity";
+import { useActivityForm } from "@/features/myActivities/hooks/useActivityForm";
 import { formatPrice } from "@/shared/utils/formatPrice";
 import { AxiosError } from "axios";
 
@@ -33,19 +27,11 @@ interface ActivityFormProps {
 }
 
 export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
+  const router = useRouter();
   const { mutateAsync: createActivity } = useCreateActivity();
   const { mutateAsync: updateActivity } = useUpdateMyActivity(
     Number(initialData?.id),
   );
-
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [tempData, setTempData] = useState<ActivityRequest | null>(null);
-
-  const isActivityDetail = (data: unknown): data is ActivityDetail => {
-    return data !== null && typeof data === "object" && "subImages" in data;
-  };
 
   const {
     register,
@@ -54,52 +40,25 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<ActivityFormInput, undefined, ActivityRequest>({
-    resolver: zodResolver(ActivityFormSchema) as unknown as Resolver<
-      ActivityFormInput,
-      undefined,
-      ActivityRequest
-    >,
-    defaultValues:
-      mode === "edit" && initialData
-        ? {
-            title: initialData.title ?? "",
-            category: initialData.category ?? "",
-            description: initialData.description ?? "",
-            address: initialData.address ?? "",
-            bannerImageUrl: initialData.bannerImageUrl ?? "",
-            price:
-              initialData.price !== undefined ? String(initialData.price) : "",
-            subImageUrls: isActivityDetail(initialData)
-              ? (initialData.subImages?.map((img) => img.imageUrl) ?? [])
-              : [],
-            schedules: initialData.schedules?.map((s) => ({
-              date: s.date,
-              startTime: s.startTime,
-              endTime: s.endTime,
-            })) ?? [{ date: "", startTime: "12:00", endTime: "13:00" }],
-          }
-        : {
-            title: "",
-            category: "",
-            description: "",
-            price: "",
-            address: "",
-            bannerImageUrl: "",
-            subImageUrls: [],
-            schedules: [{ date: "", startTime: "12:00", endTime: "13:00" }],
-          },
-  });
+  } = useActivityForm({ mode, initialData });
+
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [tempData, setTempData] = useState<ActivityRequest | null>(null);
+  const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
+  const bannerImageUrl = watch("bannerImageUrl");
+  const subImageUrls = watch("subImageUrls");
+  const selectedCategory = watch("category");
 
   const handleAddressComplete = (address: string) => {
     setValue("address", address, { shouldValidate: true });
     setIsAddressModalOpen(false);
   };
-
-  const bannerImageUrl = useWatch({ control, name: "bannerImageUrl" });
-  const subImageUrls = useWatch({ control, name: "subImageUrls" });
-  const selectedCategory = useWatch({ control, name: "category" });
 
   const onSubmit: SubmitHandler<ActivityRequest> = (data) => {
     setTempData(data);
@@ -108,29 +67,56 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
 
   const handleRealSubmit = async () => {
     if (!tempData) return;
+    console.log("tempData.schedules:", tempData.schedules);
     try {
       setIsSubmitLoading(true);
       setIsConfirmOpen(false);
 
       const combinedAddress =
         `${tempData.address} ${tempData.detailAddress || ""}`.trim();
-      const finalPayload = { ...tempData, address: combinedAddress };
+      const numericPrice = Number(String(tempData.price).replace(/,/g, ""));
+
+      const validSchedules = tempData.schedules.filter(
+        (s) => s.date && s.date.trim() !== "",
+      );
+      const originalScheduleIds = (initialData?.schedules ?? [])
+        .map((s) => s.id)
+        .filter((id): id is number => id !== undefined);
+
+      const schedulesToAdd = validSchedules.filter((s) => !s.id);
+      const scheduleIdsToRemove = originalScheduleIds.filter(
+        (id) => !validSchedules.some((s) => s.id === id),
+      );
 
       if (mode === "register") {
-        await createActivity(finalPayload);
+        await createActivity({
+          ...tempData,
+          address: combinedAddress,
+          price: numericPrice,
+          schedules: validSchedules,
+        });
+        setSuccessMessage("체험 등록이 완료되었습니다.");
       } else {
-        await updateActivity(finalPayload);
+        await updateActivity({
+          title: tempData.title,
+          category: tempData.category,
+          description: tempData.description,
+          price: numericPrice,
+          address: combinedAddress,
+          bannerImageUrl: tempData.bannerImageUrl,
+          schedulesToAdd,
+          scheduleIdsToRemove,
+        });
+        setSuccessMessage("체험 수정이 완료되었습니다.");
       }
 
       setIsSuccessOpen(true);
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
-      const msg =
-        axiosError.response?.data?.message ||
-        (mode === "register"
-          ? "등록 중 오류가 발생했습니다."
-          : "수정 중 오류가 발생했습니다.");
-      alert(msg);
+      setErrorMessage(
+        axiosError.response?.data?.message || "오류가 발생했습니다.",
+      );
+      setIsErrorOpen(true);
     } finally {
       setIsSubmitLoading(false);
     }
@@ -258,11 +244,36 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
       <Dialog open={isSuccessOpen} onOpenChange={setIsSuccessOpen}>
         <DialogContent className="flex w-[320px] flex-col items-center gap-[24px] rounded-[24px] p-[30px] md:w-[400px]">
           <DialogTitle className="pt-[40px] text-center text-[18px] font-medium">
-            체험 {mode === "register" ? "등록" : "수정"}이 완료되었습니다.
+            {successMessage}
           </DialogTitle>
           <Button
             className="h-[42px] w-[138px] rounded-[8px] text-[14px] font-semibold md:h-[48px] md:rounded-[12px] md:text-[16px]"
-            onClick={() => (window.location.href = "/mypage/activities")}
+            onClick={() => {
+              setIsSuccessOpen(false);
+              if (mode === "edit") {
+                router.back();
+              } else {
+                router.push("/mypage/activities");
+              }
+            }}
+          >
+            확인
+          </Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isErrorOpen} onOpenChange={setIsErrorOpen}>
+        <DialogContent className="flex w-[320px] flex-col items-center gap-[24px] rounded-[24px] p-[30px] md:w-[400px]">
+          <DialogTitle className="pt-[20px] text-center text-[18px] font-bold text-gray-950">
+            {mode === "register" ? "등록" : "수정"} 실패
+          </DialogTitle>
+
+          <p className="text-center text-[15px] text-gray-600">
+            {errorMessage}
+          </p>
+
+          <Button
+            className="h-[48px] w-full rounded-[12px] font-bold"
+            onClick={() => setIsErrorOpen(false)}
           >
             확인
           </Button>
