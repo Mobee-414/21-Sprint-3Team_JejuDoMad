@@ -5,6 +5,11 @@ import { cn } from "@/lib/utils";
 import { useReservationForm } from "../hooks/useReservationForm";
 import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
+import { createDisabledDate } from "@/features/reservations/utils/reservationCalendar.utils";
+import {
+  isMaxGuestCount,
+  isMinGuestCount,
+} from "../utils/reservationGuest.utils";
 
 interface ReservationFormDesktopProps {
   price: number;
@@ -34,6 +39,10 @@ export default function ReservationFormDesktop({
     price,
     schedules,
   });
+  const disabledDate = createDisabledDate(schedules);
+  const isDisabled = !canReserve || isPending;
+  const hasAvailableSchedules = availableSchedules.length > 0;
+
   const handleSubmit = () => {
     if (!selectedSchedule) return;
 
@@ -49,7 +58,7 @@ export default function ReservationFormDesktop({
         <span className="text-24-b text-foreground">
           ₩ {price.toLocaleString()}
         </span>
-        <span className="text-20-m text-muted-foreground">/ 인</span>
+        <span className="text-24-b text-muted-foreground">/ 인</span>
       </section>
 
       <section className="flex flex-col gap-[8px]">
@@ -59,6 +68,7 @@ export default function ReservationFormDesktop({
           mode="single"
           selected={selectedDate}
           onSelect={handleSelectDate}
+          disabled={disabledDate}
           className="rounded-[6px] border border-border p-0"
           modifiers={{ todayHighlight: new Date() }}
           size="md"
@@ -72,8 +82,13 @@ export default function ReservationFormDesktop({
           <button
             type="button"
             onClick={decreaseGuest}
-            disabled={guestCount <= 1}
-            className="h-[40px] w-[40px] cursor-pointer rounded-[6px] p-[10px]"
+            disabled={!hasAvailableSchedules || isMinGuestCount(guestCount)}
+            className={cn(
+              "h-[40px] w-[40px] rounded-[6px] p-[10px]",
+              !hasAvailableSchedules || isMinGuestCount(guestCount)
+                ? "cursor-not-allowed text-muted-foreground opacity-40"
+                : "cursor-pointer text-foreground",
+            )}
           >
             −
           </button>
@@ -85,8 +100,13 @@ export default function ReservationFormDesktop({
           <button
             type="button"
             onClick={increaseGuest}
-            disabled={guestCount >= 50}
-            className="h-[40px] w-[40px] cursor-pointer rounded-[6px] p-[10px]"
+            disabled={!hasAvailableSchedules || isMaxGuestCount(guestCount)}
+            className={cn(
+              "h-[40px] w-[40px] rounded-[6px] p-[10px]",
+              !hasAvailableSchedules || isMaxGuestCount(guestCount)
+                ? "cursor-not-allowed text-muted-foreground opacity-40"
+                : "cursor-pointer text-foreground",
+            )}
           >
             +
           </button>
@@ -97,26 +117,34 @@ export default function ReservationFormDesktop({
         <p className="text-16-b text-foreground">예약 가능한 시간</p>
 
         <div className="flex flex-col gap-[12px]">
-          {availableSchedules.map((schedule) => {
-            const isSelected =
-              selectedSchedule?.date === schedule.date &&
-              selectedSchedule?.startTime === schedule.startTime &&
-              selectedSchedule?.endTime === schedule.endTime;
+          {availableSchedules.length > 0 ? (
+            availableSchedules.map((schedule) => {
+              const isSelected =
+                selectedSchedule?.date === schedule.date &&
+                selectedSchedule?.startTime === schedule.startTime &&
+                selectedSchedule?.endTime === schedule.endTime;
 
-            return (
-              <button
-                key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
-                type="button"
-                onClick={() => handleSelectSchedule(schedule)}
-                className={cn(
-                  "cursor-pointer rounded-[6px] border px-[16px] py-[12px] text-left",
-                  isSelected && "border-primary bg-primary/10",
-                )}
-              >
-                {schedule.startTime} - {schedule.endTime}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
+                  type="button"
+                  onClick={() => handleSelectSchedule(schedule)}
+                  className={cn(
+                    "cursor-pointer rounded-[6px] border px-[16px] py-[12px] text-left",
+                    isSelected && "border-primary bg-primary/10",
+                  )}
+                >
+                  {schedule.startTime} - {schedule.endTime}
+                </button>
+              );
+            })
+          ) : (
+            <div className="flex w-fit items-center justify-center rounded-[6px] border border-border px-[10px] py-[10px]">
+              <p className="text-16-m whitespace-nowrap text-muted-foreground">
+                예약 가능한 시간이 없습니다
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -131,8 +159,13 @@ export default function ReservationFormDesktop({
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!canReserve || isPending}
-          className="h-[50px] min-w-[135px] cursor-pointer rounded-[14px] bg-primary px-[24px] py-[14px] text-16-b text-primary-foreground disabled:opacity-50"
+          disabled={isDisabled}
+          className={cn(
+            "h-[50px] min-w-[135px] rounded-[14px] px-[24px] py-[14px] text-16-b",
+            isDisabled
+              ? "cursor-not-allowed bg-primary text-primary-foreground opacity-50"
+              : "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90",
+          )}
         >
           예약하기
         </button>

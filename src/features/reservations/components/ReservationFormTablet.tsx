@@ -8,6 +8,12 @@ import useUpdateApplication from "../hooks/useUpdateApplication";
 import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
 import { X } from "lucide-react";
+import { createDisabledDate } from "@/features/reservations/utils/reservationCalendar.utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  isMaxGuestCount,
+  isMinGuestCount,
+} from "../utils/reservationGuest.utils";
 
 interface ReservationFormTabletProps {
   open: boolean;
@@ -52,6 +58,11 @@ export default function ReservationFormTablet({
   });
 
   const updateMutation = useUpdateApplication();
+  const disabledDate = createDisabledDate(schedules);
+  const isFewSchedules = availableSchedules.length <= 2;
+  const isScrollable = availableSchedules.length > 4;
+  const isDisabled = !canReserve || isPending || updateMutation.isPending;
+  const hasAvailableSchedules = availableSchedules.length > 0;
 
   const handleSubmit = async () => {
     if (!selectedSchedule) return;
@@ -124,52 +135,67 @@ export default function ReservationFormTablet({
                 </button>
               </div>
 
-              <div className="flex items-stretch gap-[40px]">
+              <div className="flex items-start gap-[40px]">
                 <div className="w-[359px] shrink-0">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
                     onSelect={handleSelectDate}
+                    disabled={disabledDate}
                     className="w-full rounded-[6px] p-0"
                     size="sm"
                   />
                 </div>
 
-                <section className="flex w-[260px] flex-col rounded-[24px] bg-background px-[16px] py-[16px]">
+                <section className="flex w-[260px] flex-col rounded-[6px] bg-background px-[16px] py-[16px]">
                   <p className="text-16-b text-foreground">예약 가능한 시간</p>
 
-                  <div className="mt-[10px] flex-1 overflow-y-auto">
-                    {availableSchedules.length > 0 ? (
-                      <div className="flex flex-col gap-[8px]">
-                        {availableSchedules.map((schedule) => {
-                          const isSelected =
-                            selectedSchedule?.date === schedule.date &&
-                            selectedSchedule?.startTime ===
-                              schedule.startTime &&
-                            selectedSchedule?.endTime === schedule.endTime;
-
-                          return (
-                            <button
-                              key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
-                              type="button"
-                              onClick={() => handleSelectSchedule(schedule)}
-                              className={cn(
-                                "h-[36px] w-full rounded-[8px] border border-border px-[12px] text-13-m text-foreground",
-                                isSelected &&
-                                  "border-primary bg-primary/10 text-primary",
-                              )}
-                            >
-                              {schedule.startTime} - {schedule.endTime}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className="pt-[8px] text-center text-13-m text-muted-foreground">
-                        날짜를 선택해주세요.
-                      </p>
+                  <ScrollArea
+                    className={cn(
+                      "mt-[10px]",
+                      isScrollable ? "h-[160px]" : "h-auto",
                     )}
-                  </div>
+                  >
+                    <div className="px-[12px]">
+                      {availableSchedules.length > 0 ? (
+                        <div
+                          className={cn(
+                            "flex flex-col",
+                            isFewSchedules ? "gap-[6px]" : "gap-[8px]",
+                          )}
+                        >
+                          {availableSchedules.map((schedule) => {
+                            const isSelected =
+                              selectedSchedule?.date === schedule.date &&
+                              selectedSchedule?.startTime ===
+                                schedule.startTime &&
+                              selectedSchedule?.endTime === schedule.endTime;
+
+                            return (
+                              <button
+                                key={`${schedule.date}-${schedule.startTime}-${schedule.endTime}`}
+                                type="button"
+                                onClick={() => handleSelectSchedule(schedule)}
+                                className={cn(
+                                  "h-[36px] w-full rounded-[8px] border border-border px-[12px] text-13-m text-foreground",
+                                  isSelected &&
+                                    "border-primary bg-primary/10 text-primary",
+                                )}
+                              >
+                                {schedule.startTime} - {schedule.endTime}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex w-fit items-center justify-center rounded-[6px] border border-border px-[10px] py-[10px]">
+                          <p className="text-16-m whitespace-nowrap text-muted-foreground">
+                            예약 가능한 시간이 없습니다.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
 
                   <div className="mt-[16px]">
                     <p className="mb-[8px] text-14-b text-foreground">
@@ -180,8 +206,15 @@ export default function ReservationFormTablet({
                       <button
                         type="button"
                         onClick={decreaseGuest}
-                        disabled={guestCount <= 1}
-                        className="h-[28px] w-[28px] rounded-[6px] text-16-m disabled:opacity-40"
+                        disabled={
+                          !hasAvailableSchedules || isMinGuestCount(guestCount)
+                        }
+                        className={cn(
+                          "h-[40px] w-[40px] rounded-[6px] p-[10px]",
+                          !hasAvailableSchedules || isMinGuestCount(guestCount)
+                            ? "cursor-not-allowed text-muted-foreground opacity-40"
+                            : "cursor-pointer text-foreground",
+                        )}
                       >
                         −
                       </button>
@@ -193,8 +226,15 @@ export default function ReservationFormTablet({
                       <button
                         type="button"
                         onClick={increaseGuest}
-                        disabled={guestCount >= 50}
-                        className="h-[28px] w-[28px] rounded-[6px] text-16-m disabled:opacity-40"
+                        disabled={
+                          !hasAvailableSchedules || isMaxGuestCount(guestCount)
+                        }
+                        className={cn(
+                          "h-[40px] w-[40px] rounded-[6px] p-[10px] focus:ring-0 focus:outline-none active:bg-transparent",
+                          !hasAvailableSchedules || isMaxGuestCount(guestCount)
+                            ? "cursor-not-allowed text-muted-foreground opacity-40"
+                            : "cursor-pointer text-foreground",
+                        )}
                       >
                         +
                       </button>
@@ -207,8 +247,13 @@ export default function ReservationFormTablet({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!canReserve || isPending || updateMutation.isPending}
-              className="mt-[24px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground disabled:opacity-50"
+              disabled={isDisabled}
+              className={cn(
+                "mt-[24px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground",
+                isDisabled
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer hover:bg-primary/90",
+              )}
             >
               {mode === "edit" ? "예약 변경" : "예약하기"}
             </button>

@@ -5,7 +5,9 @@ import ReservationFormMobile from "./ReservationFormMobile";
 import ReservationFormTablet from "./ReservationFormTablet";
 import ReservationFormDesktop from "./ReservationFormDesktop";
 import ReservationFormBar from "./ReservationFormBar";
+import ReservationSuccessDialog from "./ReservationSuccessDialog";
 import { useCreateReservation } from "@/features/activities/hooks/useCreateReservation";
+import type { CreateReservationParams } from "@/features/activities/api/createReservation";
 
 interface ReservationFormResponsiveProps {
   activityId: number;
@@ -34,9 +36,10 @@ export default function ReservationFormResponsive({
   onClose,
 }: ReservationFormResponsiveProps) {
   const [isReservationOpen, setIsReservationOpen] = useState(mode === "edit");
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
   const isReschedule = mode === "edit";
 
-  const { mutate: createReservation, isPending } =
+  const { mutateAsync: createReservation, isPending } =
     useCreateReservation(activityId);
 
   const handleOpenReservation = () => {
@@ -46,6 +49,16 @@ export default function ReservationFormResponsive({
   const handleCloseReservation = () => {
     setIsReservationOpen(false);
     onClose?.();
+  };
+
+  const handleSubmitReservation = async (params: CreateReservationParams) => {
+    try {
+      await createReservation(params);
+      handleCloseReservation();
+      setIsSuccessDialogOpen(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -64,11 +77,10 @@ export default function ReservationFormResponsive({
           reservationId={reservationId}
           initialScheduleId={initialScheduleId}
           initialHeadCount={initialHeadCount}
-          onSubmitReservation={createReservation}
+          onSubmitReservation={handleSubmitReservation}
           isPending={isPending}
         />
       </div>
-
       <div className="hidden min-[744px]:block min-[1024px]:hidden">
         {!isReservationOpen && mode !== "edit" && (
           <ReservationFormBar price={price} onOpen={handleOpenReservation} />
@@ -82,11 +94,10 @@ export default function ReservationFormResponsive({
           reservationId={reservationId}
           initialScheduleId={initialScheduleId}
           initialHeadCount={initialHeadCount}
-          onSubmitReservation={createReservation}
+          onSubmitReservation={handleSubmitReservation}
           isPending={isPending}
         />
       </div>
-
       <div className="hidden min-[1024px]:block">
         {isReschedule ? (
           <ReservationFormTablet
@@ -98,18 +109,22 @@ export default function ReservationFormResponsive({
             reservationId={reservationId}
             initialScheduleId={initialScheduleId}
             initialHeadCount={initialHeadCount}
-            onSubmitReservation={createReservation}
+            onSubmitReservation={handleSubmitReservation}
             isPending={isPending}
           />
         ) : (
           <ReservationFormDesktop
             price={price}
             schedules={schedules}
-            onSubmitReservation={createReservation}
+            onSubmitReservation={handleSubmitReservation}
             isPending={isPending}
           />
         )}
       </div>
+      <ReservationSuccessDialog
+        open={isSuccessDialogOpen}
+        onOpenChange={setIsSuccessDialogOpen}
+      />
     </>
   );
 }

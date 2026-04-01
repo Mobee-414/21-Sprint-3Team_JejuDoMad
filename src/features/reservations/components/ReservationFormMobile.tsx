@@ -9,6 +9,11 @@ import { useReservationForm } from "../hooks/useReservationForm";
 import useUpdateApplication from "../hooks/useUpdateApplication";
 import type { Schedule } from "../types/myReservation.schema";
 import { CreateReservationParams } from "@/features/activities/api/createReservation";
+import { createDisabledDate } from "@/features/reservations/utils/reservationCalendar.utils";
+import {
+  isMaxGuestCount,
+  isMinGuestCount,
+} from "@/features/reservations/utils/reservationGuest.utils";
 
 interface ReservationFormMobileProps {
   open: boolean;
@@ -56,6 +61,7 @@ export default function ReservationFormMobile({
 
   const [step, setStep] = useState<MobileStep>("select");
   const updateMutation = useUpdateApplication();
+  const disabledDate = createDisabledDate(schedules);
 
   const totalPrice = useMemo(() => {
     return price * guestCount;
@@ -141,53 +147,59 @@ export default function ReservationFormMobile({
                   mode="single"
                   selected={selectedDate}
                   onSelect={handleSelectDate}
+                  disabled={disabledDate}
                   className="w-full rounded-[12px] p-0"
                   size="sm"
                 />
               </section>
 
-              {selectedDate && (
-                <section className="mt-[16px]">
-                  <p className="mb-[10px] text-14-b text-foreground">
-                    예약 가능한 시간
-                  </p>
+              <section className="mt-[16px]">
+                <p className="mb-[10px] text-14-b text-foreground">
+                  예약 가능한 시간
+                </p>
 
-                  <div className="flex flex-col gap-[8px]">
-                    {availableSchedules.length > 0 ? (
-                      availableSchedules.map((schedule) => {
-                        const isSelected =
-                          selectedSchedule?.date === schedule.date &&
-                          selectedSchedule?.startTime === schedule.startTime;
+                <div className="flex flex-col gap-[8px]">
+                  {availableSchedules.length > 0 ? (
+                    availableSchedules.map((schedule) => {
+                      const isSelected =
+                        selectedSchedule?.date === schedule.date &&
+                        selectedSchedule?.startTime === schedule.startTime;
 
-                        return (
-                          <button
-                            key={`${schedule.date}-${schedule.startTime}`}
-                            type="button"
-                            onClick={() => handleSelectSchedule(schedule)}
-                            className={cn(
-                              "flex h-[40px] items-center justify-center rounded-[8px] border border-border bg-background text-13-m text-foreground",
-                              isSelected &&
-                                "border-primary bg-primary/10 text-primary",
-                            )}
-                          >
-                            {schedule.startTime} - {schedule.endTime}
-                          </button>
-                        );
-                      })
-                    ) : (
-                      <p className="rounded-[8px] bg-background py-[14px] text-center text-13-m text-muted-foreground">
+                      return (
+                        <button
+                          key={`${schedule.date}-${schedule.startTime}`}
+                          type="button"
+                          onClick={() => handleSelectSchedule(schedule)}
+                          className={cn(
+                            "flex h-[40px] items-center justify-center rounded-[8px] border border-border bg-background text-13-m text-foreground",
+                            isSelected &&
+                              "border-primary bg-primary/10 text-primary",
+                          )}
+                        >
+                          {schedule.startTime} - {schedule.endTime}
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div className="rounded-[12px] bg-muted/30 px-[12px] py-[10px]">
+                      <p className="text-15-m rounded-[8px] bg-background py-[14px] text-center text-muted-foreground">
                         예약 가능한 시간이 없습니다.
                       </p>
-                    )}
-                  </div>
-                </section>
-              )}
+                    </div>
+                  )}
+                </div>
+              </section>
 
               <button
                 type="button"
                 onClick={() => setStep("guest")}
                 disabled={!selectedDate || !selectedSchedule}
-                className="mt-[16px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground disabled:bg-muted disabled:text-muted-foreground"
+                className={cn(
+                  "mt-[16px] h-[44px] w-full rounded-[12px] text-14-b",
+                  !selectedDate || !selectedSchedule
+                    ? "cursor-not-allowed bg-muted text-muted-foreground"
+                    : "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90",
+                )}
               >
                 확인
               </button>
@@ -214,8 +226,13 @@ export default function ReservationFormMobile({
                   <button
                     type="button"
                     onClick={decreaseGuest}
-                    disabled={guestCount <= 1}
-                    className="flex h-[28px] w-[28px] items-center justify-center rounded-full text-16-m disabled:opacity-40"
+                    disabled={isMinGuestCount(guestCount)}
+                    className={cn(
+                      "flex h-[40px] w-[40px] items-center justify-center rounded-full bg-transparent text-16-m outline-none select-none",
+                      isMinGuestCount(guestCount)
+                        ? "cursor-not-allowed text-muted-foreground opacity-40"
+                        : "cursor-pointer text-foreground active:bg-muted",
+                    )}
                   >
                     −
                   </button>
@@ -227,8 +244,13 @@ export default function ReservationFormMobile({
                   <button
                     type="button"
                     onClick={increaseGuest}
-                    disabled={guestCount >= 50}
-                    className="flex h-[28px] w-[28px] items-center justify-center rounded-full text-16-m disabled:opacity-40"
+                    disabled={isMaxGuestCount(guestCount)}
+                    className={cn(
+                      "flex h-[40px] w-[40px] items-center justify-center rounded-full bg-transparent text-16-m outline-none select-none",
+                      isMaxGuestCount(guestCount)
+                        ? "cursor-not-allowed text-muted-foreground opacity-40"
+                        : "cursor-pointer text-foreground active:bg-muted",
+                    )}
                   >
                     +
                   </button>
@@ -238,7 +260,7 @@ export default function ReservationFormMobile({
               <button
                 type="button"
                 onClick={() => setStep("summary")}
-                className="mt-[16px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground"
+                className="mt-[16px] h-[44px] w-full cursor-pointer rounded-[12px] bg-primary text-14-b text-primary-foreground"
               >
                 확인
               </button>
@@ -305,7 +327,12 @@ export default function ReservationFormMobile({
                   type="button"
                   onClick={handleSubmit}
                   disabled={!canReserve || isPending}
-                  className="mt-[16px] h-[44px] w-full rounded-[12px] bg-primary text-14-b text-primary-foreground disabled:opacity-50"
+                  className={cn(
+                    "mt-[16px] h-[44px] w-full rounded-[12px] text-14-b",
+                    !canReserve || isPending
+                      ? "cursor-not-allowed bg-primary text-primary-foreground opacity-50"
+                      : "cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90",
+                  )}
                 >
                   {mode === "edit" ? "예약 변경" : "예약하기"}
                 </button>
