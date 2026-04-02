@@ -51,8 +51,10 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
+  const titleValue = watch("title") || "";
+  const descriptionValue = watch("description") || "";
   const bannerImageUrl = watch("bannerImageUrl");
-  const subImageUrls = watch("subImageUrls");
+  const subImageUrls = watch("subImageUrls") || [];
   const selectedCategory = watch("category");
 
   const handleAddressComplete = (address: string) => {
@@ -88,6 +90,16 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
         (id) => !validSchedules.some((s) => s.id === id),
       );
 
+      const initialSubImages = initialData?.subImages || [];
+      const currentSubImageUrls = tempData.subImageUrls || [];
+      const subImageIdsToRemove = initialSubImages
+        .filter((img) => !currentSubImageUrls.includes(img.imageUrl))
+        .map((img) => img.id);
+
+      const subImageUrlsToAdd = currentSubImageUrls.filter(
+        (url) => !initialSubImages.some((img) => img.imageUrl === url),
+      );
+
       if (mode === "register") {
         await createActivity({
           ...tempData,
@@ -104,6 +116,8 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
           price: numericPrice,
           address: combinedAddress,
           bannerImageUrl: tempData.bannerImageUrl,
+          subImageIdsToRemove,
+          subImageUrlsToAdd,
           schedulesToAdd,
           scheduleIdsToRemove,
         });
@@ -125,14 +139,17 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
-        <FormInput
-          {...register("title")}
-          label="제목"
-          placeholder="제목을 입력해 주세요"
-          variant="experience"
-          className="!bg-white"
-          errorMessage={errors.title?.message}
-        />
+        <div className="flex flex-col">
+          <FormInput
+            {...register("title")}
+            placeholder="제목을 입력해 주세요"
+            label="제목"
+            maxLength={20}
+          />
+          <p className="pr-2 text-right text-xs text-gray-400">
+            {titleValue.length} / 20
+          </p>
+        </div>
 
         <CategoryInput
           value={selectedCategory}
@@ -142,15 +159,21 @@ export const ActivityForm = ({ mode, initialData }: ActivityFormProps) => {
           error={errors.category?.message}
         />
 
-        <FormInput
-          {...register("description")}
-          label="설명"
-          isTextarea
-          placeholder="체험에 대해 설명해 주세요"
-          variant="experience"
-          className="h-[160px] !bg-white"
-          errorMessage={errors.description?.message}
-        />
+        <div className="flex flex-col">
+          <FormInput
+            {...register("description")}
+            label="설명"
+            isTextarea
+            placeholder="체험에 대해 설명해 주세요"
+            variant="experience"
+            className="h-[160px] !bg-white"
+            maxLength={500}
+            errorMessage={errors.description?.message}
+          />
+          <p className="pr-2 text-right text-xs text-gray-400">
+            {descriptionValue.length} / 500
+          </p>
+        </div>
 
         <FormInput
           {...register("price", {

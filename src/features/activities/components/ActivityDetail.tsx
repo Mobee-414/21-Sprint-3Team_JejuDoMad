@@ -16,6 +16,12 @@ import ReservationFormResponsive from "@/features/reservations/components/Reserv
 import type { Schedule } from "@/features/reservations/types/myReservation.schema";
 import { AxiosError } from "axios";
 
+import { ImageGallerySkeleton } from "@/components/skeleton/imageGallerySkeleton";
+import { TitleSectionSkeleton } from "@/components/skeleton/titleSectionSkeletion";
+import { DescriptionSkeleton } from "@/components/skeleton/descriptionSkeletion";
+import { MapSkeleton } from "@/components/skeleton/mapSkeletion";
+import { ReservationSkeleton } from "@/components/skeleton/reservationSkeletion";
+
 type Props = {
   activityId: number;
 };
@@ -33,7 +39,6 @@ export default function ActivityDetail({ activityId }: Props) {
   const { data: me } = useMe();
   const { mutate: deleteActivity, isPending } = useDeleteActivity();
 
-  if (isLoading) return <div>로딩중...</div>;
   if (error || !activity) return <div>에러 발생</div>;
 
   const isOwner = me?.id === activity.userId;
@@ -60,30 +65,46 @@ export default function ActivityDetail({ activityId }: Props) {
       <div className="mx-auto mt-10 w-full max-w-[375px] px-4 min-[744px]:max-w-[744px] min-[744px]:px-6 min-[1024px]:max-w-[1120px] min-[1024px]:px-0">
         <div className="flex flex-col gap-6 min-[1024px]:flex-row min-[1024px]:gap-10">
           <div className="min-[1024px]:max-w-[670px] min-[1024px]:flex-1">
-            <ImageGallery
-              bannerImageUrl={activity.bannerImageUrl}
-              subImages={activity.subImages ?? []}
-            />
+            {isLoading ? (
+              <ImageGallerySkeleton />
+            ) : (
+              <ImageGallery
+                bannerImageUrl={activity.bannerImageUrl}
+                subImages={activity.subImages ?? []}
+              />
+            )}
 
             <div className="mt-6 min-[744px]:mt-8 min-[1024px]:hidden">
-              <TitleSection
-                title={activity.title}
-                category={activity.category}
-                rating={activity.rating}
-                reviewCount={activity.reviewCount}
-                address={activity.address}
-                isOwner={isOwner}
-                activityId={activityId}
-                onDelete={() => setIsDeleteConfirmOpen(true)}
-              />
+              {isLoading ? (
+                <TitleSectionSkeleton />
+              ) : (
+                <TitleSection
+                  title={activity.title}
+                  category={activity.category}
+                  rating={activity.rating}
+                  reviewCount={activity.reviewCount}
+                  address={activity.address}
+                  isOwner={isOwner}
+                  activityId={activityId}
+                  onDelete={() => setIsDeleteConfirmOpen(true)}
+                />
+              )}
             </div>
 
             <div className="mt-6 sm:mt-8">
-              <DescriptionSection description={activity.description} />
+              {isLoading ? (
+                <DescriptionSkeleton />
+              ) : (
+                <DescriptionSection description={activity.description} />
+              )}
             </div>
 
             <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
-              <KakaoMap address={activity.address} />
+              {isLoading ? (
+                <MapSkeleton />
+              ) : (
+                <KakaoMap address={activity.address} />
+              )}
             </div>
 
             <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
@@ -93,24 +114,31 @@ export default function ActivityDetail({ activityId }: Props) {
 
           <div className="flex flex-col gap-10 min-[1024px]:w-[410px] min-[1024px]:shrink-0">
             <div className="hidden min-[1024px]:block">
-              <TitleSection
-                title={activity.title}
-                category={activity.category}
-                rating={activity.rating}
-                reviewCount={activity.reviewCount}
-                address={activity.address}
-                isOwner={isOwner}
-                activityId={activityId}
-                onDelete={() => setIsDeleteConfirmOpen(true)}
-              />
+              {isLoading ? (
+                <TitleSectionSkeleton />
+              ) : (
+                <TitleSection
+                  title={activity.title}
+                  category={activity.category}
+                  rating={activity.rating}
+                  reviewCount={activity.reviewCount}
+                  address={activity.address}
+                  isOwner={isOwner}
+                  activityId={activityId}
+                  onDelete={() => setIsDeleteConfirmOpen(true)}
+                />
+              )}
             </div>
-            {!isOwner && (
-              <ReservationFormResponsive
-                activityId={activityId}
-                price={activity.price}
-                schedules={activity.schedules as Schedule[]}
-              />
-            )}
+            {!isOwner &&
+              (isLoading ? (
+                <ReservationSkeleton />
+              ) : (
+                <ReservationFormResponsive
+                  activityId={activityId}
+                  price={activity.price}
+                  schedules={activity.schedules as Schedule[]}
+                />
+              ))}
           </div>
         </div>
       </div>

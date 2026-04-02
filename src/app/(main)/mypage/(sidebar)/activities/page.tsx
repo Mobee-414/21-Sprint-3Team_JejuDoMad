@@ -5,28 +5,17 @@ import { buttonVariants } from "@/components/ui/button";
 import MyActivityCard from "@/components/ui/card/MyActivityCard";
 import { cn } from "@/lib/utils";
 import { useMyActivities } from "@/features/myActivities/hooks/useMyActivities";
-import { ActivityListItem } from "@/features/activities/schemas/activity.schema";
+import {
+  type ActivitiesListResponse,
+  type ActivityListItem,
+} from "@/features/activities/schemas/activity.schema";
 import MyActivityCardSkeleton from "@/features/myActivities/components/myActivityCardSkeleton";
 import MyActivityEmpty from "@/features/myActivities/components/myActivityEmpty";
+import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
+import { queryKeys } from "@/shared/api/queryKeys";
 
 export default function MyActivitiesPage() {
-  const { activities, isLoading, error } = useMyActivities();
-  const activityList: ActivityListItem[] = activities || [];
-
-  if (isLoading)
-    return (
-      <div className="flex flex-col gap-4 py-4 lg:gap-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <MyActivityCardSkeleton key={i} />
-        ))}
-      </div>
-    );
-  if (error)
-    return (
-      <div className="py-20 text-center text-red-500">
-        데이터를 불러오는 중 오류가 발생했습니다.
-      </div>
-    );
+  const { fetchActivities, getNextCursor } = useMyActivities();
 
   return (
     <section className="flex flex-col gap-6 py-4">
@@ -52,15 +41,35 @@ export default function MyActivitiesPage() {
         </Link>
       </div>
 
-      <div className="flex flex-col gap-4 lg:gap-6">
-        {activities.length > 0 ? (
-          activityList.map((activity) => (
-            <MyActivityCard key={activity.id} {...activity} />
-          ))
-        ) : (
-          <MyActivityEmpty />
+      <InfiniteScrollList<
+        ActivitiesListResponse,
+        ActivityListItem,
+        number | null
+      >
+        queryKey={queryKeys.myActivities.list({ size: 20 })}
+        queryFn={fetchActivities}
+        initialPageParam={null}
+        getNextCursor={getNextCursor}
+        getItems={(page) => page.activities}
+        renderItem={(activity) => (
+          <MyActivityCard key={activity.id} {...activity} />
         )}
-      </div>
+        loading={
+          <div className="flex flex-col gap-4 lg:gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <MyActivityCardSkeleton key={i} />
+            ))}
+          </div>
+        }
+        loadingMore={<MyActivityCardSkeleton />}
+        empty={<MyActivityEmpty />}
+        error={
+          <div className="py-20 text-center text-red-500">
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </div>
+        }
+        listClassName="flex flex-col gap-4 lg:gap-6"
+      />
     </section>
   );
 }

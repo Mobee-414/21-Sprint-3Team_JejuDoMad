@@ -55,7 +55,9 @@ export default function MyActivityCard({
   return (
     <div className="flex w-full justify-between rounded-[24px] bg-white p-[24px] shadow">
       <div className="flex flex-col gap-[10px] lg:gap-[12px]">
-        <h1 className="text-[16px] font-bold lg:text-[18px]">{title}</h1>
+        <Link href={`/activities/${id}`} className="group/title inline-block">
+          <h1 className="text-[16px] font-bold lg:text-[18px]">{title}</h1>
+        </Link>
         <div className="flex gap-[2px]">
           <Image
             src="/images/icons/icon_star_on.svg"
@@ -77,7 +79,11 @@ export default function MyActivityCard({
         </h2>
         <div className="mt-auto flex w-full gap-[8px]">
           <Link href={`/mypage/manage/edit/${id}`} className="flex flex-1">
-            <Button variant="outline" size="sm" className="w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-x h-[30px] w-full border-gray-300 bg-white text-gray-500 lg:h-[30px]"
+            >
               수정하기
             </Button>
           </Link>
@@ -87,7 +93,7 @@ export default function MyActivityCard({
               <Button
                 variant="secondary"
                 size="sm"
-                className="flex-1 text-red-500"
+                className="rounded-x h-[30px] w-full flex-1 bg-gray-200 text-gray-500 transition-colors hover:bg-gray-100 lg:h-[30px]"
                 disabled={isPending}
               >
                 {isPending ? "삭제 중..." : "삭제하기"}
@@ -157,13 +163,19 @@ export default function MyActivityCard({
         </div>
       </div>
       <div className="relative h-[82px] w-[82px] shrink-0 overflow-hidden rounded-[24px] lg:h-[142px] lg:w-[142px]">
-        <Image
-          src={bannerImageUrl}
-          alt={title}
-          fill
-          sizes="(max-width: 1024px) 82px, 142px"
-          className="object-cover"
-        />
+        <Link
+          href={`/activities/${id}`}
+          className="absolute inset-0 z-0 block transition-opacity hover:opacity-90"
+          aria-label={`${title} 상세 페이지 이동`}
+        >
+          <Image
+            src={bannerImageUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 1024px) 82px, 142px"
+            className="object-cover"
+          />
+        </Link>
       </div>
     </div>
   );
