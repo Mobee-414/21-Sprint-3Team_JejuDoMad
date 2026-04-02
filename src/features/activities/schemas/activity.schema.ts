@@ -4,9 +4,9 @@ import { z } from "zod";
 
 export const ScheduleSchema = z.object({
   id: z.number().optional(),
-  date: z.string(),
-  startTime: z.string(),
-  endTime: z.string(),
+  date: z.string().min(1, "날짜를 선택해 주세요"),
+  startTime: z.string().min(1, "시작 시간을 선택해 주세요"),
+  endTime: z.string().min(1, "종료 시간을 선택해 주세요"),
 });
 export type Schedule = z.infer<typeof ScheduleSchema>;
 
@@ -39,9 +39,15 @@ export type AvailableSchedulesResponse = z.infer<
 // 체험 등록수정 폼 스키마 유효성 검사
 
 export const ActivityFormSchema = z.object({
-  title: z.string().min(1, "제목을 등록해 주세요"),
+  title: z
+    .string()
+    .min(1, "제목을 등록해 주세요")
+    .max(20, "제목은 20자 이내로 작성해 주세요"),
   category: z.string().min(1, "카테고리를 선택해 주세요"),
-  description: z.string().min(1, "내용을 입력해 주세요"),
+  description: z
+    .string()
+    .min(1, "내용을 입력해 주세요")
+    .max(500, "설명은 500자 이내로 작성해 주세요"),
   price: z
     .string()
     .min(1, "가격을 입력해 주세요")
@@ -55,9 +61,28 @@ export const ActivityFormSchema = z.object({
   bannerImageUrl: z.string().min(1, "배너 이미지를 등록해 주세요"),
   subImageUrls: z
     .array(z.string())
-    .min(1, "소개 이미지를 1장 이상 등록해 주세요")
-    .max(4),
-  schedules: z.array(ScheduleSchema).min(1, "시간대를 하나 이상 추가해 주세요"),
+    .max(4, "소개 이미지는 최대 4개까지 등록 가능합니다.")
+    .default([]),
+  schedules: z
+    .array(ScheduleSchema)
+    .min(1, "시간대를 하나 이상 추가해 주세요")
+    .refine((schedules) => schedules.every((s) => s.startTime < s.endTime), {
+      message: "종료 시간은 시작 시간보다 늦어야 합니다",
+    })
+    .superRefine((elements, ctx) => {
+      const seen = new Set();
+      elements.forEach((sch, index) => {
+        const key = `${sch.date}-${sch.startTime}-${sch.endTime}`;
+        if (seen.has(key)) {
+          ctx.addIssue({
+            code: "custom",
+            message: "이미 추가된 시간대입니다.",
+            path: [index],
+          });
+        }
+        seen.add(key);
+      });
+    }),
 });
 
 export type ActivityFormInput = z.input<typeof ActivityFormSchema>;
