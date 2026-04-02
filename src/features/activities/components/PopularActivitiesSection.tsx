@@ -10,7 +10,6 @@ import Card from "@/components/ui/card/card";
 import { queryKeys } from "@/shared/api/queryKeys";
 import CardSkeleton from "@/components/skeleton/cardSkeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 export default function PopularActivitiesSection() {
   return (
