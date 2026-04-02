@@ -4,6 +4,11 @@ import {
   type ActivitiesListResponse,
 } from "@/features/activities/schemas/activity.schema";
 
-export const getMyActivities = async (): Promise<ActivitiesListResponse> => {
-  return await Get("my-activities", ActivitiesListResponseSchema);
+export const getMyActivities = async (params: {
+  cursorId?: number | null;
+  size?: number;
+}): Promise<ActivitiesListResponse> => {
+  return await Get("my-activities", ActivitiesListResponseSchema, {
+    params,
+  });
 };
