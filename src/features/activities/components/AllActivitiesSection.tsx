@@ -75,6 +75,7 @@ export default function AllActivitiesSection() {
 
       <div className="mt-[40px] mb-[200px]">
         <Pagination
+          type="button"
           currentPage={page}
           totalPages={totalPages}
           onPageChange={setPage}

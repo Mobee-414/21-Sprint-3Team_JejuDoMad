@@ -16,11 +16,16 @@ export default function SearchBar() {
     const trimmed = keyword.trim();
     if (!trimmed) return;
 
-    router.push(`/?keyword=${encodeURIComponent(trimmed)}`, { scroll: false });
+    router.replace(`/?keyword=${encodeURIComponent(trimmed)}`, {
+      scroll: false,
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") handleSearch();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
   };
 
   return (
