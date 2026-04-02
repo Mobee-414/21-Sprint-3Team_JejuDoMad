@@ -2,6 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { Schedule } from "../types/myReservation.schema";
+import { getSchedulesByDate } from "../utils/reservationCalendar.utils";
+import {
+  getNextGuestCount,
+  getPrevGuestCount,
+} from "../utils/reservationGuest.utils";
 
 interface UseReservationFormParams {
   price: number;
@@ -25,35 +30,24 @@ interface UseReservationFormReturn {
   setSelectedSchedule: React.Dispatch<React.SetStateAction<Schedule | null>>;
 }
 
-function isSameDate(scheduleDate: string, date: Date) {
-  const targetDate = new Date(scheduleDate);
-
-  return (
-    targetDate.getFullYear() === date.getFullYear() &&
-    targetDate.getMonth() === date.getMonth() &&
-    targetDate.getDate() === date.getDate()
-  );
-}
-
 export function useReservationForm({
   price,
   schedules,
 }: UseReservationFormParams): UseReservationFormReturn {
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const today = new Date();
+  const todaySchedules = getSchedulesByDate(schedules, today);
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    todaySchedules.length > 0 ? today : undefined,
+  );
   const [guestCount, setGuestCount] = useState(1);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
     null,
   );
 
   const availableSchedules = useMemo(() => {
-    if (!selectedDate) {
-      return [];
-    }
-
-    return schedules.filter((schedule) => {
-      return isSameDate(schedule.date, selectedDate);
-    });
-  }, [schedules, selectedDate]);
+    return getSchedulesByDate(schedules, selectedDate ?? today);
+  }, [schedules, selectedDate, today]);
 
   const totalPrice = price * guestCount;
 
@@ -69,11 +63,11 @@ export function useReservationForm({
   };
 
   const decreaseGuest = () => {
-    setGuestCount((prev) => Math.max(prev - 1, 1));
+    setGuestCount((prev) => getPrevGuestCount(prev));
   };
 
   const increaseGuest = () => {
-    setGuestCount((prev) => Math.min(prev + 1, 50));
+    setGuestCount((prev) => getNextGuestCount(prev));
   };
 
   const isSelectedSchedule = (schedule: Schedule) => {

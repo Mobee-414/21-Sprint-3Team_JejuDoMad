@@ -11,12 +11,6 @@ export const useCreateReservation = (activityId: number) => {
     mutationFn: (params: CreateReservationParams) =>
       createReservation(activityId, params),
 
-    onSuccess: () => {
-      toast.success("예약 완료", {
-        description: "예약이 완료되었습니다.",
-      });
-    },
-
     onError: (error) => {
       if (axios.isAxiosError(error)) {
         const message = error.response?.data?.message;

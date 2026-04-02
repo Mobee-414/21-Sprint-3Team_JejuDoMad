@@ -106,7 +106,10 @@ function CustomMonthCaption({
           type="button"
           onClick={() => previousMonth && goToMonth(previousMonth)}
           disabled={!previousMonth}
-          className={styles.navButton}
+          className={cn(
+            styles.navButton,
+            "cursor-pointer disabled:cursor-default",
+          )}
         >
           <ChevronLeftIcon className="h-[16px] w-[16px]" />
         </button>
@@ -119,7 +122,10 @@ function CustomMonthCaption({
           type="button"
           onClick={() => nextMonth && goToMonth(nextMonth)}
           disabled={!nextMonth}
-          className={styles.navButton}
+          className={cn(
+            styles.navButton,
+            "cursor-pointer disabled:cursor-default",
+          )}
         >
           <ChevronRightIcon className="h-[16px] w-[16px]" />
         </button>
@@ -142,13 +148,18 @@ function Calendar({
 }: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
   const styles = calendarSizeStyles[size];
+  const today = React.useMemo(() => new Date(), []);
+  const disabledDays =
+    size === "lg" ? undefined : (props.disabled ?? { before: today });
 
   return (
     <DayPicker
+      {...props}
       showOutsideDays={showOutsideDays}
       captionLayout={captionLayout}
       locale={locale}
       style={style}
+      disabled={disabledDays}
       formatters={{
         formatMonthDropdown: (date) =>
           date.toLocaleString(locale?.code, { month: "short" }),
@@ -275,7 +286,6 @@ function Calendar({
         },
         ...components,
       }}
-      {...props}
     />
   );
 }
@@ -317,7 +327,7 @@ function CalendarDayButton({
         data-range-middle={modifiers.range_middle}
         className={cn(
           classNames[UI.DayButton],
-          "relative isolate z-10 border-0",
+          "relative isolate z-10 cursor-pointer border-0 disabled:cursor-default",
           "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
           "data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground",
           "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground",
@@ -351,7 +361,7 @@ function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         classNames[UI.DayButton],
-        "relative isolate z-10 flex aspect-square size-auto flex-col gap-[4px] border-0 leading-none font-normal",
+        "relative isolate z-10 flex aspect-square size-auto cursor-pointer flex-col gap-[4px] border-0 leading-none font-normal disabled:cursor-default",
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
         "data-[range-end=true]:rounded-(--cell-radius) data-[range-end=true]:rounded-r-(--cell-radius) data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground",
         "data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-muted data-[range-middle=true]:text-foreground",

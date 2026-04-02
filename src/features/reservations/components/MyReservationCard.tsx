@@ -132,7 +132,7 @@ export default function MyReservationCard({
         open={isCancelDialogOpen}
         title="예약을 취소하시겠어요?"
         confirmText="취소하기"
-        cancelText="아니요"
+        cancelText="아니오"
         onCancel={() => setIsCancelDialogOpen(false)}
         onConfirm={handleCancelReservation}
       />

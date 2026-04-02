@@ -47,7 +47,7 @@ export default function ConfirmDialog({
             <Button
               variant="outline"
               onClick={onCancel}
-              className="h-[41px] flex-1 rounded-[12px] md:h-[47px] md:rounded-[14px]"
+              className="h-[41px] flex-1 rounded-[12px] bg-white md:h-[47px] md:rounded-[14px]"
             >
               {cancelText}
             </Button>
