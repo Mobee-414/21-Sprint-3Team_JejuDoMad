@@ -7,13 +7,11 @@ import {
 import ReservationCard from "@/features/reservations/components/MyReservationCard";
 import ReservationFormResponsive from "@/features/reservations/components/ReservationFormResponsive";
 import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
-import {
-  getMyReservations,
-  cancelMyReservation,
-} from "../api/myReservations.api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getMyReservations } from "../api/myReservations.api";
+import { useCancelReservation } from "../hooks/useCancelReservation";
 import { useActivityDetail } from "@/features/activities/hooks/useActivityDetail";
 import { useAvailableSchedule } from "@/features/activities/hooks/useAvailableSchedule";
+import MyActivityCardSkeleton from "@/features/myActivities/components/myActivityCardSkeleton";
 
 interface Props {
   selectedStatus: ReservationStatus | null;
@@ -32,16 +30,7 @@ export default function MyReservationList({
     useState<MyReservationItem | null>(null);
   const [isReservationFormOpen, setIsReservationFormOpen] = useState(false);
 
-  const queryClient = useQueryClient();
-
-  const cancelReservationMutation = useMutation({
-    mutationFn: cancelMyReservation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["myReservations"],
-      });
-    },
-  });
+  const cancelReservationMutation = useCancelReservation();
 
   const getReservationPage = (cursor: number | null) => {
     return getMyReservations({
@@ -130,7 +119,13 @@ export default function MyReservationList({
         listClassName="flex flex-col gap-[16px]"
         triggerClassName="h-[1px]"
         empty={empty}
-        loading={<div>로딩중</div>}
+        loading={
+          <div className="flex flex-col gap-[16px]">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <MyActivityCardSkeleton key={i} />
+            ))}
+          </div>
+        }
         error={<div>에러가 발생했습니다.</div>}
         loadingMore={
           <div className="py-4 text-center text-muted-foreground">
