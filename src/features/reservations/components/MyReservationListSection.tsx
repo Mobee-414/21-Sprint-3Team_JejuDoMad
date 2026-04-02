@@ -117,7 +117,7 @@ export default function ReservationListSection() {
               <EmptyState
                 message="아직 예약한 체험이 없어요"
                 buttonText="둘러보기"
-                onButtonClick={() => router.push("/activities")}
+                onButtonClick={() => router.push("/")}
               />
             </div>
           }

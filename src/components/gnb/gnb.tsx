@@ -2,18 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import NotificationList from "../ui/NotificationList";
 import { Dropdown } from "@/components/ui/dropdown";
+import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
+import { toast } from "sonner";
 
 export default function GNB() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
   const isLogin = !!user;
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     logout();
+    toast("로그아웃되었습니다.");
     router.push("/");
   };
 
@@ -84,9 +89,18 @@ export default function GNB() {
                   <Dropdown.Item onClick={handleMyPage}>
                     마이페이지
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setShowLogoutModal(true)}>로그아웃</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
+
+              <ConfirmDialog
+                open={showLogoutModal}
+                title="로그아웃 하시겠습니까?"
+                confirmText="로그아웃"
+                cancelText="취소"
+                onCancel={() => setShowLogoutModal(false)}
+                onConfirm={handleLogout}
+              />
             </>
           ) : (
             <div className="flex gap-4 text-[14px] font-medium text-[#1F1F22]">

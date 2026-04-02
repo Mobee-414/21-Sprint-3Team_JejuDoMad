@@ -109,12 +109,12 @@ export default function LoginForm() {
         </Button>
       </form>
       <Dialog open={alertModal.open} onOpenChange={alertModal.onClose}>
-        <DialogContent showOverlay>
-          <DialogTitle className="p-6 text-center text-[16px] font-bold">
+        <DialogContent showOverlay className="w-[400px] max-w-[400px] h-[170px] justify-center">
+          <DialogTitle className="px-6 pt-6 pb-2 text-center text-[16px] font-bold">
             {alertModal.msg}
           </DialogTitle>
-          <DialogFooter>
-            <Button onClick={alertModal.onClose}>확인</Button>
+          <DialogFooter className="items-center p-4">
+            <Button onClick={alertModal.onClose} className="w-[200px] h-[47px]">확인</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
