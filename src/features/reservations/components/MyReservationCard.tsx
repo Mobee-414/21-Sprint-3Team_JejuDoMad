@@ -54,10 +54,7 @@ export default function MyReservationCard({
       <div className={cn("relative", hasButtonUI && "pb-[48px] lg:pb-0")}>
         <div className="rounded-[24px] pr-[88px] shadow-[0px_4px_24px_rgba(156,180,202,0.2)] md:pr-[116px] lg:pr-[155px]">
           <div className="rounded-[24px] shadow-[0px_-8px_20px_rgba(0,0,0,0.05)] lg:relative">
-            <Link
-              href={``}
-              className="relative z-[1] block rounded-[24px] bg-white p-[20px] lg:px-[40px] lg:py-[30px]"
-            >
+            <div className="relative z-[1] block rounded-[24px] bg-white p-[20px] lg:px-[40px] lg:py-[30px]">
               <StateBadge variant={reservationStatusMap[status].variant}>
                 {reservationStatusMap[status].label}
               </StateBadge>
@@ -80,14 +77,14 @@ export default function MyReservationCard({
                   /{headCount}명
                 </span>
               </div>
-            </Link>
+            </div>
             <div className="text-14 absolute right-0 bottom-0 left-0 flex h-[36px] gap-[12px] px-[8px] font-medium text-gray-600 md:px-0 lg:right-[40px] lg:bottom-[30px] lg:left-auto lg:z-[1] lg:h-[29px] lg:gap-[8px]">
               {status === "pending" && (
                 <>
                   <button
                     type="button"
                     onClick={onChangeReservation}
-                    className="flex h-full grow items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]"
+                    className="flex h-full grow cursor-pointer items-center justify-center rounded-[12px] border border-gray-300 bg-white px-[10px] py-[6px]"
                   >
                     예약 변경
                   </button>
