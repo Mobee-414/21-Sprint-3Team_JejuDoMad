@@ -36,7 +36,7 @@ export default function PopularActivitiesSection() {
   };
 
   return (
-    <div className="mx-auto mt-[80px] max-w-[1120px] overflow-hidden">
+    <div className="mx-auto mt-[80px] max-w-[1120px] overflow-hidden px-4 md:px-8">
       <h2 className="text-[20px] font-bold"> 인기 체험</h2>
 
       <div
@@ -77,7 +77,7 @@ export default function PopularActivitiesSection() {
               rating={item.rating}
               reviewCount={item.reviewCount}
               price={item.price}
-              className="shrink-0"
+              className="w-[131px] max-w-none shrink-0 md:w-[331px] lg:w-[262px]"
             />
           )}
           listClassName="flex gap-[16px] mt-[24px] pb-[8px] w-full"

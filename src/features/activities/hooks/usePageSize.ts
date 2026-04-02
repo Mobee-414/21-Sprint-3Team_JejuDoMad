@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 export function usePageSize() {
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(6);
 
   useEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 767px)");
