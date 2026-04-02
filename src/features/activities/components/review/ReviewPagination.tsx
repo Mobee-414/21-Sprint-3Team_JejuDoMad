@@ -13,6 +13,8 @@ export default function ReviewPagination({
   totalPages,
   onPageChange,
 }: Props) {
+  if (totalPages <= 1) return null;
+
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
@@ -30,7 +32,7 @@ export default function ReviewPagination({
           key={page}
           onClick={() => onPageChange(page)}
           className={cn(
-            "rounded-md px-3 py-2 text-sm",
+            "cursor-pointer rounded-md px-3 py-2 text-sm disabled:cursor-default",
             currentPage === page ? "bg-black text-white" : "hover:bg-gray-100",
           )}
         >
