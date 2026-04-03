@@ -16,7 +16,8 @@ export default function GNB() {
   const isLogin = !!user;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "DELETE" });
     logout();
     toast("로그아웃되었습니다.");
     router.push("/");

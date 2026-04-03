@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useAvailableSchedule } from "@/features/activities/hooks/useAvailableSchedule";
 import { useCreateReservation } from "@/features/activities/hooks/useCreateReservation";
+import { useMe } from "@/features/mypage/users/hooks/useMe";
 
 interface SelectedSchedule {
   id: number;
@@ -19,6 +21,8 @@ interface Props {
 }
 
 export default function ActivityReservationForm({ activityId, price }: Props) {
+  const router = useRouter();
+  const { data: me } = useMe();
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(String(today.getFullYear()));
   const [currentMonth, setCurrentMonth] = useState(
@@ -110,6 +114,7 @@ export default function ActivityReservationForm({ activityId, price }: Props) {
             type="button"
             disabled={!canReserve || isPending}
             onClick={() => {
+              if (!me) return router.push("/login");
               if (!selectedSchedule) return;
               reserve({
                 scheduleId: selectedSchedule.id,
@@ -118,7 +123,7 @@ export default function ActivityReservationForm({ activityId, price }: Props) {
             }}
             className="h-[50px] min-w-[135px] cursor-pointer rounded-[14px] bg-primary px-[24px] py-[14px] text-16-b text-primary-foreground disabled:opacity-50"
           >
-            {isPending ? "예약 중..." : "예약하기"}+
+            {isPending ? "예약 중..." : "예약하기"}
           </button>
         </div>
       </section>
@@ -159,10 +164,18 @@ export default function ActivityReservationForm({ activityId, price }: Props) {
         </div>
         <button
           type="button"
-          disabled={!canReserve}
+          disabled={!canReserve || isPending}
+          onClick={() => {
+            if (!me) return router.push("/login");
+            if (!selectedSchedule) return;
+            reserve({
+              scheduleId: selectedSchedule.id,
+              headCount: guestCount,
+            });
+          }}
           className="h-[50px] min-w-[135px] cursor-pointer rounded-[14px] bg-primary px-[24px] py-[14px] text-16-b text-primary-foreground disabled:opacity-50"
         >
-          예약하기
+          {isPending ? "예약 중..." : "예약하기"}
         </button>
       </section>
     </div>
