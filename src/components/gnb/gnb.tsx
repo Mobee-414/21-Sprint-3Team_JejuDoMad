@@ -4,16 +4,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useQueryClient } from "@tanstack/react-query";
 import NotificationList from "../ui/NotificationList";
 import { Dropdown } from "@/components/ui/dropdown";
 
 export default function GNB() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const isLogin = !!user;
 
   const handleLogout = () => {
     logout();
+    queryClient.setQueryData(["me"], null);
+    queryClient.removeQueries({ queryKey: ["me"] });
     router.push("/");
   };
 

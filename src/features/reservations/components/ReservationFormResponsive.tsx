@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ReservationFormMobile from "./ReservationFormMobile";
 import ReservationFormTablet from "./ReservationFormTablet";
 import ReservationFormDesktop from "./ReservationFormDesktop";
@@ -8,6 +9,8 @@ import ReservationFormBar from "./ReservationFormBar";
 import ReservationSuccessDialog from "./ReservationSuccessDialog";
 import { useCreateReservation } from "@/features/activities/hooks/useCreateReservation";
 import type { CreateReservationParams } from "@/features/activities/api/createReservation";
+import { Dialog, DialogContent } from "@/components/ui/dialog/dialog";
+import { Button } from "@/components/ui/button";
 
 interface ReservationFormResponsiveProps {
   activityId: number;
@@ -23,6 +26,10 @@ interface ReservationFormResponsiveProps {
   initialScheduleId?: number;
   initialHeadCount?: number;
   onClose?: () => void;
+  user: {
+    id: number;
+    nickname: string;
+  } | null;
 }
 
 export default function ReservationFormResponsive({
@@ -34,15 +41,22 @@ export default function ReservationFormResponsive({
   initialScheduleId,
   initialHeadCount = 1,
   onClose,
+  user,
 }: ReservationFormResponsiveProps) {
   const [isReservationOpen, setIsReservationOpen] = useState(mode === "edit");
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const isReschedule = mode === "edit";
+  const router = useRouter();
 
   const { mutateAsync: createReservation, isPending } =
     useCreateReservation(activityId);
 
   const handleOpenReservation = () => {
+    if (!user) {
+      openLoginDialog();
+      return;
+    }
     setIsReservationOpen(true);
   };
 
@@ -51,7 +65,16 @@ export default function ReservationFormResponsive({
     onClose?.();
   };
 
+  const openLoginDialog = () => {
+    setIsLoginDialogOpen(true);
+  };
+
   const handleSubmitReservation = async (params: CreateReservationParams) => {
+    console.log("submit user", user);
+    if (!user) {
+      openLoginDialog();
+      return;
+    }
     try {
       await createReservation(params);
       handleCloseReservation();
@@ -125,6 +148,26 @@ export default function ReservationFormResponsive({
         open={isSuccessDialogOpen}
         onOpenChange={setIsSuccessDialogOpen}
       />
+      <Dialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen}>
+        <DialogContent className="w-[320px] rounded-[24px] bg-card px-[30px] pt-[34px] pb-[30px] md:w-[400px] md:rounded-[30px] md:px-[40px] md:pt-[40px] md:pb-[30px]">
+          <div className="flex flex-col items-center gap-[16px] md:gap-[20px]">
+            <p className="text-16-b text-foreground md:text-18-b">
+              로그인 후 예약할 수 있어요.
+            </p>
+
+            <Button
+              type="button"
+              onClick={() => {
+                setIsLoginDialogOpen(false);
+                router.push("/login");
+              }}
+              className="flex h-[41px] w-[180px] items-center justify-center rounded-[12px] text-14-b text-primary-foreground md:h-[47px] md:w-[200px] md:rounded-[14px] md:text-16-b"
+            >
+              로그인하러 가기
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

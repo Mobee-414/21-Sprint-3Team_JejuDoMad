@@ -5,11 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
-import IconEdit from "@/../public/images/icons/icon_edit.svg";
-import IconUser from "@/../public/images/icons/icon_user.svg";
-import IconList from "@/../public/images/icons/icon_list.svg";
-import IconSetting from "@/../public/images/icons/icon_setting.svg";
-import IconCalendar from "@/../public/images/icons/icon_calendar.svg";
 import { useMe } from "@/features/mypage/users/hooks/useMe";
 import { useUpdateMe } from "@/features/mypage/users/hooks/useUpdateMe";
 import { useUploadProfileImage } from "@/features/mypage/users/hooks/useUploadProfileImage";
@@ -68,10 +63,26 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
   };
 
   const menuItems = [
-    { label: "내 정보", icon: IconUser, href: "/mypage/myInfo" },
-    { label: "예약내역", icon: IconList, href: "/mypage/myReservations" },
-    { label: "내 체험 관리", icon: IconSetting, href: "/mypage/activities" },
-    { label: "예약 현황", icon: IconCalendar, href: "/mypage/status" },
+    {
+      label: "내 정보",
+      icon: "/images/icons/icon_user.svg",
+      href: "/mypage/myInfo",
+    },
+    {
+      label: "예약내역",
+      icon: "/images/icons/icon_list.svg",
+      href: "/mypage/myReservations",
+    },
+    {
+      label: "내 체험 관리",
+      icon: "/images/icons/icon_setting.svg",
+      href: "/mypage/activities",
+    },
+    {
+      label: "예약 현황",
+      icon: "/images/icons/icon_calendar.svg",
+      href: "/mypage/status",
+    },
   ];
 
   return (
@@ -97,7 +108,7 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <Image
-                src={IconUser}
+                src="/images/icons/icon_user.svg"
                 alt="기본 프로필 이미지"
                 width={24}
                 height={24}
@@ -115,7 +126,7 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
           className="absolute right-[2px] bottom-[4px] flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-full bg-[#B3B4BC] disabled:cursor-not-allowed"
         >
           <Image
-            src={IconEdit}
+            src="/images/icons/icon_edit.svg"
             alt="icon_edit"
             width={16}
             height={16}

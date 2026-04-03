@@ -17,10 +17,21 @@ import { deleteMyNotifications } from "@/features/myNotifications/api/deleteMyNo
 import { formatRelativeTime } from "@/utils/formatTime";
 import InfiniteScrollList from "@/shared/components/infinite-scroll/InfiniteScrollList";
 import { queryKeys } from "@/shared/api/queryKeys";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 
 export default function NotificationList() {
   const queryClient = useQueryClient();
+
+  const { data: previewData } = useQuery({
+    queryKey: [...queryKeys.myNotifications.all, "preview"],
+    queryFn: () =>
+      getMyNotifications({
+        size: 1,
+        cursorId: null,
+      }),
+  });
+
+  const hasNotification = (previewData?.notifications.length ?? 0) > 0;
 
   // 알림 삭제 함수
   const handleDeleteNotification = async (notificationId: number) => {
@@ -29,6 +40,9 @@ export default function NotificationList() {
       // 삭제 성공 후, 무한 스크롤 리스트를 최신화합니다.
       queryClient.invalidateQueries({
         queryKey: queryKeys.myNotifications.all,
+      });
+      queryClient.invalidateQueries({
+        queryKey: [...queryKeys.myNotifications.all, "preview"],
       });
     } catch (error) {
       console.error("알림 삭제 실패:", error);
@@ -40,10 +54,14 @@ export default function NotificationList() {
       <DialogTrigger>
         <button className="relative flex items-center justify-center p-1">
           <Image
-            src="/images/icons/icon_bell.svg"
+            src={
+              hasNotification
+                ? "/images/icons/icon_alert_bell.svg"
+                : "/images/icons/icon_bell.svg"
+            }
             alt="알림 종"
-            width={24}
-            height={24}
+            width={hasNotification ? 24 : 16}
+            height={hasNotification ? 24 : 16}
           />
         </button>
       </DialogTrigger>
