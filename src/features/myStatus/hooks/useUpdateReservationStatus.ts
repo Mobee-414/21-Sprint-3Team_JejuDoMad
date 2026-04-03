@@ -19,12 +19,11 @@ export const useUpdateReservationStatus = (activityId: number) => {
       // 데이터를 먼저 무효화해서 백그라운드에서 새로고침을 시작합니다.
       queryClient.invalidateQueries({ queryKey: queryKeys.reservation.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.myActivities.all });
-
-      alert("처리가 완료되었습니다.");
+      // 대시보드 숫자 업데이트를 위해 추가 권장
+      queryClient.invalidateQueries({ queryKey: ["reservation-dashboard"] });
     },
     onError: (error) => {
       console.error(error);
-      alert("처리에 실패했습니다. 다시 시도해주세요.");
     },
   });
 };
