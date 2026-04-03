@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useActivityDetail } from "../hooks/useActivityDetail";
 import { useMe } from "@/features/mypage/users/hooks/useMe";
-import ImageGallery from "./header/ImageGalery";
+import ImageGallery from "./header/ImageGallery";
 import TitleSection from "./header/TitleSection";
 import DescriptionSection from "./header/DescriptionSection";
 import KakaoMap from "./map/KakaoMap";
