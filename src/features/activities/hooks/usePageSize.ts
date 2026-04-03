@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 
 export function usePageSize() {
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(4);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 767px)");
     const tabletQuery = window.matchMedia(
       "(min-width: 768px) and (max-width: 1023px)",

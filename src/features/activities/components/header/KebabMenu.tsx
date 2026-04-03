@@ -26,7 +26,7 @@ export default function KebabMenu({ onEdit, onDelete }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100"
+        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition hover:bg-gray-100"
       >
         ⋮
       </button>
@@ -38,7 +38,7 @@ export default function KebabMenu({ onEdit, onDelete }: Props) {
               onEdit?.();
               setIsOpen(false);
             }}
-            className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50"
+            className="w-full cursor-pointer px-4 py-3 text-left text-sm hover:bg-gray-50"
           >
             수정하기
           </button>
@@ -48,7 +48,7 @@ export default function KebabMenu({ onEdit, onDelete }: Props) {
               onDelete?.();
               setIsOpen(false);
             }}
-            className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50"
+            className="w-full cursor-pointer px-4 py-3 text-left text-sm hover:bg-gray-50"
           >
             삭제하기
           </button>

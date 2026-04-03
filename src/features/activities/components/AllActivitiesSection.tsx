@@ -37,12 +37,12 @@ export default function AllActivitiesSection() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto mt-[80px] max-w-[1120px]">
+      <div className="mx-auto mt-[80px] max-w-[1120px] px-4 md:px-10">
         <h2 className="text-[20px] font-bold"> 모든 체험</h2>
 
-        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
+        <div className="mt-[24px] grid grid-cols-2 gap-[20px] lg:grid-cols-4 lg:gap-[24px]">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <CardSkeleton key={i} />
+            <CardSkeleton key={i} className="w-full md:w-full max-w-none min-w-0" />
           ))}
         </div>
       </div>

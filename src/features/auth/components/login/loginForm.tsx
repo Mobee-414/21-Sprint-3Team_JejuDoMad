@@ -102,7 +102,7 @@ export default function LoginForm() {
         <Button
           type="submit"
           size="lg"
-          className="mt-[8px] text-white md:mt-[10px]"
+          className="mt-[8px] text-white md:mt-[10px] disabled:cursor-not-allowed"
           disabled={!isValid || loginMutation.isPending}
         >
           {loginMutation.isPending ? "로그인중..." : "로그인하기"}
