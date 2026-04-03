@@ -8,15 +8,18 @@ import SearchResultSection from "@/features/home/components/SearchResultSection"
 export default function MainPageClient() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("keyword") ?? "";
-
-  if (keyword) {
-    return <SearchResultSection keyword={keyword} />;
-  }
+  const hasKeyword = Boolean(keyword);
 
   return (
-    <>
-      <PopularActivitiesSection />
-      <AllActivitiesSection />
-    </>
+    <div className="min-h-[1000px]">
+      {hasKeyword ? (
+        <SearchResultSection keyword={keyword} />
+      ) : (
+        <>
+          <PopularActivitiesSection />
+          <AllActivitiesSection />
+        </>
+      )}
+    </div>
   );
 }
