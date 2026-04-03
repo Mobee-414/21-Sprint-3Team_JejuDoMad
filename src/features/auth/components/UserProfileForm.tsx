@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useUpdateMe } from "@/features/mypage/users/hooks/useUpdateMe";
 import { useMe } from "@/features/mypage/users/hooks/useMe";
+import { useAuthStore } from "@/store/authStore";
 
 export function EditProfileForm() {
   const { data: user } = useMe();
   const updateMeMutation = useUpdateMe();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const [nickname, setNickname] = useState("");
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -64,18 +66,20 @@ export function EditProfileForm() {
         ...(password ? { newPassword: password } : {}),
       });
 
+      setUser({
+        ...user,
+        nickname: nickname,
+      });
+
       if (passwordRef.current) {
         passwordRef.current.value = "";
       }
-
       if (passwordConfirmRef.current) {
         passwordConfirmRef.current.value = "";
       }
 
       setPasswordError(false);
-
       let description = "";
-
       if (isNicknameChanged && isPasswordChanged) {
         description = "내 정보가 수정되었습니다.";
       } else if (isNicknameChanged) {
