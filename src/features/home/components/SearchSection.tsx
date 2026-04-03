@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SearchBar from "./SearchBar";
 
 export default function SearchSection() {
@@ -6,7 +7,9 @@ export default function SearchSection() {
       <p className="h-[20px] w-[327px] text-center text-base font-bold sm:h-[40px] sm:w-[600px] sm:text-2xl md:h-auto md:w-auto md:text-4xl">
         무엇을 체험하고 싶으신가요?
       </p>
-      <SearchBar />
+      <Suspense>
+        <SearchBar />
+      </Suspense>
     </div>
   );
 }
