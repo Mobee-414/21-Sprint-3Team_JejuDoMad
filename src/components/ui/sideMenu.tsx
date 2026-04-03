@@ -9,6 +9,7 @@ import { useMe } from "@/features/mypage/users/hooks/useMe";
 import { useUpdateMe } from "@/features/mypage/users/hooks/useUpdateMe";
 import { useUploadProfileImage } from "@/features/mypage/users/hooks/useUploadProfileImage";
 import { toast } from "sonner";
+import { useAuthStore } from "@/store/authStore";
 
 interface SideMenuProps {
   onMenuClick?: () => void;
@@ -23,6 +24,7 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
   const { data: me } = useMe();
   const { mutate: uploadProfileImage, isPending } = useUploadProfileImage();
   const { mutate: updateMe } = useUpdateMe();
+  const setUser = useAuthStore((state) => state.setUser);
 
   const filterDefault =
     "invert(48%) sepia(3%) saturate(728%) hue-rotate(194deg) brightness(90%) contrast(87%)";
@@ -46,6 +48,12 @@ export default function SideMenu({ onMenuClick }: SideMenuProps) {
           },
           {
             onSuccess: () => {
+              if (me) {
+                setUser({
+                  ...me,
+                  profileImageUrl: data.profileImageUrl,
+                });
+              }
               setProfileImageUrl(data.profileImageUrl);
 
               toast.success("프로필 이미지가 변경되었습니다.");

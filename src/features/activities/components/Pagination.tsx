@@ -30,7 +30,7 @@ export default function Pagination({
           key={page}
           onClick={() => onPageChange(page)}
           className={cn(
-            "rounded-[6px] px-[12px] py-[8px] text-[14px]",
+            "cursor-pointer rounded-[6px] px-[12px] py-[8px] text-[14px] disabled:cursor-default",
             currentPage === page ? "bg-black text-white" : "hover:bg-gray-100",
           )}
         >

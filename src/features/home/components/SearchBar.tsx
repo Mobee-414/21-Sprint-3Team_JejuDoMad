@@ -31,7 +31,7 @@ export default function SearchBar() {
   return (
     <div
       onClick={() => inputRef.current?.focus()}
-      className="flex h-[53px] w-full max-w-[327px] cursor-text items-center justify-between rounded-[16px] border bg-white py-[6px] pr-[8px] pl-[20px] md:h-[70px] md:max-w-[604px] md:rounded-[24px] md:py-[10px] md:pr-[12px] md:pl-[32px] xl:max-w-[1040px]"
+      className="flex h-[53px] w-full max-w-[calc(100%-80px)] cursor-text items-center justify-between rounded-[16px] border bg-white py-[6px] pr-[8px] pl-[20px] md:h-[70px] md:rounded-[24px] md:py-[10px] md:pr-[12px] md:pl-[32px] xl:max-w-[1040px]"
     >
       <div className="flex gap-[12px]">
         <Image

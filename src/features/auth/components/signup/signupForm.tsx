@@ -173,12 +173,17 @@ export default function SignupForm() {
         </Button>
       </form>
       <Dialog open={alertModal.open} onOpenChange={alertModal.onClose}>
-        <DialogContent showOverlay>
-          <DialogTitle className="p-6 text-center text-[16px] font-bold">
+        <DialogContent
+          showOverlay
+          className="h-[170px] w-[360px] max-w-[400px] justify-center"
+        >
+          <DialogTitle className="px-6 pt-6 text-center text-[16px] font-bold">
             {alertModal.msg}
           </DialogTitle>
-          <DialogFooter>
-            <Button onClick={alertModal.onClose}>확인</Button>
+          <DialogFooter className="items-center p-4">
+            <Button onClick={alertModal.onClose} className="h-[47px] w-[200px]">
+              확인
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
