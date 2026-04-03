@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { cancelMyReservation } from "../api/myReservations.api";
 import { toast } from "sonner";
+import { queryKeys } from "@/shared/api/queryKeys";
 
 export function useCancelReservation() {
   const queryClient = useQueryClient();
@@ -10,7 +11,7 @@ export function useCancelReservation() {
     onSuccess: () => {
       toast.success("예약이 취소되었습니다.");
       queryClient.invalidateQueries({
-        queryKey: ["myReservations"],
+        queryKey: queryKeys.myReservations.all,
       });
     },
     onError: () => {

@@ -58,7 +58,7 @@ export default function PopularActivitiesSection() {
               ))}
             </div>
           }
-          error={<div className="mt-[24px]">에러 발생</div>}
+          error={<div className="mt-[24px]"></div>}
         />
         <ScrollBar
           orientation="horizontal"

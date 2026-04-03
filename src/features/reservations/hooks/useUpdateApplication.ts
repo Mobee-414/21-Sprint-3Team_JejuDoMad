@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateReservation } from "../api/myReservations.api";
+import { queryKeys } from "@/shared/api/queryKeys";
 
 interface UpdateApplicationParams {
   reservationId: number;
@@ -23,7 +24,7 @@ export default function useUpdateApplication() {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["myReservations"],
+        queryKey: queryKeys.myReservations.all,
       });
     },
   });
