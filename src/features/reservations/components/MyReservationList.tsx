@@ -12,6 +12,7 @@ import { useCancelReservation } from "../hooks/useCancelReservation";
 import { useActivityDetail } from "@/features/activities/hooks/useActivityDetail";
 import { useAvailableSchedule } from "@/features/activities/hooks/useAvailableSchedule";
 import MyActivityCardSkeleton from "@/features/myActivities/components/myActivityCardSkeleton";
+import { useMe } from "@/features/mypage/users/hooks/useMe";
 
 interface Props {
   selectedStatus: ReservationStatus | null;
@@ -31,6 +32,8 @@ export default function MyReservationList({
   const [isReservationFormOpen, setIsReservationFormOpen] = useState(false);
 
   const cancelReservationMutation = useCancelReservation();
+
+  const { data: me } = useMe();
 
   const getReservationPage = (cursor: number | null) => {
     return getMyReservations({
@@ -94,6 +97,7 @@ export default function MyReservationList({
             price={activityDetail.price}
             schedules={reservationSchedules}
             onClose={handleCloseReservationForm}
+            user={me ?? null}
           />
         )}
 

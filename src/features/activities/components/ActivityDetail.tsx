@@ -137,6 +137,7 @@ export default function ActivityDetail({ activityId }: Props) {
                   activityId={activityId}
                   price={activity.price}
                   schedules={activity.schedules as Schedule[]}
+                  user={me ?? null}
                 />
               ))}
           </div>

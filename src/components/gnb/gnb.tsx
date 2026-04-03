@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useQueryClient } from "@tanstack/react-query";
 import NotificationList from "../ui/NotificationList";
 import { Dropdown } from "@/components/ui/dropdown";
 import ConfirmDialog from "@/components/ui/dialog/ConfirmDialog";
@@ -13,12 +14,15 @@ import { toast } from "sonner";
 export default function GNB() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const isLogin = !!user;
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "DELETE" });
     logout();
+    queryClient.setQueryData(["me"], null);
+    queryClient.removeQueries({ queryKey: ["me"] });
     toast("로그아웃되었습니다.");
     router.push("/");
   };
@@ -90,7 +94,9 @@ export default function GNB() {
                   <Dropdown.Item onClick={handleMyPage}>
                     마이페이지
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setShowLogoutModal(true)}>로그아웃</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setShowLogoutModal(true)}>
+                    로그아웃
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
 
