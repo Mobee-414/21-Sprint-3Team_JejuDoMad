@@ -117,13 +117,22 @@ export function EditProfileForm() {
             id="nickname"
             type="text"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 10) {
+                setNickname(e.target.value);
+              }
+            }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className={`h-[54px] text-16-m ${
               isFocused ? "text-foreground" : "text-muted-foreground"
             }`}
           />
+          <div className="flex justify-end px-1">
+            <p className={`pr-2 text-right text-xs text-gray-400`}>
+              {nickname.length} / 10
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-col gap-[10px]">
