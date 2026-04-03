@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMyActivities } from "@/features/myStatus/api/getMyActivitys";
 import { useGetReservationDashboard } from "@/features/myStatus/hooks/useGetReservationDashboard";
 import { useGetReservedSchedule } from "@/features/myStatus/hooks/useGetReservedSchedule";
@@ -15,6 +15,7 @@ import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/features/activities/hooks/useMediaQuery";
 
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Calendar } from "@/components/ui/calendar";
@@ -38,6 +39,8 @@ interface ReservationItem {
 }
 
 export default function StatusPage() {
+  const queryClient = useQueryClient(); // 쿼리 무효화를 위해 필요
+
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -75,10 +78,8 @@ export default function StatusPage() {
   );
 
   // 1. 날짜별 스케줄(시간대) 조회
-  const { data: scheduleData } = useGetReservedSchedule(
-    selectedActivity?.id,
-    dateKey,
-  );
+  const { data: scheduleData, isLoading: isScheduleLoading } =
+    useGetReservedSchedule(selectedActivity?.id, dateKey);
 
   // 2. 시간대 목록 추출 (Dropdown에 뿌려줄 데이터)
   const timeSlots =
@@ -96,6 +97,43 @@ export default function StatusPage() {
   const { mutate: updateStatus, isPending: isUpdating } =
     useUpdateReservationStatus(selectedActivity?.id || 0);
 
+  // 예약 승인/거절 핸들러 함수
+  const handleStatusUpdate = (
+    reservationId: number,
+    status: "confirmed" | "declined",
+  ) => {
+    const statusText = status === "confirmed" ? "승인" : "거절";
+
+    updateStatus(
+      { reservationId, status },
+      {
+        onSuccess: () => {
+          // 🔔 팀원이 만든 토스트 알림 호출
+          toast.success(`${statusText} 완료`, {
+            description: `예약이 성공적으로 ${statusText}되었습니다.`,
+          });
+
+          // 🔄 데이터 즉시 새로고침 (달력 배지, 대시보드 숫자, 명단 리스트)
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.reservation.all,
+          });
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.myActivities.all,
+          });
+          // 대시보드(숫자) 갱신을 위해 추가
+          queryClient.invalidateQueries({
+            queryKey: ["reservation-dashboard"],
+          });
+        },
+        onError: () => {
+          toast.error(`${statusText} 실패`, {
+            description: "잠시 후 다시 시도해주세요.",
+          });
+        },
+      },
+    );
+  };
+
   const activityItems = myActivitiesData?.activities || [];
 
   useEffect(() => {
@@ -111,11 +149,11 @@ export default function StatusPage() {
   // 이 로직이 "데이터에 맞는 시간"을 찾아주는 핵심입니다.
   useEffect(() => {
     if (timeSlots && timeSlots.length > 0) {
-      // 데이터가 있다면 그 날의 첫 번째 시간을 선택
+      // 데이터가 있다면 그 날의 첫 번째 시간을 기본값으로 설정
       setSelectedTime(timeSlots[0]);
     } else {
-      // 그 날에 운영하는 시간대가 아예 없다면 비워둠
-      setSelectedTime("선택 가능한 시간이 없습니다");
+      // 데이터가 없으면 상태를 빈 문자열로 초기화 (에러 방지)
+      setSelectedTime("");
     }
   }, [dateKey, scheduleData]);
 
@@ -196,7 +234,11 @@ export default function StatusPage() {
                   }
                 }}
                 // 달력의 화살표를 눌러 월을 바꿀 때, 선택된 날짜를 해당 월의 1일로 변경합니다.
-                onMonthChange={(month) => setSelectedDate(month)}
+                onMonthChange={(month) => {
+                  setSelectedDate(month);
+                  setIsPopupOpen(false); // 팝업 닫기
+                  setActiveTab("신청"); // 탭 초기화 (선택 사항)
+                }}
                 locale={ko}
                 size="lg"
                 className="w-full rounded-3xl border bg-white shadow-sm"
@@ -297,6 +339,7 @@ export default function StatusPage() {
    * isDesktop 프롭을 통해 DialogClose 에러를 방지합니다.
    */
   function PopupInnerContent({ isDesktop = false }: { isDesktop?: boolean }) {
+    const StatusInfiniteList = InfiniteScrollList as React.ComponentType<any>;
     return (
       <div className="flex w-full flex-col">
         {/* 헤더 영역 */}
@@ -308,12 +351,12 @@ export default function StatusPage() {
           {isDesktop ? (
             <button
               onClick={() => setIsPopupOpen(false)}
-              className="p-1 transition hover:opacity-70"
+              className="cursor-pointer p-1 transition hover:opacity-70"
             >
               <Image src={IconClose} alt="close" width={24} height={24} />
             </button>
           ) : (
-            <DialogClose className="p-1 transition hover:opacity-70">
+            <DialogClose className="cursor-pointer p-1 transition hover:opacity-70">
               <Image src={IconClose} alt="close" width={24} height={24} />
             </DialogClose>
           )}
@@ -356,21 +399,43 @@ export default function StatusPage() {
               예약 시간
             </label>
             <Dropdown className="w-full" matchTriggerWidth>
-              <Dropdown.Trigger className="h-[52px] w-full justify-between rounded-lg border border-[#CCCCCC] px-4 text-16-m">
-                {selectedTime}
+              <Dropdown.Trigger
+                // ✨ 시간이 없으면 클릭 안 되게 비활성화 (피드백 반영)
+                // disabled={timeSlots.length === 0}
+                className={cn(
+                  "h-[52px] w-full justify-between rounded-lg border border-[#CCCCCC] px-4 text-16-m",
+                  // ✨ 비활성화 시 배경색과 커서 모양 변경
+                  // timeSlots.length === 0 &&
+                  // 로딩 중이거나 데이터가 없을 때 스타일 처리
+                  (isScheduleLoading || timeSlots.length === 0) &&
+                    "pointer-events-none cursor-not-allowed bg-gray-100 text-[#84858C]",
+                )}
+              >
+                {/* ✨ 시간이 있으면 선택된 시간, 없으면 안내 문구 출력 */}
+                {/* {timeSlots.length > 0
+                  ? selectedTime
+                  : "선택 가능한 시간이 없습니다"} */}
+                {/* 우선순위: 로딩 중 -> 데이터 있음 -> 데이터 없음 */}
+                {isScheduleLoading
+                  ? "시간을 불러오는 중..."
+                  : timeSlots.length > 0
+                    ? selectedTime
+                    : "선택 가능한 시간이 없습니다"}
                 <Image src={IconArrowDown} alt="arrow" width={24} height={24} />
               </Dropdown.Trigger>
-              <Dropdown.Menu className="mt-1 rounded-[10px] border-[#EEEEEE] bg-white py-2 shadow-lg">
-                {timeSlots.map((time) => (
-                  <Dropdown.Item
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className="cursor-pointer px-4 py-3 text-16-m hover:bg-gray-50"
-                  >
-                    {time}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
+              {timeSlots.length > 0 && (
+                <Dropdown.Menu className="mt-1 max-h-[160px] overflow-y-auto rounded-[10px] border-[#EEEEEE] bg-white py-2 shadow-lg md:max-h-[100px] lg:max-h-[160px]">
+                  {timeSlots.map((time) => (
+                    <Dropdown.Item
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className="cursor-pointer px-4 py-3 text-16-m hover:bg-gray-50"
+                    >
+                      {time}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
             </Dropdown>
           </div>
 
@@ -378,107 +443,103 @@ export default function StatusPage() {
           <div className="w-full md:w-1/2 lg:w-full">
             <p className="mb-2 text-18-b text-[#1B1B1B]">예약 내역</p>
             <div className="flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-1">
-              {/* ✨ 공통 컴포넌트로 교체 */}
-              <InfiniteScrollList<any, any, number | null>
-                // 쿼리 키 (필터가 바뀔 때마다 새로 로드)
-                queryKey={[
-                  ...queryKeys.reservation.all,
-                  "details",
-                  currentScheduleId,
-                  activeTab,
-                ]}
-                // 데이터 요청 함수 (cursor 파라미터 활용)
-                queryFn={(cursor) =>
-                  fetchReservationList(selectedActivity!.id, {
-                    size: 10,
-                    status: statusMap[activeTab],
-                    scheduleId: currentScheduleId,
-                    cursorId: cursor as number | null,
-                  })
-                }
-                initialPageParam={null}
-                // 다음 페이지 ID 추출 (서버 응답 데이터 구조에 맞게)
-                getNextCursor={(lastPage) => lastPage.cursorId}
-                // 페이지 데이터에서 리스트 추출
-                getItems={(page) => page.reservations}
-                // 리스트 아이템 하나하나 렌더링 (기존 카드 UI 그대로 복사)
-                renderItem={(item) => (
-                  <div
-                    key={item.id}
-                    className="mb-4 rounded-[12px] border border-[#EEEEEE] bg-white p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="text-16-b text-[#84858C]">
-                          닉네임{" "}
-                          <span className="ml-2 text-16-m text-[#1B1B1B]">
-                            {item.nickname}
-                          </span>
-                        </p>
-                        <p className="text-16-b text-[#84858C]">
-                          인원&emsp;{" "}
-                          <span className="ml-2 text-16-m text-[#1B1B1B]">
-                            {item.headCount}명
-                          </span>
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        {activeTab === "신청" ? (
-                          <>
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              className="h-9 w-20 rounded-lg"
-                              onClick={() =>
-                                updateStatus({
-                                  reservationId: item.id,
-                                  status: "confirmed",
-                                })
+              {timeSlots.length === 0 ? (
+                <div className="py-14 text-center text-gray-400">
+                  예약 내역이 없습니다.
+                </div>
+              ) : (
+                <StatusInfiniteList
+                  /* 쿼리 키 (필터가 바뀔 때마다 새로 로드) */
+                  queryKey={[
+                    ...queryKeys.reservation.all,
+                    "details",
+                    currentScheduleId,
+                    activeTab,
+                  ]}
+                  /* currentScheduleId가 있을 때만 API를 호출하도록 설정 */
+                  enabled={!!currentScheduleId}
+                  queryFn={(cursor: any) =>
+                    fetchReservationList(selectedActivity!.id, {
+                      size: 10,
+                      status: statusMap[activeTab],
+                      scheduleId: currentScheduleId!,
+                      cursorId: cursor as number | null,
+                    })
+                  }
+                  initialPageParam={null}
+                  getNextCursor={(lastPage: any) => lastPage.cursorId}
+                  getItems={(page: any) => page.reservations}
+                  renderItem={(item: any) => (
+                    <div
+                      key={item.id}
+                      className="mb-4 rounded-[12px] border border-[#EEEEEE] bg-white p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-16-b text-[#84858C]">
+                            닉네임
+                            <span className="ml-2 text-16-m text-[#1B1B1B]">
+                              {item.nickname}
+                            </span>
+                          </p>
+                          <p className="text-16-b text-[#84858C]">
+                            인원&emsp;
+                            <span className="ml-2 text-16-m text-[#1B1B1B]">
+                              {item.headCount}명
+                            </span>
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          {activeTab === "신청" ? (
+                            <>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                className="h-9 w-20 rounded-lg"
+                                onClick={() =>
+                                  handleStatusUpdate(item.id, "confirmed")
+                                }
+                                disabled={isUpdating}
+                              >
+                                승인하기
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="h-9 w-20 rounded-lg"
+                                onClick={() =>
+                                  handleStatusUpdate(item.id, "declined")
+                                }
+                                disabled={isUpdating}
+                              >
+                                거절하기
+                              </Button>
+                            </>
+                          ) : (
+                            <StateBadge
+                              variant={
+                                activeTab === "승인" ? "approve" : "reject"
                               }
-                              disabled={isUpdating}
                             >
-                              승인하기
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="h-9 w-20 rounded-lg"
-                              onClick={() =>
-                                updateStatus({
-                                  reservationId: item.id,
-                                  status: "declined",
-                                })
-                              }
-                              disabled={isUpdating}
-                            >
-                              거절하기
-                            </Button>
-                          </>
-                        ) : (
-                          <StateBadge
-                            variant={
-                              activeTab === "승인" ? "approve" : "reject"
-                            }
-                          >
-                            {activeTab === "승인" ? "예약 승인" : "예약 거절"}
-                          </StateBadge>
-                        )}
+                              {activeTab === "승인" ? "예약 승인" : "예약 거절"}
+                            </StateBadge>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                // 예외 상황 UI
-                empty={
-                  <div className="py-14 text-center text-gray-400">
-                    내역이 없습니다.
-                  </div>
-                }
-                loading={
-                  <div className="py-14 text-center text-gray-400">
-                    로딩 중...
-                  </div>
-                }
-              />
+                  )}
+                  empty={
+                    <div className="py-14 text-center text-gray-400">
+                      내역이 없습니다.
+                    </div>
+                  }
+                  loading={
+                    <div className="py-14 text-center text-gray-400">
+                      로딩 중...
+                    </div>
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
