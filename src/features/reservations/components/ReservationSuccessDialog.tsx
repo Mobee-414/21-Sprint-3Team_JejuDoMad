@@ -24,7 +24,7 @@ export default function ReservationSuccessDialog({
           <Button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="h-[41px] w-[180px] rounded-[12px] text-14-b md:h-[47px] md:w-[200px] md:rounded-[14px] md:text-16-b"
+            className="h-[41px] w-[180px] rounded-[12px] text-14-b text-primary-foreground md:h-[47px] md:w-[200px] md:rounded-[14px] md:text-16-b"
           >
             확인
           </Button>
