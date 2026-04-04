@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReviewHeader from "./ReviewHeader";
 import ReviewList from "./ReviewList";
 import ReviewPagination from "./ReviewPagination";
 import { useActivityReviews } from "../../hooks/useActivityReviews";
 import ReviewSkeleton from "@/components/skeleton/reviewSkeleton";
+import { toast } from "sonner";
 
 const PAGE_SIZE = 3;
 
@@ -26,6 +27,12 @@ export default function ReviewSection({ activityId }: Props) {
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
 
+  useEffect(() => {
+    if (error) {
+      toast.error("리뷰를 불러오지 못했어요");
+    }
+  }, [error]);
+
   if (isLoading || isFetching) {
     return (
       <div className="mt-10 space-y-4">
@@ -35,7 +42,7 @@ export default function ReviewSection({ activityId }: Props) {
       </div>
     );
   }
-  if (error) return <div>에러 발생</div>;
+
   if (!data) return null;
 
   return (

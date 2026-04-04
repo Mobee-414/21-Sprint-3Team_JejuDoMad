@@ -29,7 +29,7 @@ export default function InfiniteScrollList<Page, Item, Cursor>({
   getItems,
   renderItem,
   empty = <div>데이터가 없습니다.</div>,
-  loading = <div>로딩중</div>,
+  loading = null,
   error = <div>에러가 발생했습니다.</div>,
   loadingMore,
   className,

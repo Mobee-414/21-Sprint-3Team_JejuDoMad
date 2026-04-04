@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "@/components/ui/card/card";
 import Pagination from "@/features/activities/components/Pagination";
 import { useActivities } from "@/features/activities/hooks/useActivities";
 import { usePageSize } from "@/features/activities/hooks/usePageSize";
 import CardSkeleton from "@/components/skeleton/cardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 interface Props {
   keyword: string;
@@ -16,7 +17,7 @@ export default function SearchResultSection({ keyword }: Props) {
   const PAGE_SIZE = usePageSize();
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, error } = useActivities({
+  const { data, isLoading, isFetching, error } = useActivities({
     method: "offset",
     page,
     size: PAGE_SIZE,
@@ -24,16 +25,21 @@ export default function SearchResultSection({ keyword }: Props) {
     keyword,
   });
 
+  const showSkeleton = isLoading || isFetching;
+
   const activities = data?.activities ?? [];
   const totalCount = data?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 
-  if (isLoading) return <div>로딩중...</div>;
-  if (error) return <div>에러 발생</div>;
+  useEffect(() => {
+    if (error) {
+      toast.error("데이터를 불러오는데 실패했어요");
+    }
+  }, [error]);
 
   return (
-    <div className="mx-auto mt-[80px] max-w-[1120px] px-4 md:px-10">
-      {isLoading ? (
+    <div className="mx-auto mt-[80px] max-w-[1120px]">
+      {showSkeleton ? (
         <>
           <Skeleton className="h-[18px] w-[260px]" />
           <Skeleton className="mt-[16px] h-[18px] w-[100px]" />
@@ -52,8 +58,8 @@ export default function SearchResultSection({ keyword }: Props) {
         </>
       )}
 
-      {isLoading ? (
-        <div className="mt-[24px] grid grid-cols-2 gap-[20px] lg:grid-cols-4 lg:gap-[24px]">
+      {showSkeleton ? (
+        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
             <CardSkeleton key={i} className="w-full md:w-full max-w-none min-w-0" />
           ))}
@@ -78,7 +84,7 @@ export default function SearchResultSection({ keyword }: Props) {
         </div>
       )}
 
-      {!isLoading && (
+      {!showSkeleton && (
         <div className="mt-[40px] mb-[200px]">
           <Pagination
             currentPage={page}

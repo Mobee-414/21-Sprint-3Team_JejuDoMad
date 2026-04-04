@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useActivityDetail } from "../hooks/useActivityDetail";
 import { useMe } from "@/features/mypage/users/hooks/useMe";
@@ -21,6 +21,7 @@ import { TitleSectionSkeleton } from "@/components/skeleton/titleSectionSkeletio
 import { DescriptionSkeleton } from "@/components/skeleton/descriptionSkeletion";
 import { MapSkeleton } from "@/components/skeleton/mapSkeletion";
 import { ReservationSkeleton } from "@/components/skeleton/reservationSkeletion";
+import { toast } from "sonner";
 
 type Props = {
   activityId: number;
@@ -39,7 +40,45 @@ export default function ActivityDetail({ activityId }: Props) {
   const { data: me } = useMe();
   const { mutate: deleteActivity, isPending } = useDeleteActivity();
 
-  if (error || !activity) return <div>에러 발생</div>;
+  if (isLoading) {
+    return (
+      <div className="mx-auto mt-10 w-full max-w-[375px] px-4 min-[744px]:max-w-[744px] min-[744px]:px-6 min-[1024px]:max-w-[1120px] min-[1024px]:px-0">
+        <div className="flex flex-col gap-6 min-[1024px]:flex-row min-[1024px]:gap-10">
+          <div className="min-[1024px]:max-w-[670px] min-[1024px]:flex-1">
+            <ImageGallerySkeleton />
+
+            <div className="mt-6 min-[744px]:mt-8 min-[1024px]:hidden">
+              <TitleSectionSkeleton />
+            </div>
+
+            <div className="mt-6 sm:mt-8">
+              <DescriptionSkeleton />
+            </div>
+
+            <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
+              <MapSkeleton />
+            </div>
+
+            <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
+              <ReviewSection activityId={activityId} />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-10 min-[1024px]:w-[410px] min-[1024px]:shrink-0">
+            <div className="hidden min-[1024px]:block">
+              <TitleSectionSkeleton />
+            </div>
+
+            <ReservationSkeleton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !activity) {
+    return <div></div>;
+  }
 
   const isOwner = me?.id === activity.userId;
 

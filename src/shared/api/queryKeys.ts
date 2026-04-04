@@ -56,4 +56,10 @@ export const queryKeys = {
     list: (params: object) =>
       [...queryKeys.myNotifications.lists(), params] as const,
   },
+  myReservations: {
+    all: ["myReservations"] as const,
+  },
+  users: {
+    me: () => ["users", "me"] as const,
+  },
 } as const;

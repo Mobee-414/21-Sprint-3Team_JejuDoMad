@@ -48,7 +48,7 @@ export default function AllActivitiesSection() {
       </div>
     );
   }
-  if (error) return <div>에러 발생</div>;
+  if (error) return <div></div>;
 
   return (
     <div className="mx-auto mt-[80px] max-w-[1120px] px-4 md:px-10">
@@ -70,7 +70,7 @@ export default function AllActivitiesSection() {
             rating={item.rating}
             reviewCount={item.reviewCount}
             price={item.price}
-            className="w-full md:w-full max-w-none min-w-0"
+            className="w-full max-w-none min-w-0 md:w-full"
           />
         ))}
       </div>

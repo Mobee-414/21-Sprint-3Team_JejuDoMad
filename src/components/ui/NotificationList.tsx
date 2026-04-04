@@ -60,8 +60,8 @@ export default function NotificationList() {
                 : "/images/icons/icon_bell.svg"
             }
             alt="알림 종"
-            width={hasNotification ? 24 : 16}
-            height={hasNotification ? 24 : 16}
+            width={hasNotification ? 24 : 14}
+            height={hasNotification ? 24 : 14}
           />
         </button>
       </DialogTrigger>
