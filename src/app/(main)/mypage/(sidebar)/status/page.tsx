@@ -309,7 +309,7 @@ export default function StatusPage() {
 
             {/* --- 1. PC 버전 (lg 이상): 캘린더 오른쪽 하단 고정 팝업 --- */}
             {isPopupOpen && (
-              <div className="absolute right-[-10px] bottom-[-10px] z-10 hidden w-[429px] animate-in rounded-[30px] border border-[#EEEEEE] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.2)] zoom-in-95 fade-in lg:block">
+              <div className="absolute top-1/2 left-1/2 z-10 hidden w-[429px] -translate-x-1/2 -translate-y-1/2 animate-in rounded-[30px] border border-[#EEEEEE] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.2)] zoom-in-95 fade-in lg:block">
                 <PopupInnerContent isDesktop />
               </div>
             )}
