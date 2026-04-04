@@ -54,7 +54,7 @@ export default function PopularActivitiesSection() {
           loading={
             <div className="flex gap-[16px] pb-6 md:pb-10">
               {Array.from({ length: 4 }).map((_, i) => (
-                <CardSkeleton key={i} />
+                <CardSkeleton key={i} className="w-[131px] max-w-none shrink-0 md:w-[331px] lg:w-[262px]" />
               ))}
             </div>
           }

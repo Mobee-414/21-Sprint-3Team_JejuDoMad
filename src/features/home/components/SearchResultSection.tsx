@@ -61,7 +61,7 @@ export default function SearchResultSection({ keyword }: Props) {
       {showSkeleton ? (
         <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <CardSkeleton key={i} />
+            <CardSkeleton key={i} className="w-full md:w-full max-w-none min-w-0" />
           ))}
         </div>
       ) : activities.length === 0 ? (
@@ -69,7 +69,7 @@ export default function SearchResultSection({ keyword }: Props) {
           검색 결과가 없습니다
         </div>
       ) : (
-        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
+        <div className="mt-[24px] grid grid-cols-2 gap-[20px] lg:grid-cols-4 lg:gap-[24px]">
           {activities.map((item) => (
             <Card
               key={item.id}

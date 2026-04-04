@@ -101,7 +101,7 @@ export default function ActivityDetail({ activityId }: Props) {
 
   return (
     <>
-      <div className="mx-auto mt-10 w-full max-w-[375px] px-4 min-[744px]:max-w-[744px] min-[744px]:px-6 min-[1024px]:max-w-[1120px] min-[1024px]:px-0">
+      <div className="mx-auto mt-10 w-full max-w-[375px] px-4 min-[744px]:max-w-[744px] min-[744px]:px-6 min-[1024px]:max-w-[1120px] min-[1024px]:px-5">
         <div className="flex flex-col gap-6 min-[1024px]:flex-row min-[1024px]:gap-10">
           <div className="min-[1024px]:max-w-[670px] min-[1024px]:flex-1">
             {isLoading ? (

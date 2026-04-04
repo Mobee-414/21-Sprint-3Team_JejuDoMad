@@ -52,7 +52,7 @@ export default function NotificationList() {
   return (
     <Dialog>
       <DialogTrigger>
-        <button className="relative flex items-center justify-center p-1">
+        <button className="relative flex cursor-pointer items-center justify-center p-1">
           <Image
             src={
               hasNotification

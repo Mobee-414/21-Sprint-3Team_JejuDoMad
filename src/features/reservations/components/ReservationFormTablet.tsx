@@ -115,7 +115,7 @@ export default function ReservationFormTablet({
       <button
         type="button"
         onClick={onClose}
-        className="rounded-md p-1 text-muted-foreground hover:bg-muted"
+        className="cursor-pointer rounded-md p-1 text-muted-foreground hover:bg-muted"
       >
         <X className="h-4 w-4" />
       </button>
@@ -129,7 +129,7 @@ export default function ReservationFormTablet({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="text-14-m text-muted-foreground hover:text-foreground"
+                  className="cursor-pointer text-14-m text-muted-foreground hover:text-foreground"
                 >
                   X
                 </button>
@@ -177,7 +177,7 @@ export default function ReservationFormTablet({
                                 type="button"
                                 onClick={() => handleSelectSchedule(schedule)}
                                 className={cn(
-                                  "h-[36px] w-full rounded-[8px] border border-border px-[12px] text-13-m text-foreground",
+                                  "h-[36px] w-full cursor-pointer rounded-[8px] border border-border px-[12px] text-13-m text-foreground",
                                   isSelected &&
                                     "border-primary bg-primary/10 text-primary",
                                 )}

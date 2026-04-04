@@ -1,8 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-export default function CardSkeleton() {
+export default function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div className="block w-[155px] max-w-[260px] overflow-hidden rounded-[18px] md:w-[260px] md:rounded-[32px]">
+    <div className={cn("block w-[155px] max-w-[260px] overflow-hidden rounded-[18px] md:w-[260px] md:rounded-[32px]", className)}>
       <Skeleton className="aspect-[155/175] w-full rounded-none md:aspect-[260/290]" />
 
       <div className="relative -mt-[34px] rounded-[18px] bg-white px-[17px] py-[16px] shadow-[0px_-4.5px_11.25px_rgba(0,0,0,0.05)] md:rounded-[32px] md:px-[30px] md:py-[20px]">

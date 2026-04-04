@@ -94,7 +94,7 @@ export default function ReviewDialog({
                   type="button"
                   onClick={() => setRating(starValue)}
                   aria-label={`${starValue}점 선택`}
-                  className="flex h-9 w-9 items-center justify-center md:h-[42px] md:w-[42px]"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center md:h-[42px] md:w-[42px]"
                 >
                   <img
                     src={

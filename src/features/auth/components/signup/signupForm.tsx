@@ -166,7 +166,7 @@ export default function SignupForm() {
         <Button
           type="submit"
           size="lg"
-          className="mt-2 text-white md:mt-[10px]"
+          className="mt-2 text-white md:mt-[10px] disabled:pointer-events-auto disabled:cursor-not-allowed"
           disabled={!isValid || isSubmitting}
         >
           회원가입하기
