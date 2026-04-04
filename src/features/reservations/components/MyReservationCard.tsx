@@ -91,7 +91,7 @@ export default function MyReservationCard({
                   <button
                     type="button"
                     onClick={handleCancelClick}
-                    className="flex h-full grow items-center justify-center rounded-[12px] bg-gray-50 px-[10px] py-[6px]"
+                    className="flex h-full grow cursor-pointer items-center justify-center rounded-[12px] bg-gray-50 px-[10px] py-[6px]"
                   >
                     예약 취소
                   </button>
@@ -101,7 +101,10 @@ export default function MyReservationCard({
                 <button
                   type="button"
                   onClick={onClickReview}
-                  className="flex h-full grow cursor-pointer items-center justify-center rounded-[12px] bg-primary px-[10px] py-[6px] text-white"
+                  className={cn(
+                    "flex h-full grow items-center justify-center rounded-[12px] bg-primary px-[10px] py-[6px] text-white",
+                    !reviewSubmitted && "cursor-pointer",
+                  )}
                   disabled={reviewSubmitted}
                 >
                   {reviewSubmitted ? "후기 작성 완료!" : "후기 작성"}

@@ -43,8 +43,8 @@ export default function Card({
           {rating}
           <span className="text-gray-400 md:ml-[2px]">({reviewCount})</span>
         </div>
-        <div className="mt-[10px] flex flex-wrap items-center gap-[2px] md:mt-[18px]">
-          <strong className="text-[15px] font-bold md:text-[18px]">
+        <div className="mt-[10px] flex flex-wrap items-end gap-[2px] md:mt-[18px]">
+          <strong className="text-[16px] font-bold md:text-[18px]">
             &#8361; {(price ?? 0).toLocaleString()}
           </strong>
           <span className="text-[12px] font-medium text-gray-400 md:text-[16px]">

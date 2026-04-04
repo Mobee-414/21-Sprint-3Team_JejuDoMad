@@ -83,10 +83,6 @@ export default function ReservationFormMobile({
     setGuestCount(initialHeadCount);
   }, [open, mode, initialScheduleId, schedules]);
 
-  useEffect(() => {
-    if (open) setStep("select");
-  }, [open]);
-
   const handleSubmit = async () => {
     if (!selectedSchedule) return;
 
@@ -110,10 +106,15 @@ export default function ReservationFormMobile({
         });
       }
 
-      onClose();
+      handleClose();
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleClose = () => {
+    setStep("select");
+    onClose();
   };
 
   if (!open) return null;
@@ -123,7 +124,7 @@ export default function ReservationFormMobile({
       <button
         type="button"
         aria-label="예약 폼 닫기"
-        onClick={onClose}
+        onClick={handleClose}
         className="fixed inset-0 z-40 bg-black/45"
       />
 
@@ -136,8 +137,8 @@ export default function ReservationFormMobile({
                   <p className="mb-[10px] text-14-b text-foreground">날짜</p>
                   <button
                     type="button"
-                    onClick={onClose}
-                    className="text-14-m text-muted-foreground hover:text-foreground"
+                    onClick={handleClose}
+                    className="cursor-pointer text-14-m text-muted-foreground hover:text-foreground"
                   >
                     X
                   </button>
@@ -171,7 +172,7 @@ export default function ReservationFormMobile({
                           type="button"
                           onClick={() => handleSelectSchedule(schedule)}
                           className={cn(
-                            "flex h-[40px] items-center justify-center rounded-[8px] border border-border bg-background text-13-m text-foreground",
+                            "flex h-[40px] cursor-pointer items-center justify-center rounded-[8px] border border-border bg-background text-13-m text-foreground",
                             isSelected &&
                               "border-primary bg-primary/10 text-primary",
                           )}

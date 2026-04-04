@@ -32,7 +32,7 @@ export default function SearchResultSection({ keyword }: Props) {
   if (error) return <div>에러 발생</div>;
 
   return (
-    <div className="mx-auto mt-[80px] max-w-[1120px]">
+    <div className="mx-auto mt-[80px] max-w-[1120px] px-4 md:px-10">
       {isLoading ? (
         <>
           <Skeleton className="h-[18px] w-[260px]" />
@@ -53,9 +53,9 @@ export default function SearchResultSection({ keyword }: Props) {
       )}
 
       {isLoading ? (
-        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
+        <div className="mt-[24px] grid grid-cols-2 gap-[20px] lg:grid-cols-4 lg:gap-[24px]">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <CardSkeleton key={i} />
+            <CardSkeleton key={i} className="w-full md:w-full max-w-none min-w-0" />
           ))}
         </div>
       ) : activities.length === 0 ? (
@@ -63,7 +63,7 @@ export default function SearchResultSection({ keyword }: Props) {
           검색 결과가 없습니다
         </div>
       ) : (
-        <div className="mt-[24px] grid grid-cols-2 gap-[16px] md:grid-cols-4">
+        <div className="mt-[24px] grid grid-cols-2 gap-[20px] lg:grid-cols-4 lg:gap-[24px]">
           {activities.map((item) => (
             <Card
               key={item.id}

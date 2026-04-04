@@ -24,7 +24,7 @@ export default function ReservationFormBar({
         <button
           type="button"
           onClick={onOpen}
-          className="text-14-b text-primary underline underline-offset-2"
+          className="cursor-pointer text-14-b text-primary underline underline-offset-2"
         >
           날짜 선택하기
         </button>
@@ -34,7 +34,7 @@ export default function ReservationFormBar({
         <button
           type="button"
           onClick={onOpen}
-          className="h-[44px] w-full rounded-[12px] bg-muted text-14-b text-muted-foreground"
+          className="h-[44px] w-full cursor-pointer rounded-[12px] bg-muted text-14-b text-muted-foreground"
         >
           예약하기
         </button>
