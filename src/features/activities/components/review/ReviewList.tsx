@@ -16,7 +16,7 @@ export default function ReviewList({ reviews }: Props) {
       {reviews.map((review) => (
         <div
           key={review.id}
-          className="rounded-2xl border border-gray-200 p-5 shadow-sm"
+          className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
         >
           <div className="flex items-center gap-3">
             {review.user.profileImageUrl ? (
