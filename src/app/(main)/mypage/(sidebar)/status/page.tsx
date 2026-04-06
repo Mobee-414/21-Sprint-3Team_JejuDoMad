@@ -261,6 +261,7 @@ export default function StatusPage() {
                         className={cn(
                           props.className,
                           "relative flex min-h-25 w-full flex-col items-center! pt-4",
+                          dayInfo && "cursor-pointer",
                         )}
                       >
                         {/* 1. 예약이 하나라도 있으면 빨간 점 표시 */}
@@ -369,7 +370,7 @@ export default function StatusPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "flex-1 border-b-2 py-3 transition-colors",
+                "flex-1 cursor-pointer border-b-2 py-3 transition-colors",
                 activeTab === tab
                   ? "border-[#3390FF] text-[#3390FF]"
                   : "border-transparent text-[#84858C]",
@@ -495,7 +496,7 @@ export default function StatusPage() {
                               <Button
                                 variant="secondary"
                                 size="sm"
-                                className="h-9 w-20 rounded-lg"
+                                className="h-9 w-20 cursor-pointer rounded-lg"
                                 onClick={() =>
                                   handleStatusUpdate(item.id, "confirmed")
                                 }
@@ -506,7 +507,7 @@ export default function StatusPage() {
                               <Button
                                 variant="destructive"
                                 size="sm"
-                                className="h-9 w-20 rounded-lg"
+                                className="h-9 w-20 cursor-pointer rounded-lg"
                                 onClick={() =>
                                   handleStatusUpdate(item.id, "declined")
                                 }

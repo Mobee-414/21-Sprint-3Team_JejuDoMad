@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, notFound } from "next/navigation";
 import { useActivityDetail } from "../hooks/useActivityDetail";
 import { useMe } from "@/features/mypage/users/hooks/useMe";
 import ImageGallery from "./header/ImageGallery";
@@ -76,9 +76,7 @@ export default function ActivityDetail({ activityId }: Props) {
     );
   }
 
-  if (error || !activity) {
-    return <div></div>;
-  }
+  if (error || !activity) return notFound();
 
   const isOwner = me?.id === activity.userId;
 

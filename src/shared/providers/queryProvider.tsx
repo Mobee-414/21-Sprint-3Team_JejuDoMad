@@ -9,7 +9,7 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000 * 60 * 10, // 10분
+            staleTime: 1000 * 30, // 30초 (예약상태, 알림 등 실시간성 데이터 기본값)
           },
         },
       }),

@@ -126,7 +126,7 @@ export default function NotificationList() {
                       </span>
                       <button
                         onClick={() => handleDeleteNotification(item.id)}
-                        className="opacity-0 transition-opacity group-hover:opacity-100"
+                        className="cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
                       >
                         <Image
                           src="/images/icons/icon_close.svg"
