@@ -12,6 +12,15 @@ export default function HeroSection() {
         <Suspense>
           <JejuCanvas />
         </Suspense>
+
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+          <h1 className="text-4xl font-extrabold text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] md:text-6xl lg:text-7xl">
+            WELCOME
+          </h1>
+          <p className="mt-2 text-xl font-semibold tracking-widest text-blue-200">
+            JEJU ISLAND
+          </p>
+        </div>
       </div>
     </div>
   );
