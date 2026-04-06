@@ -23,6 +23,7 @@ export const useUpdateMyActivity = (activityId: number) => {
 
       queryClient.invalidateQueries({
         queryKey: queryKeys.myActivities.lists(),
+        exact: false,
       });
     },
 
