@@ -9,5 +9,6 @@ export const useActivityDetail = (activityId: number) => {
     queryKey: ["activities", activityId],
     queryFn: () => getActivityDetail(activityId),
     enabled: !!activityId,
+    staleTime: 1000 * 60 * 10, // 10분
   });
 };

@@ -10,5 +10,6 @@ export const useActivities = (params?: GetActivitiesParams) => {
     queryKey: queryKeys.activities.list(params),
     queryFn: () => getActivities(params),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 10, // 10분
   });
 };

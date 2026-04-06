@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import ActivityDetail from "@/features/activities/components/ActivityDetail";
 
 type Props = {
@@ -6,5 +7,11 @@ type Props = {
 
 export default async function ActivitiyDetailPage({ params }: Props) {
   const { id } = await params;
-  return <ActivityDetail activityId={Number(id)} />;
+  const activityId = Number(id);
+
+  if (!id || isNaN(activityId) || activityId <= 0) {
+    notFound();
+  }
+
+  return <ActivityDetail activityId={activityId} />;
 }
