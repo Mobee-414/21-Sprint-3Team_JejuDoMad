@@ -17,13 +17,10 @@ type Props = {
 export default function ReviewSection({ activityId }: Props) {
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isFetching, error } = useActivityReviews(
-    activityId,
-    {
-      page,
-      size: PAGE_SIZE,
-    },
-  );
+  const { data, isLoading, error } = useActivityReviews(activityId, {
+    page,
+    size: PAGE_SIZE,
+  });
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
 
@@ -33,7 +30,7 @@ export default function ReviewSection({ activityId }: Props) {
     }
   }, [error]);
 
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return (
       <div className="mt-10 space-y-4">
         {Array.from({ length: 3 }).map((_, i) => (
@@ -54,7 +51,7 @@ export default function ReviewSection({ activityId }: Props) {
         />
 
         <div className="mt-6">
-          <ReviewList reviews={data.reviews} />
+          <ReviewList reviews={data.reviews ?? []} />
         </div>
 
         <div className="mt-6">

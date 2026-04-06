@@ -60,7 +60,7 @@ export default function ActivityDetail({ activityId }: Props) {
             </div>
 
             <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
-              <ReviewSection activityId={activityId} />
+              <ReviewSection key={activityId} activityId={activityId} />
             </div>
           </div>
 
@@ -145,7 +145,7 @@ export default function ActivityDetail({ activityId }: Props) {
             </div>
 
             <div className="mt-6 border-t border-gray-200 pt-6 sm:mt-8 sm:pt-8">
-              <ReviewSection activityId={activityId} />
+              <ReviewSection key={activityId} activityId={activityId} />
             </div>
           </div>
 

@@ -164,7 +164,7 @@ export const ReviewItemSchema = z.object({
   user: z.object({
     id: z.number(),
     nickname: z.string(),
-    profileImageUrl: z.string(),
+    profileImageUrl: z.string().nullable(),
   }),
   activityId: z.number(),
   rating: z.number(),
