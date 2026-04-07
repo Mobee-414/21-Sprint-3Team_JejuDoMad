@@ -78,11 +78,11 @@ export default function MyActivityCard({
           <span className="text-[14px] text-gray-400 lg:text-[16px]">/ 인</span>
         </h2>
         <div className="mt-auto flex w-full gap-[8px]">
-          <Link href={`/mypage/manage/edit/${id}`} className="flex flex-1">
+          <Link href={`/mypage/manage/edit/${id}`} className="block">
             <Button
               variant="outline"
               size="sm"
-              className="rounded-x h-[30px] w-full border-gray-300 bg-white text-gray-500 lg:h-[30px]"
+              className="h-[28px] w-[72px] max-w-[72px] min-w-[72px] rounded-[6px] border-gray-300 bg-white p-0 text-[12px] text-gray-500 lg:h-[32px] lg:w-[90px] lg:max-w-[90px] lg:min-w-[90px] lg:text-[14px]"
             >
               수정하기
             </Button>
@@ -93,7 +93,7 @@ export default function MyActivityCard({
               <Button
                 variant="secondary"
                 size="sm"
-                className="rounded-x h-[30px] w-full flex-1 bg-gray-200 text-gray-500 transition-colors hover:bg-gray-100 lg:h-[30px]"
+                className="h-[28px] w-[72px] max-w-[72px] min-w-[72px] rounded-[6px] bg-gray-200 p-0 text-[12px] text-gray-500 transition-colors hover:bg-gray-100 lg:h-[32px] lg:w-[90px] lg:max-w-[90px] lg:min-w-[90px] lg:text-[14px]"
                 disabled={isPending}
               >
                 {isPending ? "삭제 중..." : "삭제하기"}
