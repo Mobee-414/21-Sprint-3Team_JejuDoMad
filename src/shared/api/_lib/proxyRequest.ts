@@ -17,20 +17,23 @@ export const fetchWithAccessToken = async (
   const search = req.nextUrl.search;
   const targetPath = pathname + search;
 
-  // 액세스 토큰 주입
   if (accessToken) {
     headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  let body: BodyInit | null = null;
+
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    body = await req.arrayBuffer();
   }
 
   const fetchOptions: CustomRequestInit = {
     method: req.method,
     headers,
-    body: req.body ? req.clone().body : null,
-    duplex: "half",
+    body,
+    duplex: body ? "half" : undefined,
     cache: "no-store",
   };
-
-  // request 요청
   return await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}${targetPath}`,
     fetchOptions,
